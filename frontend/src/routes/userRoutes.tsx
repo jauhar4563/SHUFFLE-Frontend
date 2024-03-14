@@ -4,10 +4,12 @@ import Signup from '../pages/signup/signup';
 import ForgotPassword from '../pages/forgotPassword/forgotPassword';
 import RenewPassword from '../pages/forgotPassword/renewPassword';
 import Otp from '../pages/otpPage/Otp';
+import HomePage from '../pages/homePage/HomePage';
 
 function UserRoutes() {
   return (
     <Routes>
+        <Route path='/' element={<HomePage />} />
       <Route path='/login' element={<Login />} />
       <Route path='/signup' element={<Signup />} />
       <Route path='/forgot-password' element={<ForgotPassword />} />
