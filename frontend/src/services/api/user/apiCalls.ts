@@ -6,8 +6,8 @@ import { api } from "./api";
 
 
 
-export const apiCall = async (method:string, url:string, data) => {
-  return await new Promise(async (resolve, reject) => {
+export const apiCall = async<T> (method:string, url:string, data:T) => {
+  return await new Promise(async(resolve, reject) => {
     try {
       let response, error;
 

@@ -1,4 +1,4 @@
-import {Toaster,toast} from 'sonner'
+import {toast} from 'sonner'
 import { Link } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import TextError from "../../components/textError";
@@ -9,16 +9,20 @@ import logo from '../../../public/images/logo/shuffle.png';
 import signupImg from '../../../public/images/signup-img.png';
 
 
+
 function Signup() {
-  
+
   const navigate = useNavigate();
   const submit = (values:FormValues) => {
     postRegister(values).then((response:any) => {
+      const data = response.data
       if(response.status === 200) {
-        toast.success('OTP has been sent')
-        navigate('/otp');
+        toast.success(data.message)
+        navigate(`/otp?email=${data.email}`);
       } else {
-        console.log(response.message);
+        toast.error(data.message)
+
+        console.log(data.message);
       }
     }).catch((error) => {
       console.log(error?.message)
@@ -27,7 +31,6 @@ function Signup() {
 
   return (
     <>
-     <Toaster />
 
       <div className="bg-gray-100 flex justify-center items-center h-screen">
         {/* Left: Image */}

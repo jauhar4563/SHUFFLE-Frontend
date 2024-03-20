@@ -2,7 +2,7 @@ import axios from "axios";
 // import { userAuth } from "../const/localStorage";
 import { BASE_URL } from "../../../constants/baseUrls"; 
 
-export const api = axios.create({
+export const api = axios.create({withCredentials:true,
   baseURL: `${BASE_URL}/api`,
 });
 
