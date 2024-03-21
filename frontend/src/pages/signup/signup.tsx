@@ -3,15 +3,19 @@ import { Link } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import TextError from "../../components/textError";
 import { validationSchema,FormValues,initialValues } from "../../utils/validations/registerValidation";
-import { postRegister } from "../../services/api/user/apiMethods";
+import { postRegister,googleAuthenticate } from "../../services/api/user/apiMethods";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux';
 import logo from '../../../public/images/logo/shuffle.png';
 import signupImg from '../../../public/images/signup-img.png';
-
+import {provider,auth} from '../../utils/firebase/config'
+import { signInWithPopup } from 'firebase/auth';
+import { loginSuccess } from '../../utils/context/reducers/authSlice'; 
 
 
 function Signup() {
-
+  const dispatch = useDispatch();
+  localStorage.removeItem('otpTimer');
   const navigate = useNavigate();
   const submit = (values:FormValues) => {
     postRegister(values).then((response:any) => {
@@ -22,12 +26,36 @@ function Signup() {
       } else {
         toast.error(data.message)
 
-        console.log(data.message);
       }
     }).catch((error) => {
-      console.log(error?.message)
+      toast.error(error?.message);
     })
   };
+  const handlegoogleSignUp = ()=>{
+    signInWithPopup(auth, provider).then((data: any) => {
+      console.log(data);
+  
+      const userData = {
+        username: data.user.displayName,
+        email: data.user.email,
+        imageUrl: data.user.photoURL
+      };
+  
+      googleAuthenticate(userData).then((response: any) => {
+        const data = response.data;
+        if (response.status === 200) {
+          toast.success(data.message);
+          dispatch(loginSuccess({ user: data }));
+          navigate('/');
+        } else {
+          console.log(response.message);
+          toast.error(data.message);
+        }
+      }).catch((error) => {
+        console.log(error?.message);
+      });
+    });
+  }
 
   return (
     <>
@@ -63,6 +91,7 @@ function Signup() {
               <button
                 className="bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-3 rounded-md outline-grey focus:outline-none mr-3 mb-5  uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
                 type="button"
+                onClick={handlegoogleSignUp}
               >
                 <img
                   alt="..."

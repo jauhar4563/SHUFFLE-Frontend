@@ -1,7 +1,22 @@
+import { useDispatch,useSelector } from 'react-redux';
+import { logout } from '../utils/context/reducers/authSlice'; 
+import { useNavigate } from 'react-router-dom';
+
+
 function SideNavBar() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const selectUser = (state:any)=>state.auth.user;
+  const user = useSelector(selectUser);
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem('email')
+    navigate('/login')
+  };
+
   return (
     <>
-      <aside className="flex flex-col w-64 h-5/6 mt-5 ms-32 px-4 py-5 overflow-none  border-r rounded-xl rtl:border-r-0 rtl:border-l bg-gradient-to-b from-purple-600 to-blue-400 dark:border-gray-700">
+      <aside className="fixed top-20 left-0  flex flex-col w-64 h-5/6 mt-5 ms-32 px-4 py-5 overflow-none  border-r rounded-xl rtl:border-r-0 rtl:border-l bg-gradient-to-b from-purple-600 to-blue-400 dark:border-gray-700">
         <div className="flex flex-col items-center -mx-2">
           <img
             className="object-cover w-16 h-16  mx-2 rounded-full border-2 border-white"
@@ -9,7 +24,7 @@ function SideNavBar() {
             alt="avatar"
           />
           <h4 className="mx-2 mt-4 font-medium text-gray-800 dark:text-gray-200">
-            Muhammad Jawhar
+            {user?user.name:''}
           </h4>
         </div>
 
@@ -202,7 +217,7 @@ function SideNavBar() {
               d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"
             />
           </svg>
-          <span className="mx-5 ">Logout</span>
+          <button className="mx-5 " onClick={handleLogout}>Logout</button>
         </div>
       </aside>
     </>

@@ -7,7 +7,7 @@ function HomePage() {
   return (
     <>
         <Header />
-        <div className="flex bg-gray-100 h-fit ">
+        <div className="flex bg-gray-100 mt-20 h-fit ">
 
             <SideNavBar />
             <Posts />

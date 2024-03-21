@@ -2,10 +2,10 @@ import React, { useState, useRef, FormEvent, useEffect } from "react";
 import { useNavigate,useLocation } from "react-router-dom";
 import logo from "../../../public/images/logo/shuffle.png";
 import signup from "../../../public/images/signup-img.png";
-import { postOTP,postResendOTP } from "../../services/api/user/apiMethods";
+import { forgotOTP,postResendOTP } from "../../services/api/user/apiMethods";
 import { toast } from "sonner";
 
-function Otp() {
+function ForgotOtp() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const email = queryParams.get('email') || '';
@@ -90,13 +90,13 @@ function Otp() {
       return;
     }
 
-    postOTP({ otp: otp })
+    forgotOTP({ otp: otp })
       .then((response: any) => {
         localStorage.removeItem('otpTimer');
         const data = response.data;
         if (response.status === 200) {
           toast.success(data.message);
-          navigate("/");
+          navigate("/renew-password");
         } else {
           toast.error(data.message);
         }
@@ -214,4 +214,4 @@ function Otp() {
   );
 }
 
-export default Otp;
+export default ForgotOtp;
