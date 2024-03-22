@@ -1,5 +1,5 @@
 import { apiCall } from "./apiCalls";
-import { userUrls } from "../endPoints";
+import { postUrls, userUrls } from "../endPoints";
 import { FormValues } from "../../../utils/validations/registerValidation";
 
 //@dec      Register user
@@ -149,3 +149,23 @@ export const forgotPassword = (email: { email: string }) => {
       }
     });
   };
+
+
+//@dec      Renew Password
+//method    POST
+
+export const addPost = (postData: {userId:any, imageUrl: string; title: string; description:string }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("post", postUrls.addPost, postData)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};

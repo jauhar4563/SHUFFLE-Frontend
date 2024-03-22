@@ -1,7 +1,10 @@
+
+
 function Posts() {
+
   return (
     <>
-      <div className="lg:col-span-2 ms-96 w-5/12 p-4  mt-2" id="posted">
+      <div className="lg:col-span-2 ms-96 w-12/12 p-4  " id="posted">
         <div className="flex flex-col">
           <div className="bg-white p-6 mb-4 rounded-lg shadow-md max-w-full">
             {/* User Info with Three-Dot Menu */}

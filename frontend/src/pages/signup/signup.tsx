@@ -6,7 +6,7 @@ import { validationSchema,FormValues,initialValues } from "../../utils/validatio
 import { postRegister,googleAuthenticate } from "../../services/api/user/apiMethods";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
-import logo from '../../../public/images/logo/shuffle.png';
+import logo from "../../../public/images/logo/shuffle.png";
 import signupImg from '../../../public/images/signup-img.png';
 import {provider,auth} from '../../utils/firebase/config'
 import { signInWithPopup } from 'firebase/auth';
