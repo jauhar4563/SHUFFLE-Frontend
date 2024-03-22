@@ -9,11 +9,20 @@ import { toast } from "sonner";
 import { useSelector } from "react-redux";
 
 function AddPost() {
-  const selectUser = (state:any)=>state.auth.user;
-  const user = useSelector(selectUser);
-  const userId = user._id;
+  const selectUser = (state: any) => state.auth.user || ''; 
+  const user = useSelector(selectUser) || '';
+  const userId = user._id || '';
   const [showModal, setShowModal] = useState(false);
+  const [hideLikes, setHideLikes] = useState(false);
+  const [hideComment, setHideComment] = useState(false);
 
+  const handleHideLikesToggle = () => {
+    setHideLikes(!hideLikes);
+  };
+
+  const handleHideCommentToggle = () => {
+    setHideComment(!hideComment);
+  };
   const handleCreatePostClick = () => {
     setShowModal(true);
   };
@@ -33,6 +42,7 @@ function AddPost() {
       image: "",
       title: "",
       description: "",
+      
     },
     validationSchema: Yup.object({
       image: Yup.mixed()
@@ -52,9 +62,9 @@ function AddPost() {
       description: Yup.string().required("Description is required"),
     }),
     onSubmit: async () => {
-      console.log("hello",userId);
+      console.log("hello", userId);
 
-      const { image, title, description } = formik.values;
+      const { image, title, description} = formik.values;
       const formData = new FormData();
 
       try {
@@ -66,7 +76,7 @@ function AddPost() {
         );
         if (res.status === 200) {
           const imageUrl = res.data.secure_url;
-          addPost({userId, imageUrl, title, description })
+          addPost({ userId, imageUrl, title, description,hideLikes,hideComment })
             .then((response: any) => {
               const data = response.data;
               if (response.status === 200) {
@@ -137,7 +147,7 @@ function AddPost() {
         </div>
       </div>
       {showModal && (
-        <div className="addpost-popup">
+        <div className="addpost-popup z-50">
           <div className="addpost-popup">
             <div className="addpost-modal rounded-xl flex bg-gray-100 mx-auto w-10/12 flex-col text-gray-800 border z-50 border-gray-300 p-5 shadow-lg max-w-2xl">
               <p className="font-semibold text-5xl m-3">Create Post</p>
@@ -220,6 +230,33 @@ function AddPost() {
                       }
                     }}
                   />
+                   <label className="inline-flex items-center me-5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      value=""
+                      className="sr-only peer"
+                      checked={hideComment}
+                      onChange={handleHideCommentToggle}
+                    />
+                    <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+                    <span className="ms-3 text-sm font-semibold text-gray-900 dark:text-gray-900">
+                      Hide Comments
+                    </span>
+                  </label>
+                  <label className="inline-flex items-center me-5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      value=""
+                      className="sr-only peer"
+                      checked={hideLikes}
+                      onChange={handleHideLikesToggle}
+                    />
+                    <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+                    <span className="ms-3 text-sm font-semibold text-gray-900 dark:text-gray-900">
+                      Hide Likes
+                    </span>
+                  </label>
+
                   <div className="count ml-auto text-gray-400 text-xs font-semibold">
                     0/300
                   </div>

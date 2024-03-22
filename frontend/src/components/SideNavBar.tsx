@@ -16,7 +16,7 @@ function SideNavBar() {
 
   return (
     <>
-      <aside className="fixed top-20 left-0  flex flex-col w-64 h-5/6 mt-5 ms-32 px-4 py-5 overflow-none  border-r rounded-xl rtl:border-r-0 rtl:border-l bg-gradient-to-b from-purple-600 to-blue-400 dark:border-gray-700">
+      <aside className="fixed top-20 left-0 z-30  flex flex-col w-64 h-5/6 mt-5 ms-32 px-4 py-5 overflow-none  border-r rounded-xl rtl:border-r-0 rtl:border-l bg-gradient-to-b from-purple-600 to-blue-400 dark:border-gray-700">
         <div className="flex flex-col items-center -mx-2">
           <img
             className="object-cover w-16 h-16  mx-2 rounded-full border-2 border-white"
@@ -199,7 +199,7 @@ function SideNavBar() {
             {/* Add more navigation links */}
           </nav>
         </div>
-        <div className="flex mt-28 text-white px-4">
+        <div onClick={handleLogout} className="flex mt-28 cursor-pointer text-white px-4">
           <svg
             className="w-6 h-6 text-gray-800 dark:text-white"
             aria-hidden="true"

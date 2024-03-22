@@ -154,7 +154,7 @@ export const forgotPassword = (email: { email: string }) => {
 //@dec      Renew Password
 //method    POST
 
-export const addPost = (postData: {userId:any, imageUrl: string; title: string; description:string }) => {
+export const addPost = (postData: {userId:any, imageUrl: string; title: string; description:string,hideLikes:boolean,hideComment:boolean }) => {
   return new Promise((resolve, reject) => {
     try {
       apiCall("post", postUrls.addPost, postData)
