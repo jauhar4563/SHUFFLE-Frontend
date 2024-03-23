@@ -105,7 +105,7 @@ function AddPost() {
   };
 
   return (
-    <div className=" ms-96 ">
+    <div className=" ms-96 w-12/12">
       <div className=" m-4 home-addpost-section h-18%  rounded-xl border border-gray-200 shadow-md">
         <div className="bg-white flex flex-col rounded-lg justify-between p-4">
           <div className="text-gray-500 font-medium text-xs">

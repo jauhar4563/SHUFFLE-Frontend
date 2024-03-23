@@ -169,3 +169,42 @@ export const addPost = (postData: {userId:any, imageUrl: string; title: string; 
     }
   });
 };
+
+
+//@dec      Get All Posts
+//method    POST
+
+export const    getAllPosts = () => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("get", postUrls.getAllPosts, null)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+//@dec      Get User Post
+//method    POST
+
+export const    getUserPost = ({userId}) => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("post", postUrls.getAllPosts, userId)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};

@@ -1,3 +1,4 @@
+
 export const userUrls = {
     register:'/register',
     registerOtp:'/register-otp',
@@ -10,7 +11,9 @@ export const userUrls = {
 }
 
 export const postUrls = {
-    addPost:'/post/add-post'
+    addPost:'/post/add-post',
+    getAllPosts:'/post/get-post',
+    getUserPosts:'/post/get-user-post'
 }
 
 

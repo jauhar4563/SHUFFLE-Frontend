@@ -1,9 +1,10 @@
 import { useDispatch,useSelector } from 'react-redux';
 import { logout } from '../utils/context/reducers/authSlice'; 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation,NavLink } from 'react-router-dom';
 
 
 function SideNavBar() {
+  const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const selectUser = (state:any)=>state.auth.user;
@@ -30,12 +31,12 @@ function SideNavBar() {
 
         <div className="flex flex-col justify-between flex-1 mt-5">
           <nav>
-            <a
-              className="flex items-center px-4 py-2 text-purple-600 bg-white rounded-md"
-              href="#"
+            <NavLink
+            to={'/'}
+              className={`flex items-center px-4 py-2  rounded-md ${location.pathname === '/' ? 'text-purple-600 bg-white' : 'text-white'}`}
             >
               <svg
-                className="w-5 h-5"
+                className={`w-5 h-5  ${location.pathname !== '/' ? 'text-gray-800 dark:text-white':''}`}
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -49,13 +50,13 @@ function SideNavBar() {
                 />
               </svg>
               <span className="mx-5 ">Dashboard</span>
-            </a>
-            <a
-              className="flex items-center px-4 mt-2 py-2 text-white  rounded-lg"
-              href="#"
+            </NavLink>
+            <NavLink
+              className={`flex items-center px-4 mt-2 py-2 ${location.pathname === '/notifications' ? 'text-purple-600 bg-white' : 'text-white'}  rounded-lg`}
+              to={'/'}
             >
               <svg
-                className="w-6 h-6 text-gray-800 dark:text-white"
+                className={`w-5 h-5  ${location.pathname !== '/notifications' ? 'text-gray-800 dark:text-white':''}`}
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -73,13 +74,13 @@ function SideNavBar() {
               </svg>
 
               <span className="mx-5 ">Notifications</span>
-            </a>
-            <a
-              className="flex items-center px-4 mt-2 py-2 text-white  rounded-lg"
-              href="#"
+            </NavLink>
+            <NavLink
+              className={`flex items-center px-4 mt-2 py-2 ${location.pathname === '/messages' ? 'text-purple-600 bg-white' : 'text-white'}  rounded-lg`}
+              to={'/'}
             >
               <svg
-                className="w-6 h-6 text-gray-800 dark:text-white"
+                className={`w-5 h-5  ${location.pathname !== '/messages' ? 'text-gray-800 dark:text-white':''}`}
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -97,13 +98,13 @@ function SideNavBar() {
               </svg>
 
               <span className="mx-5 ">Messages</span>
-            </a>
-            <a
-              className="flex items-center px-4 mt-2 py-2 text-white  rounded-lg"
-              href="#"
+            </NavLink>
+            <NavLink
+              className={`flex items-center px-4 mt-2 py-2 ${location.pathname === '/requests' ? 'text-purple-600 bg-white' : 'text-white'}  rounded-lg`}
+              to={'/'}
             >
               <svg
-                className="w-6 h-6 text-gray-800 dark:text-white"
+                className={`w-5 h-5  ${location.pathname !== '/requests' ? 'text-gray-800 dark:text-white':''}`}
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -121,13 +122,13 @@ function SideNavBar() {
               </svg>
 
               <span className="mx-5 ">Requests</span>
-            </a>
-            <a
-              className="flex items-center px-4 mt-2 py-2 text-white  rounded-lg"
-              href="#"
+            </NavLink>
+            <NavLink
+              className={`flex items-center px-4 mt-2 py-2 ${location.pathname === '/saved-posts' ? 'text-purple-600 bg-white' : 'text-white'}  rounded-lg`}
+              to={'/'}
             >
               <svg
-                className="w-6 h-6 text-gray-800 dark:text-white"
+                className={`w-5 h-5  ${location.pathname !== '/saved-posts' ? 'text-gray-800 dark:text-white':''}`}
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -145,13 +146,13 @@ function SideNavBar() {
               </svg>
 
               <span className="mx-5 ">Saved Posts</span>
-            </a>
-            <a
-              className="flex items-center px-4 mt-2 py-2 text-white  rounded-lg"
-              href="#"
+            </NavLink>
+            <NavLink
+              className={`flex items-center px-4 mt-2 py-2 ${location.pathname === '/profile' ? 'text-purple-600 bg-white' : 'text-white'}  rounded-lg`}
+              to={'/profile'}
             >
               <svg
-                className="w-6 h-6 text-gray-800 dark:text-white"
+                className={`w-5 h-5  ${location.pathname !== '/profile' ? 'text-gray-800 dark:text-white':''}`}
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -167,13 +168,13 @@ function SideNavBar() {
               </svg>
 
               <span className="mx-5 ">Profile</span>
-            </a>
-            <a
-              className="flex items-center px-4 mt-2 py-2 text-white  rounded-lg"
-              href="#"
+            </NavLink>
+            <NavLink
+              className={`flex items-center px-4 mt-2 py-2 ${location.pathname === '/settings' ? 'text-purple-600 bg-white' : 'text-white'}  rounded-lg`}
+              to={'/'}
             >
               <svg
-                className="w-5 h-5"
+                className={`w-5 h-5  ${location.pathname !== '/settings' ? 'text-gray-800 dark:text-white':''}`}
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -195,7 +196,7 @@ function SideNavBar() {
               </svg>
 
               <span className="mx-5 ">More</span>
-            </a>
+            </NavLink>
             {/* Add more navigation links */}
           </nav>
         </div>

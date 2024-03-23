@@ -8,6 +8,7 @@ import HomePage from '../pages/homePage/HomePage';
 import App from '../App';
 import ForgotOtp from '../pages/otpPage/forgotOtp';
 import { adminRouter,adminLoginRouter } from './adminRoutes';
+import UserProfile from '../pages/profile/UserProfile';
 
 
 const appRouter = createBrowserRouter([
@@ -20,10 +21,10 @@ const appRouter = createBrowserRouter([
         path: "/",
         element: <HomePage />,
       },
-      // {
-      //   path: "/profile/:username",
-      //   element: <UserProfile />,
-      // },
+      {
+        path: "/profile",
+        element: <UserProfile />,
+      },
     ],
   },
   {
@@ -43,7 +44,7 @@ const appRouter = createBrowserRouter([
     element: <ForgotOtp />,
   },
   {
-    path: "/forgot-otp",
+    path: "/otp",
     element: <Otp />,
   },
   {
