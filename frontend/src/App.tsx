@@ -1,18 +1,36 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import UserRoutes from "./routes/userRoutes";
-import AdminRoutes from "./routes/adminRoutes";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import {  Outlet,useNavigate } from "react-router-dom";
 import { Toaster } from "sonner";
+import Protect from "./routes/protect";
+import Header from "./components/Header";
+import SideNavBar from "./components/SideNavBar";
 
 function App() {
-  return (
-    <Router>
-      <Toaster richColors position="top-right"/>
-      <Routes>
-        <Route path="/*" element={<UserRoutes />} />
-        <Route path="/admin*" element={<AdminRoutes />} />
+  const selectUser = (state:any)=>state.auth.user;
+  const user = useSelector(selectUser);
+  const navigate = useNavigate();
+   //authenticator
+   useEffect(() => {
+    if (!user ) {
+      navigate("/login");
+    }
+  },[user,  navigate]);
 
-      </Routes>
-    </Router>
+  return (
+    <>
+        <Protect>
+      <Toaster richColors position="top-right"/>
+      <Header />
+        <div className="flex bg-gray-100  mt-20 h-fit ">
+
+            <SideNavBar />
+            <Outlet />
+
+        </div>
+    </Protect>
+    </>
+
   );
 }
 

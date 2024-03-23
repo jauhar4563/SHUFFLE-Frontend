@@ -1,11 +1,11 @@
 import Navbar from "../../../components/admin/Navbar"
-import UserList from "../../../components/admin/UserList"
+import { Outlet } from "react-router-dom"
 
 function AdminDashboard() {
   return (
     <div className="flex">
         <Navbar />
-        <UserList />
+        <Outlet />
     </div>
   )
 }

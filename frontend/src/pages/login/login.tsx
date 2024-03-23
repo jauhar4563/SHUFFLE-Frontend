@@ -11,14 +11,23 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { postLogin,googleAuthenticate } from "../../services/api/user/apiMethods";
 import TextError from "../../components/textError";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from "../../utils/context/reducers/authSlice"; 
 import { signInWithPopup } from "firebase/auth";
 import {provider,auth} from '../../utils/firebase/config'
+import { useEffect } from "react";
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const selectUser = (state:any)=>state.auth.user;
+  const user = useSelector(selectUser);
+   //authenticator
+   useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  },[user,  navigate]);
   const submit = (values: FormValues) => {
     postLogin(values)
       .then((response: any) => {
