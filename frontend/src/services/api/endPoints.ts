@@ -13,7 +13,8 @@ export const userUrls = {
 export const postUrls = {
     addPost:'/post/add-post',
     getAllPosts:'/post/get-post',
-    getUserPosts:'/post/get-user-post'
+    getUserPosts:'/post/get-user-post',
+    editPost:'/post/edit-post'
 }
 
 

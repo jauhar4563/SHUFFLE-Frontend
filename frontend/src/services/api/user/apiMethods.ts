@@ -151,7 +151,7 @@ export const forgotPassword = (email: { email: string }) => {
   };
 
 
-//@dec      Renew Password
+//@dec      Add new Post
 //method    POST
 
 export const addPost = (postData: {userId:any, imageUrl: string; title: string; description:string,hideLikes:boolean,hideComment:boolean }) => {
@@ -197,6 +197,27 @@ export const    getUserPost = (userId:{userId:any}) => {
   return new Promise((resolve, reject) => {
     try {
       apiCall("post", postUrls.getUserPosts, userId)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+
+
+//@dec      Edit User post
+//method    POST
+
+export const editPost = (postData: {postId:any,  title: string; description:string,hideLikes:boolean,hideComment:boolean }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("post", postUrls.editPost, postData)
         .then((response) => {
           resolve(response);
         })

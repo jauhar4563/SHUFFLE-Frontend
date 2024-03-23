@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-
+import EditPost from "./EditPost";
 interface PostProps {
   post: {
     _id: string;
@@ -27,12 +27,19 @@ const Posts:React.FC<PostProps> = ({ post })=> {
   const selectUser = (state:any)=>state.auth.user;
   const user = useSelector(selectUser);
   const [isOpen, setIsOpen] = useState(false);
+  const [editPostData, setEditPostData] = useState<any>(null);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
   const handleEdit = () => {
+    console.log(post)
+    setEditPostData(post);
+
+  };
+  const handleCancelEdit = () => {
+    setEditPostData(null);
   };
 
   const handleDelete = () => {
@@ -98,7 +105,7 @@ const Posts:React.FC<PostProps> = ({ post })=> {
                 
                 }
                 {isOpen && (
-        <div className="absolute right-96 mt-2 w-40 bg-white divide-y divide-gray-100 rounded-lg shadow-lg">
+        <div className="absolute  right-96 mt-2 w-40 bg-white divide-y divide-gray-100 rounded-lg shadow-lg">
           <button
             className="block px-4 py-2 hover:bg-gray-100 w-40"
             onClick={handleEdit}
@@ -207,6 +214,9 @@ const Posts:React.FC<PostProps> = ({ post })=> {
          
         </div>
       </div>
+      {editPostData && (
+        <EditPost post={editPostData} onCancelEdit={handleCancelEdit} />
+      )}
     </>
   );
 }

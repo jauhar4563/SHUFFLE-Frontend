@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import {  Outlet,useNavigate } from "react-router-dom";
-import { Toaster } from "sonner";
 import Protect from "./routes/protect";
 import Header from "./components/Header";
 import SideNavBar from "./components/SideNavBar";
@@ -20,7 +19,6 @@ function App() {
   return (
     <>
         <Protect>
-      <Toaster richColors position="top-right"/>
       <Header />
         <div className="flex bg-gray-100  mt-20 h-fit ">
 
