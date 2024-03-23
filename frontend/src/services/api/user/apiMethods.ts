@@ -193,10 +193,10 @@ export const    getAllPosts = () => {
 //@dec      Get User Post
 //method    POST
 
-export const    getUserPost = ({userId}) => {
+export const    getUserPost = (userId:{userId:any}) => {
   return new Promise((resolve, reject) => {
     try {
-      apiCall("post", postUrls.getAllPosts, userId)
+      apiCall("post", postUrls.getUserPosts, userId)
         .then((response) => {
           resolve(response);
         })

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
 interface PostProps {
   post: {
@@ -21,7 +22,21 @@ interface PostProps {
   };
 }
 
+
 const Posts:React.FC<PostProps> = ({ post })=> {
+  const selectUser = (state:any)=>state.auth.user;
+  const user = useSelector(selectUser);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleEdit = () => {
+  };
+
+  const handleDelete = () => {
+  };
 
   return (
     <>
@@ -58,8 +73,11 @@ const Posts:React.FC<PostProps> = ({ post })=> {
                 </div>
               </div>
               <div className="text-gray-500 cursor-pointer">
-                {/* Three-dot menu icon */}
-                <button className="hover:bg-gray-50 rounded-full p-1">
+                {post.userId._id===user._id && (
+                  <button
+                  className="hover:bg-gray-50 rounded-full p-1"
+                  onClick={toggleDropdown}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -76,6 +94,25 @@ const Posts:React.FC<PostProps> = ({ post })=> {
                     <circle cx="12" cy="17" r="1" />
                   </svg>
                 </button>
+                ) 
+                
+                }
+                {isOpen && (
+        <div className="absolute right-96 mt-2 w-40 bg-white divide-y divide-gray-100 rounded-lg shadow-lg">
+          <button
+            className="block px-4 py-2 hover:bg-gray-100 w-40"
+            onClick={handleEdit}
+          >
+            Edit
+          </button>
+          <button
+            className="block px-4 py-2 hover:bg-gray-100 w-40"
+            onClick={handleDelete}
+          >
+            Delete
+          </button>
+        </div>
+      )}
               </div>
             </div>
             {/* Message */}

@@ -1,7 +1,7 @@
 import  { useEffect, useState } from 'react';
 import Posts from '../../components/Posts';
 import { Pencil, Share2Icon } from 'lucide-react';
-import { getAllPosts } from '../../services/api/user/apiMethods';
+import {  getUserPost } from '../../services/api/user/apiMethods';
 import { useSelector } from 'react-redux';
 
 function HomePage() {
@@ -14,7 +14,7 @@ function HomePage() {
     try {
       setLoading(true);
       setTimeout(() => {
-        getAllPosts({userId:user._id})
+        getUserPost({userId:user._id})
           .then((response: any) => {
             const postsData = response.data;
             setPosts(postsData);
@@ -57,7 +57,9 @@ function HomePage() {
           <div className='flex gap-5 mr-14'>
             <Pencil />
             <Share2Icon />
+            
           </div>
+          
         </div>
         <div className='w-11/12'>
           <p className='font-semibold'>About Me</p>
