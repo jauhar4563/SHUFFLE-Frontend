@@ -9,10 +9,13 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { adminPostLogin } from '../../../services/api/admin/apiMethods';
 import TextError from "../../../components/textError";
+import { useDispatch } from "react-redux";
+import { AdminLoginSuccess } from "../../../utils/context/reducers/adminAuthSlice";
 
 
 function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const submit = (values: FormValues) => {
   
     adminPostLogin(values).then((response:any) => {
@@ -20,8 +23,8 @@ function Login() {
       const data = response.data
       if(response.status === 200) {
        toast.success(data.message)
-    //    dispatch(loginSuccess({ user: data }));
-        navigate('/admin/');
+       dispatch(AdminLoginSuccess({ admin: data }));        
+       navigate('/admin/');
       } else {
         console.log(response.message);
         toast.error(data.message)

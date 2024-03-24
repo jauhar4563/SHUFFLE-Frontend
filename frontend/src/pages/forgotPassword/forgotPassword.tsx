@@ -27,6 +27,7 @@ function ForgotPassword() {
         navigate(`/forgot-otp?email=${data.email}`);
       })
       .catch((error) => {
+        
         toast.error(error?.message);
       });
   };

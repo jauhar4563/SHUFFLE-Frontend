@@ -44,6 +44,7 @@ function SideNavBar() {
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
+                className={`${location.pathname === '/' ? 'text-purple-600 bg-white' : 'text-white'}`}
                   d="M19 11H5M19 11C20.1046 11 21 11.8954 21 13V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V13C3 11.8954 3.89543 11 5 11M19 11V9C19 7.89543 18.1046 7 17 7M5 11V9C5 7.89543 5.89543 7 7 7M7 7V5C7 3.89543 7.89543 3 9 3H15C16.1046 3 17 3.89543 17 5V7M7 7H17"
                   stroke="currentColor"
                   strokeWidth="2"
@@ -67,6 +68,8 @@ function SideNavBar() {
                 viewBox="0 0 24 24"
               >
                 <path
+                                className={`${location.pathname === '/notifications' ? 'text-purple-600 bg-white' : 'text-white'}`}
+
                   stroke="currentColor"
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -91,6 +94,8 @@ function SideNavBar() {
                 viewBox="0 0 24 24"
               >
                 <path
+                                className={`${location.pathname === '/messages' ? 'text-purple-600 bg-white' : 'text-white'}`}
+
                   stroke="currentColor"
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -115,6 +120,8 @@ function SideNavBar() {
                 viewBox="0 0 24 24"
               >
                 <path
+                                className={`${location.pathname === '/requests' ? 'text-purple-600 bg-white' : 'text-white'}`}
+
                   stroke="currentColor"
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -139,6 +146,8 @@ function SideNavBar() {
                 viewBox="0 0 24 24"
               >
                 <path
+                                className={`${location.pathname === '/saved-posts' ? 'text-purple-600 bg-white' : 'text-white'}`}
+
                   stroke="currentColor"
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -163,7 +172,8 @@ function SideNavBar() {
                 viewBox="0 0 24 24"
               >
                 <path
-                  stroke="currentColor"
+                className={`${location.pathname === '/profile' ? 'text-purple-600 bg-white' : 'text-white'}`}
+                stroke="currentColor"
                   stroke-width="2"
                   d="M7 17v1a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1a3 3 0 0 0-3-3h-4a3 3 0 0 0-3 3Zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
                 />
@@ -176,7 +186,7 @@ function SideNavBar() {
               to={'/'}
             >
               <svg
-                className={`w-5 h-5  ${location.pathname !== '/settings' ? 'text-gray-800 dark:text-white':''}`}
+                className={`w-5 h-5 text-white ${location.pathname !== '/settings' ? 'text-gray-800 dark:text-white':''}`}
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -204,7 +214,7 @@ function SideNavBar() {
         </div>
         <div onClick={handleLogout} className="flex mt-28 cursor-pointer text-white px-4">
           <svg
-            className="w-6 h-6 text-gray-800 dark:text-white"
+            className="w-6 h-6 text-white "
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             width="24"

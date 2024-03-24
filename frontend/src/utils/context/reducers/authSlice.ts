@@ -11,14 +11,14 @@ interface UserData {
   email: string;
 }
 
-const initialState: AuthState = {
+const userInitialState: AuthState = {
   user: null,
   token: null,
 };
 
 const authSlice = createSlice({
   name: 'auth',
-  initialState,
+  initialState:userInitialState,
   reducers: {
     loginSuccess: (state, action: PayloadAction<{ user: UserData}>) => {
       state.user = action.payload.user;

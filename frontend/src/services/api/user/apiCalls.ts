@@ -37,11 +37,12 @@ export const apiCall = async<T> (method:string, url:string, data:T) => {
         resolve(response);
 
       } else if (error) {
-        console.log(error?.response);
+
+        
         reject(error?.response?.data);
       }
-    } catch (err) {
-        reject(err);
+    } catch (err:any) {
+        reject(err.response.data);
     }
   });
 };

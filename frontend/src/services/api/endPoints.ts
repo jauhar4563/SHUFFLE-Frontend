@@ -20,5 +20,6 @@ export const postUrls = {
 
 
 export const adminUrl = {
-    login: "/admin/login"
+    login: "/admin/login",
+    userList:'/admin/get-users'
 }
