@@ -30,7 +30,7 @@ function HomePage() {
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  }, [posts,user]);
 
   return (
     <div className='ml-5 w-9/12'>

@@ -1,12 +1,25 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useFormik } from "formik";
 import { toast } from "sonner";
 import * as Yup from "yup";
 import { editPost } from "../services/api/user/apiMethods";
 
-function EditPost({ post ,onCancelEdit }) {
-    const [hideLikes, setHideLikes] = useState(false);
-    const [hideComment, setHideComment] = useState(false);
+interface EditPostProps {
+  post: {
+    _id: string;
+    title: string;
+    description: string;
+    imageUrl: string;
+    hideLikes: boolean;
+    hideComment: boolean;
+  };
+  onCancelEdit: () => void;
+}
+
+const EditPost: React.FC<EditPostProps> = ({ post, onCancelEdit }) => {
+
+    const [hideLikes, setHideLikes] = useState(post.hideLikes);
+    const [hideComment, setHideComment] = useState(post.hideComment);
   const formik = useFormik({
     initialValues: {
       title: post.title,
@@ -29,7 +42,7 @@ function EditPost({ post ,onCancelEdit }) {
           hideLikes
 
         });
-        toast.success("Post updated successfully");
+        toast.info("Post updated successfully");
         onCancelEdit();
       } catch (error) {
         console.error("Error updating post:", error);
@@ -37,6 +50,13 @@ function EditPost({ post ,onCancelEdit }) {
       }
     },
   });
+  const handleHideLikesToggle = () => {
+    setHideLikes(!hideLikes);
+  };
+
+  const handleHideCommentToggle = () => {
+    setHideComment(!hideComment);
+  };
 
   return (
     <div className="addpost-popup z-50">
@@ -84,6 +104,34 @@ function EditPost({ post ,onCancelEdit }) {
               </div>
             </div>
             {/* Buttons */}
+            <div className="icons flex text-gray-500 m-2">
+            <label className="inline-flex items-center me-5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      value=""
+                      className="sr-only peer"
+                      checked={hideComment}
+                      onChange={handleHideCommentToggle}
+                    />
+                    <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+                    <span className="ms-3 text-sm font-semibold text-gray-900 dark:text-gray-900">
+                      Hide Comments
+                    </span>
+                  </label>
+                  <label className="inline-flex items-center me-5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      value=""
+                      className="sr-only peer"
+                      checked={hideLikes}
+                      onChange={handleHideLikesToggle}
+                    />
+                    <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+                    <span className="ms-3 text-sm font-semibold text-gray-900 dark:text-gray-900">
+                      Hide Likes
+                    </span>
+                  </label>
+            </div>
             <div className="buttons flex">
               <div
                 onClick={onCancelEdit}

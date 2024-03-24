@@ -1,6 +1,7 @@
 import { useDispatch,useSelector } from 'react-redux';
 import { logout } from '../utils/context/reducers/authSlice'; 
 import { useNavigate,useLocation,NavLink } from 'react-router-dom';
+import { toast } from 'sonner';
 
 
 function SideNavBar() {
@@ -12,6 +13,7 @@ function SideNavBar() {
   const handleLogout = () => {
     dispatch(logout());
     localStorage.removeItem('email')
+    toast.info("Logout Successful")
     navigate('/login')
   };
 

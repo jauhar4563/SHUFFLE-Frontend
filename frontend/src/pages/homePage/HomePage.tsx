@@ -35,7 +35,7 @@ function HomePage() {
     console.log(error);
     
     }
-  }, []);
+  }, [setPosts]);
   return (
     <>
 

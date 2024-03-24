@@ -80,7 +80,7 @@ function AddPost() {
             .then((response: any) => {
               const data = response.data;
               if (response.status === 200) {
-                toast.success(data.message);
+                toast.info(data.message);
                 handleCancelClick();
               } else {
                 console.log(response.message);

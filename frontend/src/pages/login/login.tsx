@@ -33,7 +33,7 @@ function Login() {
       .then((response: any) => {
         const data = response.data;
         if (response.status === 200) {
-          toast.success(data.message);
+          toast.info(data.message);
           dispatch(loginSuccess({ user: data }));
           navigate("/");
         } else {
