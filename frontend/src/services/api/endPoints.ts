@@ -24,5 +24,7 @@ export const adminUrl = {
     login: "/admin/login",
     userList:'/admin/get-users',
     userBlock:'/admin/user-block',
-    hashtagList:'/admin/hashtags'
+    hashtagList:'/admin/hashtags',
+    addHashtag:'/admin/add-hashtag',
+    blockHashtag:'/admin/block-hashtag'
 }

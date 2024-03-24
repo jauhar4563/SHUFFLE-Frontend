@@ -1,5 +1,5 @@
 import { apiCall } from "./apiCalls";
-import { postUrls, userUrls } from "../endPoints";
+import {  postUrls, userUrls } from "../endPoints";
 import { FormValues } from "../../../utils/validations/registerValidation";
 
 //@dec      Register user
@@ -263,23 +263,4 @@ export const    deletePost = (postData:{postId:string,userId:string}) => {
 };
 
 
-
-//@dec      Get Hashtags
-//method    POST
-
-export const    getHashtags = () => {
-  return new Promise((resolve, reject) => {
-    try {
-      apiCall("post", postUrls.getUserPosts, null)
-        .then((response) => {
-          resolve(response);
-        })
-        .catch((err) => {
-          reject(err);
-        });
-    } catch (error) {
-      resolve({ status: 500, message: "Somethings wrong." });
-    }
-  });
-};
 

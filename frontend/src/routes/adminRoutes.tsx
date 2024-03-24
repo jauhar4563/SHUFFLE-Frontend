@@ -1,6 +1,7 @@
 import AdminLogin from "../pages/admin/login/adminLogin";
 import AdminDashboard from "../pages/admin/dashboard/AdminDashboard";
 import UserList from "../components/admin/UserList";
+import HashTags from "../components/admin/hashTags";
 
 
 
@@ -19,7 +20,7 @@ export const adminRouter = {
     },
     {
       path:"/admin/hashtags",
-      element: <UserList />
+      element: <HashTags />
     },
   ]
 };
