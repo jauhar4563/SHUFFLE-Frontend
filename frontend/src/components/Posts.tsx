@@ -1,6 +1,9 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import EditPost from "./EditPost";
+import { deletePost } from "../services/api/user/apiMethods";
+import { toast } from "sonner";
+import { setPosts } from "../utils/context/reducers/authSlice";
 interface PostProps {
   post: {
     _id: string;
@@ -24,6 +27,7 @@ interface PostProps {
 
 
 const Posts:React.FC<PostProps> = ({ post })=> {
+  const dispatch = useDispatch();
   const selectUser = (state:any)=>state.auth.user;
   const user = useSelector(selectUser);
   const [isOpen, setIsOpen] = useState(false);
@@ -42,7 +46,19 @@ const Posts:React.FC<PostProps> = ({ post })=> {
     setEditPostData(null);
   };
 
-  const handleDelete = () => {
+  const handleDelete = (postId:string,userId:string) => {
+    try{
+      deletePost({postId,userId}).then((response:any)=>{
+        const postData= response.data;
+        console.log(postData.posts)
+        dispatch(setPosts({posts:postData.posts}))
+        toast.info("Post Deleted");
+      }).catch((error)=>{
+        toast.error(error.message)
+      })
+    }catch(error){
+      console.log(error.message)
+    }
   };
 
   return (
@@ -114,7 +130,7 @@ const Posts:React.FC<PostProps> = ({ post })=> {
           </button>
           <button
             className="block px-4 py-2 hover:bg-gray-100 w-40"
-            onClick={handleDelete}
+            onClick={()=>handleDelete(post._id,post.userId._id)}
           >
             Delete
           </button>

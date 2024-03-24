@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface AuthState {
   user: UserData | null;
   token: string | null;
+  posts:any[];
 }
 
 interface UserData {
@@ -14,6 +15,7 @@ interface UserData {
 const userInitialState: AuthState = {
   user: null,
   token: null,
+  posts:[]
 };
 
 const authSlice = createSlice({
@@ -27,11 +29,15 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.token = null;
+      state.posts = [];
     },
+    setPosts:(state,action:PayloadAction<{posts:any[]}>)=>{
+      state.posts=action.payload.posts
+     }
   },
 });
 
-export const { loginSuccess, logout } = authSlice.actions;
+export const { loginSuccess, logout,setPosts } = authSlice.actions;
 export default authSlice.reducer;
 
 

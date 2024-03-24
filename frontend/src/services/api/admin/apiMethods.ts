@@ -1,13 +1,13 @@
 import { adminUrl } from "../endPoints"
 import adminApiCalls from "./apiCalls"
-
+import { FormValues } from "../../../utils/validations/loginValidations";
 
 
 
 
 //@dec      Admin login
 //@method   POST
-export const adminPostLogin = (adminData:any) => {
+export const adminPostLogin = (adminData:FormValues) => {
     return new Promise((resolve, reject) => {
         try {
             adminApiCalls("post", adminUrl.login, adminData).then((response) => {
@@ -45,7 +45,7 @@ export const adminUserList = () => {
 export const adminUserBlock = (userId:{userId:string}) => {
     return new Promise((resolve, reject) => {
         try {
-            adminApiCalls("post", adminUrl.userBlock, userId).then((response) => {
+            adminApiCalls("post", adminUrl.hashtagList, userId).then((response) => {
                 resolve(response);
               }
             ).catch((err) => {

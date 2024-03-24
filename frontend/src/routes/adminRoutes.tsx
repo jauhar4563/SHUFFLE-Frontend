@@ -17,6 +17,10 @@ export const adminRouter = {
       path:"/admin/users",
       element: <UserList />
     },
+    {
+      path:"/admin/hashtags",
+      element: <UserList />
+    },
   ]
 };
 

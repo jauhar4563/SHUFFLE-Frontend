@@ -164,7 +164,7 @@ export const forgotPassword = (email: { email: string }) => {
 //@dec      Add new Post
 //method    POST
 
-export const addPost = (postData: {userId:any, imageUrl: string; title: string; description:string,hideLikes:boolean,hideComment:boolean }) => {
+export const addPost = (postData: {userId:string, imageUrl: string; title: string; description:string,hideLikes:boolean,hideComment:boolean }) => {
   return new Promise((resolve, reject) => {
     try {
       apiCall("post", postUrls.addPost, postData)
@@ -203,7 +203,7 @@ export const    getAllPosts = () => {
 //@dec      Get User Post
 //method    POST
 
-export const    getUserPost = (userId:{userId:any}) => {
+export const    getUserPost = (userId:{userId:string}) => {
   return new Promise((resolve, reject) => {
     try {
       apiCall("post", postUrls.getUserPosts, userId)
@@ -224,7 +224,7 @@ export const    getUserPost = (userId:{userId:any}) => {
 //@dec      Edit User post
 //method    POST
 
-export const editPost = (postData: {postId:any,  title: string; description:string,hideLikes:boolean,hideComment:boolean }) => {
+export const editPost = (postData: {userId:string,postId:string,  title: string; description:string,hideLikes:boolean,hideComment:boolean }) => {
   return new Promise((resolve, reject) => {
     try {
       apiCall("post", postUrls.editPost, postData)
@@ -239,3 +239,47 @@ export const editPost = (postData: {postId:any,  title: string; description:stri
     }
   });
 };
+
+
+
+
+//@dec      Delete a post
+//method    POST
+
+export const    deletePost = (postData:{postId:string,userId:string}) => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("post", postUrls.deletePost, postData)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+
+
+//@dec      Get Hashtags
+//method    POST
+
+export const    getHashtags = () => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("post", postUrls.getUserPosts, null)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+

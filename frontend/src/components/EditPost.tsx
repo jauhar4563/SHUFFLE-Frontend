@@ -3,10 +3,17 @@ import { useFormik } from "formik";
 import { toast } from "sonner";
 import * as Yup from "yup";
 import { editPost } from "../services/api/user/apiMethods";
+import { useDispatch, useSelector } from "react-redux";
+import { setPosts } from "../utils/context/reducers/authSlice";
 
 interface EditPostProps {
   post: {
     _id: string;
+    userId: {
+      _id: string;
+      username: string;
+      profileImg: string;
+    };
     title: string;
     description: string;
     imageUrl: string;
@@ -17,7 +24,10 @@ interface EditPostProps {
 }
 
 const EditPost: React.FC<EditPostProps> = ({ post, onCancelEdit }) => {
-
+  const dispatch = useDispatch()
+  const selectUser = (state: any) => state.auth.user || "";
+  const user = useSelector(selectUser) || "";
+  const userId = user._id || "";
     const [hideLikes, setHideLikes] = useState(post.hideLikes);
     const [hideComment, setHideComment] = useState(post.hideComment);
   const formik = useFormik({
@@ -35,15 +45,20 @@ const EditPost: React.FC<EditPostProps> = ({ post, onCancelEdit }) => {
       const { title, description } = values;
       try {
         await editPost({
+          userId,
           postId,
           title,
           description,
           hideComment,
           hideLikes
 
-        });
-        toast.info("Post updated successfully");
-        onCancelEdit();
+        }).then((response:any)=>{
+          const postData = response.data;
+          dispatch(setPosts({ posts: postData.posts }));
+          toast.info("Post updated successfully");
+          onCancelEdit();
+        })
+        
       } catch (error) {
         console.error("Error updating post:", error);
         toast.error("Failed to update post");
@@ -70,13 +85,13 @@ const EditPost: React.FC<EditPostProps> = ({ post, onCancelEdit }) => {
                 {/* Image Preview */}
                 <img  style={{  height:'250px',borderRadius:'10px'}} src={post.imageUrl} alt="" />
               </div>
-              <div className="flex flex-col w-6/12">
+              <div className="flex flex-col ml-3 w-6/12">
                 <p className="font-semibold">Title</p>
                 <input
                   type="text"
                   placeholder="Title"
                   className="rounded-lg shadow-lg p-2 py-3 mb-3 outline-none text-xs font-normal"
-                  value={formik.values.title}
+                  value={formik.values.title.trim()}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   name="title"
@@ -91,7 +106,7 @@ const EditPost: React.FC<EditPostProps> = ({ post, onCancelEdit }) => {
                   className="rounded-lg description sec p-3 h-40 shadow-lg border-gray-300 outline-none text-xs font-normal"
                   spellCheck="false"
                   placeholder="Describe everything about this post here"
-                  value={formik.values.description}
+                  value={formik.values.description.trim()}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   name="description"

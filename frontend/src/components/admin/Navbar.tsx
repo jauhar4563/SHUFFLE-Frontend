@@ -1,5 +1,6 @@
 import {useState} from 'react'
 import logo from "../../../public/images/logo/shuffle.png";
+import { Link } from 'react-router-dom';
 
 
 function Navbar() {
@@ -83,8 +84,8 @@ function Navbar() {
                   </svg>
                   <span className="">Dashboard</span>
                 </a>
-                <a
-                      href=""
+                <Link
+                      to={'/admin/users'}
                       className="text-sm font-medium text-gray-700 py-2 px-2 hover:bg-gradient-to-b hover:from-purple-600 hover:to-blue-400 hover:text-white hover:scale-105 rounded-md transition duration-150 ease-in-out"
                     >
                       <svg
@@ -98,7 +99,7 @@ function Navbar() {
                         ></path>
                       </svg>
                       <span className="">Users</span>
-                    </a>
+                    </Link>
                     <a
                       href=""
                       className="text-sm font-medium text-gray-700 py-2 px-2 hover:bg-gradient-to-b hover:from-purple-600 hover:to-blue-400 hover:text-white hover:scale-105 rounded-md transition duration-150 ease-in-out"

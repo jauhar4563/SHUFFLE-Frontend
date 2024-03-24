@@ -13,7 +13,6 @@ function HomePage() {
   useEffect(() => {
     try {
       setLoading(true);
-      setTimeout(() => {
         getAllPosts()
           .then((response:any) => {
             const postsData = response.data;
@@ -30,7 +29,7 @@ function HomePage() {
           .finally(() => {
             setLoading(false);
           });
-      }, 2000);
+    
     } catch (error) {
     console.log(error);
     

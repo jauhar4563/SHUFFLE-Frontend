@@ -2,22 +2,26 @@ import  { useEffect, useState } from 'react';
 import Posts from '../../components/Posts';
 import { Pencil, Share2Icon } from 'lucide-react';
 import {  getUserPost } from '../../services/api/user/apiMethods';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import {setPosts} from '../../utils/context/reducers/authSlice'
 
 function HomePage() {
+  const dispatch = useDispatch();
+
   const [loading, setLoading] = useState(false);
-  const [posts, setPosts] = useState([]);
+  const selectPosts = (state:any)=>state.auth.posts;
   const selectUser = (state:any)=>state.auth.user;
   const user = useSelector(selectUser);
+  const posts = useSelector(selectPosts) || [];
 
   useEffect(() => {
     try {
       setLoading(true);
-      setTimeout(() => {
+      
         getUserPost({userId:user._id})
           .then((response: any) => {
             const postsData = response.data;
-            setPosts(postsData);
+            dispatch(setPosts({ posts: response.data }));            
             console.log(postsData);
           })
           .catch((error) => {
@@ -26,11 +30,11 @@ function HomePage() {
           .finally(() => {
             setLoading(false);
           });
-      }, 2000);
+      
     } catch (error) {
       console.log(error);
     }
-  }, [setPosts,user]);
+  }, []);
 
   return (
     <div className='ml-5 w-9/12'>
@@ -69,8 +73,8 @@ function HomePage() {
         </div>
       </div>
       <div className='flex'>
-        {posts.length >0 && (
-          <div className="goals">
+        {posts.length  && (
+          <div className="">
             {posts.map((post: any) => (
               <Posts key={post._id} post={post} />
             ))}
