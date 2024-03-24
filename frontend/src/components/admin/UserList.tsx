@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { adminUserList } from '../../services/api/admin/apiMethods';
+import { adminUserBlock, adminUserList } from '../../services/api/admin/apiMethods';
 import {CheckCheck} from 'lucide-react'
 
 const UserList: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [users,setUsers] = useState([])
+  
   useEffect(()=>{
     try{
       adminUserList()
@@ -28,6 +29,24 @@ const UserList: React.FC = () => {
       toast.error(error.message)
     }
   },[setUsers])
+
+  const handleUserBlock =(userId:string)=>{
+    try{
+      const requestData = { userId };
+      adminUserBlock(requestData).then((response:any) => {
+        const data = response.data;
+        toast.info(data.message)
+        
+      })
+      .catch((error) => {
+        toast.error(error.message)
+      
+      })
+    }catch(err){
+      toast.error(err.message)
+    }
+
+  }
 
   
   return (
@@ -86,9 +105,10 @@ const UserList: React.FC = () => {
            
             <td className="px-6 py-4">
               <div className="flex justify-end gap-4">
-              {user.isBlocked?(<button type="button" className=" bg-white text-blue-600 hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2 mb-2">
+              {user.isBlocked?(<button type="button"       onClick={() => handleUserBlock(user._id)}
+ className=" bg-white text-blue-600 hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2 mb-2">
                 <CheckCheck />UnBlock
-</button>):(<button type="button" className=" bg-white text-red-600 hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2 mb-2">
+</button>):(<button type="button" onClick={() => handleUserBlock(user._id)} className=" bg-white text-red-600 hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2 mb-2">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

@@ -39,3 +39,20 @@ export const adminUserList = () => {
         }
     })
 };
+
+//@dec      All Users List
+//@method   Get
+export const adminUserBlock = (userId:{userId:string}) => {
+    return new Promise((resolve, reject) => {
+        try {
+            adminApiCalls("post", adminUrl.userBlock, userId).then((response) => {
+                resolve(response);
+              }
+            ).catch((err) => {
+                reject(err);
+            })
+        } catch (error) {
+            reject(error);
+        }
+    })
+};
