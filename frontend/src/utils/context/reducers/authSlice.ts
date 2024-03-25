@@ -10,6 +10,7 @@ interface UserData {
   id: number;
   username: string;
   email: string;
+  token:string;
 }
 
 const userInitialState: AuthState = {
@@ -24,7 +25,7 @@ const authSlice = createSlice({
   reducers: {
     loginSuccess: (state, action: PayloadAction<{ user: UserData}>) => {
       state.user = action.payload.user;
-      // state.token = action.payload.token;
+      state.token = action.payload.user.token;
     },
     logout: (state) => {
       state.user = null;

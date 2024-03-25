@@ -9,13 +9,22 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { adminPostLogin } from '../../../services/api/admin/apiMethods';
 import TextError from "../../../components/textError";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AdminLoginSuccess } from "../../../utils/context/reducers/adminAuthSlice";
+import { useEffect } from "react";
 
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const selectAdmin= (state:any)=>state.adminAuth.admin;
+  const admin = useSelector(selectAdmin);
+   //authenticator
+   useEffect(() => {
+    if (admin) {
+      navigate("/admin");
+    }
+  },[admin,  navigate]);
   const submit = (values: FormValues) => {
   
     adminPostLogin(values).then((response:any) => {
@@ -62,7 +71,7 @@ function Login() {
           >
             <Form className="space-y-4 ">
               {/* Username Input */}
-              <div className="mb-4 flex justify-center">
+              <div className="mb-4 flex flex-col items-center">
                 <Field
                   type="text"
                   id="email"
@@ -74,7 +83,7 @@ function Login() {
                 <ErrorMessage name="email" component={TextError} />
               </div>
               {/* Password Input */}
-              <div className="mb-4 flex justify-center">
+              <div className="mb-4 flex flex-col items-center">
                 <Field
                   type="password"
                   id="password"

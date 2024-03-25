@@ -1,10 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Bell, Bookmark, Mail, LucideKeySquare, ImagePlus } from "lucide-react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import PreviewImage from "./previewImg";
 import axios from "axios";
-import { addPost } from "../services/api/user/apiMethods";
+import { addPost, getAllHashtag } from "../services/api/user/apiMethods";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
 
@@ -15,6 +15,22 @@ function AddPost() {
   const [showModal, setShowModal] = useState(false);
   const [hideLikes, setHideLikes] = useState(false);
   const [hideComment, setHideComment] = useState(false);
+  const [hashtags,setHashtags] = useState([])
+  const [hashtagSuggestions, setHashtagSuggestions] = useState([]);
+
+
+  useEffect(()=>{
+    try{
+      getAllHashtag().then((response:any)=>{
+        setHashtags(response.data.hashtags)
+      })
+    }
+      catch(error){
+        console.log(error.message);
+        
+      }
+    
+  },[])
 
   const handleHideLikesToggle = () => {
     setHideLikes(!hideLikes);
@@ -42,6 +58,7 @@ function AddPost() {
       image: "",
       title: "",
       description: "",
+      hashtag:""
       
     },
     validationSchema: Yup.object({
@@ -64,7 +81,7 @@ function AddPost() {
     onSubmit: async () => {
       console.log("hello", userId);
 
-      const { image, title, description} = formik.values;
+      const { image, title, description,hashtag} = formik.values;
       const formData = new FormData();
 
       try {
@@ -76,7 +93,7 @@ function AddPost() {
         );
         if (res.status === 200) {
           const imageUrl = res.data.secure_url;
-          addPost({ userId, imageUrl, title, description,hideLikes,hideComment })
+          addPost({ userId, imageUrl, title, description,hideLikes,hideComment ,hashtag})
             .then((response: any) => {
               const data = response.data;
               if (response.status === 200) {
@@ -102,6 +119,29 @@ function AddPost() {
   const handleCancelClick = () => {
     formik.values.image = "";
     setShowModal(false);
+  };
+  const handleHashtagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+  
+    const hashtagsArray = value.split(" ");
+  
+    const lastHashtag = hashtagsArray[hashtagsArray.length - 1];
+  
+    formik.setFieldValue("hashtag", value);
+  
+    const suggestions = hashtags.filter(
+      (tag: any) =>
+        tag.hashtag.toLowerCase().startsWith(lastHashtag.toLowerCase()) &&
+        !hashtagsArray.includes(tag.hashtag)
+    );
+  
+    setHashtagSuggestions(suggestions);
+  };
+  
+
+  const handleHashtagSelect = (hashtag: string) => {
+    formik.setFieldValue("hashtag", hashtag);
+    setHashtagSuggestions([]);
   };
 
   return (
@@ -201,7 +241,7 @@ function AddPost() {
                     )}
                     <p className="font-semibold mb-2">Description</p>
                     <textarea
-                      className="rounded-lg description sec p-3 h-40 shadow-lg border-gray-300 outline-none text-xs font-normal"
+                      className="rounded-lg description sec p-3 h-24 shadow-lg border-gray-300 outline-none text-xs font-normal"
                       spellCheck="false"
                       placeholder="Describe everything about this post here"
                       value={formik.values.description}
@@ -215,6 +255,37 @@ function AddPost() {
                           {formik.errors.description}
                         </p>
                       )}
+                      <p className=" font-semibold">Hashtag</p>
+                       <input
+                      type="text"
+                      placeholder="hashtag"
+                      className="rounded-lg shadow-lg p-2 py-3 mb-3 outline-none text-xs font-normal"
+                      value={formik.values.hashtag}
+                      onChange={handleHashtagChange}
+                      onBlur={formik.handleBlur}
+                      name="hashtag"
+                    />
+                      <div className="">
+                    {hashtagSuggestions.length > 0 && (
+                      <div className="absolute flex bg-white w-full mt-1 border border-gray-300 rounded-lg shadow-md">
+                        {hashtagSuggestions.map((tag:any) => (
+                          <div
+                            key={tag._id}
+                            className="cursor-pointer flex px-3 py-2 hover:bg-gray-100"
+                            onClick={() => handleHashtagSelect(tag.hashtag)}
+                          >
+                            {tag.hashtag}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {formik.touched.hashtag && formik.errors.hashtag && (
+                      <p className="text-red-600 text-xs">
+                        {formik.errors.hashtag}
+                      </p>
+                    )}
+                      </div>
+                       
                   </div>
                 </div>
                 <div className="icons flex text-gray-500 m-2">

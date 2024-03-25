@@ -31,6 +31,7 @@ const UserList: React.FC = () => {
   const handleUserBlock = (userId: string,status:string) => {
     try {
       const requestData = { userId };
+      console.log("block")
       adminUserBlock(requestData)
         .then((response: any) => {
           const data = response.data;
@@ -93,10 +94,13 @@ const UserList: React.FC = () => {
               </div>
             </th>
             <td className="px-6 py-4">
-              <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs font-semibold text-green-600">
+              {user.isOnline?(<span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs font-semibold text-green-600">
                 <span className="h-1.5 w-1.5 rounded-full bg-green-600"></span>
                 Active
-              </span>
+              </span>):(<span className="inline-flex items-center gap-1 rounded-full  px-2 py-1 text-xs font-semibold text-red-600">
+                <span className="h-1.5 w-1.5 rounded-full bg-red-600"></span>
+                Not Active
+              </span>)}
             </td>
             <td className="px-6 py-4">{user.isGoogle?(<span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-600">
             Yes

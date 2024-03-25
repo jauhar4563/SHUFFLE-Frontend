@@ -91,7 +91,7 @@ const EditPost: React.FC<EditPostProps> = ({ post, onCancelEdit }) => {
                   type="text"
                   placeholder="Title"
                   className="rounded-lg shadow-lg p-2 py-3 mb-3 outline-none text-xs font-normal"
-                  value={formik.values.title.trim()}
+                  value={formik.values.title}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   name="title"
@@ -106,7 +106,7 @@ const EditPost: React.FC<EditPostProps> = ({ post, onCancelEdit }) => {
                   className="rounded-lg description sec p-3 h-40 shadow-lg border-gray-300 outline-none text-xs font-normal"
                   spellCheck="false"
                   placeholder="Describe everything about this post here"
-                  value={formik.values.description.trim()}
+                  value={formik.values.description}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   name="description"

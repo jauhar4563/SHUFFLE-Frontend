@@ -8,6 +8,7 @@ export const userUrls = {
     forgotPassword:'/forgot-password',
     forgotOtp:'/forgot-otp',
     resetPassword:'/reset-password',
+    getHashtags:'/get-hashtags'
 }
 
 export const postUrls = {

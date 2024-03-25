@@ -4,6 +4,7 @@ import { Pencil, Share2Icon } from 'lucide-react';
 import {  getUserPost } from '../../services/api/user/apiMethods';
 import { useDispatch, useSelector } from 'react-redux';
 import {setPosts} from '../../utils/context/reducers/authSlice'
+import PostShimmer from '../../components/shimmerUI/postShimmer';
 
 function HomePage() {
   const dispatch = useDispatch();
@@ -41,7 +42,7 @@ function HomePage() {
       <div className='ms-96 flex mt-5 flex-col bg-white p-4 pl-10 w-11/12'>
         <div className='flex mt-24 justify-between '>
           <div className='flex flex-col gap-4'>
-            <img className='w-28 h-28 ' src={user.profileImg} alt="" />
+            <img className=' h-28 ' src={user.profileImg} alt="" />
             <p className='font-semibold text-lg'>{user.name}</p>
           </div>
           <div className='flex gap-6 '>
@@ -68,12 +69,18 @@ function HomePage() {
         <div className='w-11/12'>
           <p className='font-semibold'>About Me</p>
           <p className=''>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+            {user.bio?user.bio:' Lorem Ipsum is simply dummy text of the printing and typesetting industry.'}
           </p>
         </div>
       </div>
       <div className='flex'>
-        {posts.length  && (
+        {loading ? (
+          <div className=''>
+            <PostShimmer />
+            <PostShimmer />
+            <PostShimmer />
+          </div>
+        ) : (
           <div className="">
             {posts.map((post: any) => (
               <Posts key={post._id} post={post} />

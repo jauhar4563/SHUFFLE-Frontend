@@ -23,7 +23,7 @@ function SideNavBar() {
         <div className="flex flex-col items-center -mx-2">
           <img
             className="object-cover w-16 h-16  mx-2 rounded-full border-2 border-white"
-            src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
+            src={user.profileImg}
             alt="avatar"
           />
           <h4 className="mx-2 mt-4 font-medium text-white dark:text-gray-200">
@@ -230,7 +230,7 @@ function SideNavBar() {
               d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"
             />
           </svg>
-          <button className="mx-5 " onClick={handleLogout}>Logout</button>
+          <button className="mx-5 " >Logout</button>
         </div>
       </aside>
     </>

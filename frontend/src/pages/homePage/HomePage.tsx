@@ -5,6 +5,7 @@ import AddPost from "../../components/AddPost"
 import { useEffect, useState } from "react";
 import { getAllPosts } from "../../services/api/user/apiMethods";
 import PostShimmer from "../../components/shimmerUI/postShimmer";
+import { toast } from "sonner";
 
 function HomePage() {
   const [loading, setLoading] = useState(false);
@@ -13,22 +14,25 @@ function HomePage() {
   useEffect(() => {
     try {
       setLoading(true);
+      setTimeout(()=>{
         getAllPosts()
-          .then((response:any) => {
-            const postsData = response.data;
-            setPosts(postsData); 
-            
-        
-            console.log(postsData);
-            
-          })
-          .catch((error) => {
-          console.log(error);
+        .then((response:any) => {
+          const postsData = response.data;
+          setPosts(postsData); 
           
-          })
-          .finally(() => {
-            setLoading(false);
-          });
+      
+          console.log(postsData);
+          
+        })
+        .catch((error) => {
+        toast.error(error.message);
+        
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+      },2000)
+        
     
     } catch (error) {
     console.log(error);
@@ -43,21 +47,21 @@ function HomePage() {
 
               <AddPost />
               </div>
-              { loading ? (
+              {loading ? (
           // Render shimmer UI when loading
-          <div className="goals">
+          <div className="">
             {Array.from({ length: 5 }).map((_, index) => (
               <div key={index}>
-              <PostShimmer />
+                <PostShimmer />
               </div>
             ))}
           </div>
         ) : (
-          <div className="goals">
+          // Render posts when not loading
+          <div className="">
             {posts.map((post:any) => (
               <Posts key={post._id} post={post} />
             ))}
-
           </div>
         )}
     

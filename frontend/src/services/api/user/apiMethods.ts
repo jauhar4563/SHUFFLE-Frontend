@@ -161,10 +161,32 @@ export const forgotPassword = (email: { email: string }) => {
   };
 
 
+  //@dec      Get All Hashtags
+//method    get
+
+
+  export const    getAllHashtag = () => {
+    return new Promise((resolve, reject) => {
+      try {
+        apiCall("get", userUrls.getHashtags, null)
+          .then((response) => {
+            resolve(response);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      } catch (error) {
+        resolve({ status: 500, message: "Somethings wrong." });
+      }
+    });
+  };
+
+
+
 //@dec      Add new Post
 //method    POST
 
-export const addPost = (postData: {userId:string, imageUrl: string; title: string; description:string,hideLikes:boolean,hideComment:boolean }) => {
+export const addPost = (postData: {userId:string, imageUrl: string; title: string; description:string,hideLikes:boolean,hideComment:boolean,hashtag:string }) => {
   return new Promise((resolve, reject) => {
     try {
       apiCall("post", postUrls.addPost, postData)
@@ -182,7 +204,7 @@ export const addPost = (postData: {userId:string, imageUrl: string; title: strin
 
 
 //@dec      Get All Posts
-//method    POST
+//method    get
 
 export const    getAllPosts = () => {
   return new Promise((resolve, reject) => {
@@ -261,6 +283,9 @@ export const    deletePost = (postData:{postId:string,userId:string}) => {
     }
   });
 };
+
+
+
 
 
 

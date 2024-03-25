@@ -64,6 +64,7 @@ const Posts:React.FC<PostProps> = ({ post })=> {
   return (
     <>
       <div className="lg:col-span-2 ms-96 w-12/12 p-4  " id="posted">
+        
         <div className="flex flex-col">
           <div className="bg-white p-6 mb-4 rounded-lg shadow-md max-w-full">
             {/* User Info with Three-Dot Menu */}
@@ -72,7 +73,7 @@ const Posts:React.FC<PostProps> = ({ post })=> {
                 <img
                   src={post.userId.profileImg}
                   alt="User Avatar"
-                  className="w-10 h-10 rounded-full"
+                  className=" h-10 rounded-full"
                 />
 
                 <div className="flex items-center">
@@ -90,9 +91,8 @@ const Posts:React.FC<PostProps> = ({ post })=> {
                     ></path>
                   </svg>
 
-                  <p className="text-gray-500 text-sm ml-2">@johndoe200</p>
                   <p className="text-gray-500 text-sm mx-1">-</p>
-                  <p className="text-gray-500 text-sm">2 hours ago</p>
+                  <p className="text-gray-500 text-sm">{post.date}</p>
                 </div>
               </div>
               <div className="text-gray-500 cursor-pointer">
@@ -140,20 +140,31 @@ const Posts:React.FC<PostProps> = ({ post })=> {
             </div>
             {/* Message */}
             <div className="mb-4">
-              <p className="text-gray-500 text-base">
+              <p className="text-gray-500 text-base font-semibold">
                 {post.title}{" "}
-                <a href="" className="text-blue-600">
+                {/* <a href="" className="text-blue-600">
                   #Negan
                 </a>{" "}
                 <a href="" className="text-blue-600">
                   #TWD
-                </a>
+                </a> */}
+              </p>
+            </div>
+
+            <div className="mb-4">
+              <p className="text-gray-500 text-sm">
+                {post.description}{" "}
+                <a href="" className="text-blue-600">
+                  {post.hashtags}
+                </a>{" "}
+            
               </p>
             </div>
             {/* Image */}
             <div className="mb-4">
               <img
                 src={post.imageUrl}
+                style={{width:"580px"}}
                 alt="Post Image"
                 className="w-full h-80 object-cover rounded-md"
               />

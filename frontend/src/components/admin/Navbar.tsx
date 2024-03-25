@@ -1,10 +1,22 @@
 import {useState} from 'react'
 import logo from "../../../public/images/logo/shuffle.png";
-import { Link } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
+import {HashIcon,User2,LogOutIcon} from 'lucide-react'
+import { useDispatch } from 'react-redux';
+import { toast } from 'sonner';
+import { AdminLogout } from '../../utils/context/reducers/adminAuthSlice';
 
 function Navbar() {
     const [sidenav, setSidenav] = useState<boolean>(true);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+      dispatch(AdminLogout());
+      localStorage.removeItem('email')
+      toast.info("Logout Successful")
+      navigate('/admin/login')
+    };
 
     return (
       <body className="font-poppins m-5
@@ -86,18 +98,9 @@ function Navbar() {
                 </a>
                 <Link
                       to={'/admin/users'}
-                      className="text-sm font-medium text-gray-700 py-2 px-2 hover:bg-gradient-to-b hover:from-purple-600 hover:to-blue-400 hover:text-white hover:scale-105 rounded-md transition duration-150 ease-in-out"
+                      className="text-sm flex font-medium text-gray-700 py-2 px-2 hover:bg-gradient-to-b hover:from-purple-600 hover:to-blue-400 hover:text-white hover:scale-105 rounded-md transition duration-150 ease-in-out"
                     >
-                      <svg
-                        className="w-6 h-6 fill-current inline-block"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V9.236a1 1 0 00-1.447-.894l-4 2a1 1 0 00-.553.894V17zM15.211 6.276a1 1 0 000-1.788l-4.764-2.382a1 1 0 00-.894 0L4.789 4.488a1 1 0 000 1.788l4.764 2.382a1 1 0 00.894 0l4.764-2.382zM4.447 8.342A1 1 0 003 9.236V15a1 1 0 00.553.894l4 2A1 1 0 009 17v-5.764a1 1 0 00-.553-.894l-4-2z"
-                        ></path>
-                      </svg>
+                      <User2 />
                       <span className="">Users</span>
                     </Link>
                     <a
@@ -118,18 +121,9 @@ function Navbar() {
                     </a>
                     <Link
                       to={'/admin/hashtags'}
-                      className="text-sm font-medium text-gray-700 py-2 px-2 hover:bg-gradient-to-b hover:from-purple-600 hover:to-blue-400 hover:text-white hover:scale-105 rounded-md transition duration-150 ease-in-out"
+                      className="text-sm flex font-medium text-gray-700 py-2 px-2 hover:bg-gradient-to-b hover:from-purple-600 hover:to-blue-400 hover:text-white hover:scale-105 rounded-md transition duration-150 ease-in-out"
                     >
-                      <svg
-                        className="w-6 h-6 fill-current inline-block"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M11 17a1 1 0 001.447.894l4-2A1 1 0 0017 15V9.236a1 1 0 00-1.447-.894l-4 2a1 1 0 00-.553.894V17zM15.211 6.276a1 1 0 000-1.788l-4.764-2.382a1 1 0 00-.894 0L4.789 4.488a1 1 0 000 1.788l4.764 2.382a1 1 0 00.894 0l4.764-2.382zM4.447 8.342A1 1 0 003 9.236V15a1 1 0 00.553.894l4 2A1 1 0 009 17v-5.764a1 1 0 00-.553-.894l-4-2z"
-                        ></path>
-                      </svg>
+                      <HashIcon />
                       <span className="">Hashtags</span>
                     </Link>
                     <a
@@ -148,8 +142,18 @@ function Navbar() {
                       </svg>
                       <span className="">Reports</span>
                     </a>
+
+
+                    <button
+                      onClick={handleLogout}
+                      className="text-sm flex font-medium text-gray-700 py-2 mt-80  px-2 hover:bg-gradient-to-b hover:from-purple-600 hover:to-blue-400 hover:text-white hover:scale-105 rounded-md transition duration-150 ease-in-out"
+                    >
+                      <LogOutIcon />
+                      <span className="">Logout</span>
+                    </button>
                     {/* Other menu items */}
                   </div>
+                  
                 </div>
               </div>
             </div>
