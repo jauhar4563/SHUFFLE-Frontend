@@ -1,15 +1,17 @@
-import { createBrowserRouter } from 'react-router-dom';
-import Login from '../pages/login/login';
-import Signup from '../pages/signup/signup';
-import ForgotPassword from '../pages/forgotPassword/forgotPassword';
-import RenewPassword from '../pages/forgotPassword/renewPassword';
-import Otp from '../pages/otpPage/Otp';
-import HomePage from '../pages/homePage/HomePage';
-import App from '../App';
-import ForgotOtp from '../pages/otpPage/forgotOtp';
-import { adminRouter,adminLoginRouter } from './adminRoutes';
-import UserProfile from '../pages/profile/UserProfile';
-
+import { createBrowserRouter } from "react-router-dom";
+import Login from "../pages/login/login";
+import Signup from "../pages/signup/signup";
+import ForgotPassword from "../pages/forgotPassword/forgotPassword";
+import RenewPassword from "../pages/forgotPassword/renewPassword";
+import Otp from "../pages/otpPage/Otp";
+import HomePage from "../pages/homePage/HomePage";
+import App from "../App";
+import ForgotOtp from "../pages/otpPage/forgotOtp";
+import { adminRouter, adminLoginRouter } from "./adminRoutes";
+import Profile from "../pages/profile/Profile";
+import SavedPost from "../pages/savedPost/SavedPost";
+import UsersProfile from "../pages/UsersProfile/UsersProfile";
+import FollowRequests from "../pages/followRequests/FollowRequests";
 
 const appRouter = createBrowserRouter([
   {
@@ -23,7 +25,19 @@ const appRouter = createBrowserRouter([
       },
       {
         path: "/profile",
-        element: <UserProfile />,
+        element: <Profile />,
+      },
+      {
+        path: "/saved-post",
+        element: <SavedPost />,
+      },
+      {
+        path:'/users-profile/:userId',
+        element:<UsersProfile />
+      },
+      {
+        path: "/follow-requests",
+        element: <FollowRequests />,
       },
     ],
   },
@@ -53,8 +67,6 @@ const appRouter = createBrowserRouter([
   },
   adminRouter,
   adminLoginRouter,
-
 ]);
-
 
 export default appRouter;

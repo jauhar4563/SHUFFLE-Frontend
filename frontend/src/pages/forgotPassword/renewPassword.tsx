@@ -14,15 +14,16 @@ import { renewPassword } from "../../services/api/user/apiMethods";
 function RenewPassword() {
   const navigate = useNavigate();
 
-  const submit =(values:FormValues)=>{
-    renewPassword(values).then((response)=>{
-
-      toast.success(response?.data?.message);
-      navigate('/login')
-    }).catch((error)=>{
-      toast.error(error.message);
-    })
-  }
+  const submit = (values: FormValues) => {
+    renewPassword(values)
+      .then((response) => {
+        toast.success(response?.data?.message);
+        navigate("/login");
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  };
   return (
     <>
       <div className="bg-gray-100 flex justify-center items-center h-screen">

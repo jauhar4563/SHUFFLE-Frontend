@@ -1,78 +1,125 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import EditPost from "./EditPost";
-import { deletePost } from "../services/api/user/apiMethods";
+import {
+  deletePost,
+  likePost,
+  savePost,
+} from "../services/api/user/apiMethods";
 import { toast } from "sonner";
-import { setPosts } from "../utils/context/reducers/authSlice";
-interface PostProps {
-  post: {
-    _id: string;
-    userId: {
-      _id: string;
-      userName: string;
-      profileImg: string;
-    };
-    title:string;
-    imageUrl: string;
-    description: string;
-    likes: any[]; 
-    isHidden: boolean;
-    isBlocked: boolean;
-    hideComment: boolean;
-    hideLikes: boolean;
-    date: string;
-   
-  };
-}
+import { loginSuccess, setPosts } from "../utils/context/reducers/authSlice";
+import { Modal, Button } from "flowbite-react";
+import ViewPost from "./ViewPost";
+import { X } from "lucide-react";
+import { PostProps } from "../utils/types/postType";
+import { Link } from "react-router-dom";
 
-
-const Posts:React.FC<PostProps> = ({ post })=> {
+const Posts: React.FC<PostProps> = ({ post }) => {
   const dispatch = useDispatch();
-  const selectUser = (state:any)=>state.auth.user;
+  const selectUser = (state: any) => state.auth.user;
   const user = useSelector(selectUser);
+  const userId = user._id || "";
   const [isOpen, setIsOpen] = useState(false);
   const [editPostData, setEditPostData] = useState<any>(null);
+  const [deletePostId, setDeletePostId] = useState<string | null>(null);
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [isLikedByUser, setIsLikedByUser] = useState(
+    post.likes.includes(userId)
+  );
+  const [isSavedByUser, setIsSavedByUser] = useState(
+    user.savedPost.includes(post._id)
+  );
+  const [likeCount, setLikeCount] = useState(post.likes.length);
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
   const handleEdit = () => {
-    console.log(post)
+    console.log(post);
     setEditPostData(post);
-
   };
   const handleCancelEdit = () => {
     setEditPostData(null);
   };
 
-  const handleDelete = (postId:string,userId:string) => {
-    try{
-      deletePost({postId,userId}).then((response:any)=>{
-        const postData= response.data;
-        console.log(postData.posts)
-        dispatch(setPosts({posts:postData.posts}))
-        toast.info("Post Deleted");
-      }).catch((error)=>{
-        toast.error(error.message)
-      })
-    }catch(error){
-      console.log(error.message)
+  const handleDelete = (postId: string, userId: string) => {
+    try {
+      deletePost({ postId, userId })
+        .then((response: any) => {
+          const postData = response.data;
+          dispatch(setPosts({ posts: postData.posts }));
+          toast.info("Post Deleted");
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
+    } catch (error) {
+      console.log(error.message);
     }
   };
 
+  const confirmDeletePost = () => {
+    if (deletePostId) {
+      handleDelete(deletePostId, post.userId._id);
+      setDeletePostId(null);
+    }
+  };
+
+  const handleLike = (postId: string, userId: string) => {
+    try {
+      likePost({ postId, userId })
+        .then((response: any) => {
+          const postData = response.data;
+          console.log(postData);
+          dispatch(setPosts({ posts: postData.posts }));
+          setIsLikedByUser(!isLikedByUser);
+          if (isLikedByUser) {
+            setLikeCount((prev) => prev - 1);
+          } else {
+            setLikeCount((prev) => prev + 1);
+          }
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+  const handleSave = (postId: string, userId: string) => {
+    try {
+      savePost({ postId, userId })
+        .then((response: any) => {
+          const userData = response.data;
+          console.log(userData);
+          dispatch(loginSuccess({ user: userData }));
+          setIsSavedByUser(!isSavedByUser);
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+  
   return (
     <>
-      <div className="lg:col-span-2 ms-96 w-12/12 p-4  " id="posted">
-        
+      <div className="lg:col-span-2 ms-96 w-12/12 p-4" id="posted">
         <div className="flex flex-col">
-          <div className="bg-white p-6 mb-4 rounded-lg shadow-md max-w-full">
-            {/* User Info with Three-Dot Menu */}
+          <div
+            onDoubleClick={() => handleLike(post._id, user._id)}
+            className="bg-white p-6 mb-1 rounded-lg shadow-md max-w-full"
+          >
             <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center space-x-2">
+              <Link
+                to={`/users-profile/${post.userId._id}`}
+                className="flex items-center space-x-2"
+              >
                 <img
                   src={post.userId.profileImg}
-                  alt="User Avatar"
+                  alt="User"
                   className=" h-10 rounded-full"
                 />
 
@@ -94,48 +141,46 @@ const Posts:React.FC<PostProps> = ({ post })=> {
                   <p className="text-gray-500 text-sm mx-1">-</p>
                   <p className="text-gray-500 text-sm">{post.date}</p>
                 </div>
-              </div>
+              </Link>
               <div className="text-gray-500 cursor-pointer">
-                {post.userId._id===user._id && (
+                {post.userId._id === user._id && (
                   <button
-                  className="hover:bg-gray-50 rounded-full p-1"
-                  onClick={toggleDropdown}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                    className="hover:bg-gray-50 rounded-full p-1"
+                    onClick={toggleDropdown}
                   >
-                    <circle cx="12" cy="7" r="1" />
-                    <circle cx="12" cy="12" r="1" />
-                    <circle cx="12" cy="17" r="1" />
-                  </svg>
-                </button>
-                ) 
-                
-                }
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="12" cy="7" r="1" />
+                      <circle cx="12" cy="12" r="1" />
+                      <circle cx="12" cy="17" r="1" />
+                    </svg>
+                  </button>
+                )}
                 {isOpen && (
-        <div className="absolute  right-96 mt-2 w-40 bg-white divide-y divide-gray-100 rounded-lg shadow-lg">
-          <button
-            className="block px-4 py-2 hover:bg-gray-100 w-40"
-            onClick={handleEdit}
-          >
-            Edit
-          </button>
-          <button
-            className="block px-4 py-2 hover:bg-gray-100 w-40"
-            onClick={()=>handleDelete(post._id,post.userId._id)}
-          >
-            Delete
-          </button>
-        </div>
-      )}
+                  <div className="absolute  right-96 mt-2 w-40 bg-white divide-y divide-gray-100 rounded-lg shadow-lg">
+                    <button
+                      className="block px-4 py-2 hover:bg-gray-100 w-40"
+                      onClick={handleEdit}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="block px-4 py-2 hover:bg-gray-100 w-40"
+                      onClick={() => setDeletePostId(post._id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
             {/* Message */}
@@ -157,29 +202,33 @@ const Posts:React.FC<PostProps> = ({ post })=> {
                 <a href="" className="text-blue-600">
                   {post.hashtags}
                 </a>{" "}
-            
               </p>
             </div>
             {/* Image */}
             <div className="mb-4">
               <img
                 src={post.imageUrl}
-                style={{width:"580px"}}
+                style={{ width: "580px" }}
                 alt="Post Image"
                 className="w-full h-80 object-cover rounded-md"
               />
             </div>
             {/* Like and Comment Section */}
             <div className="flex items-center justify-between text-gray-500">
-              <div className="flex items-center space-x-2">
-                <button className="flex justify-center items-center gap-2 px-2 hover:bg-gray-50 rounded-full p-1">
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={() => handleLike(post._id, user._id)}
+                  className="flex justify-center items-center gap-2 px-2 hover:bg-gray-50 rounded-full p-1 transform transition-all duration-300 hover:scale-105"
+                >
                   <svg
-                    className="w-6 h-6 text-gray-500 "
+                    className={`w-7 h-7 ${
+                      isLikedByUser ? "text-red-500" : "text-gray-500"
+                    }  `}
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
                     height="24"
-                    fill="none"
+                    fill={isLikedByUser ? "red" : "none"}
                     viewBox="0 0 24 24"
                   >
                     <path
@@ -191,32 +240,14 @@ const Posts:React.FC<PostProps> = ({ post })=> {
                     />
                   </svg>
 
-                  <span className="text-sm">42</span>
+                  <span className="text-sm">{likeCount} Likes</span>
                 </button>
-                <button className="flex justify-center items-center gap-2 px-2 hover:bg-gray-50 rounded-full p-1">
+                <button
+                  onClick={() => setShowCommentModal(true)}
+                  className="flex justify-center items-center gap-2 px-2 hover:bg-gray-50 rounded-full p-1 transform transition-all duration-300 hover:scale-105"
+                >
                   <svg
-                    className="w-6 h-6 text-gray-500 "
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="m17 21-5-4-5 4V3.889a.92.92 0 0 1 .244-.629.808.808 0 0 1 .59-.26h8.333a.81.81 0 0 1 .589.26.92.92 0 0 1 .244.63V21Z"
-                    />
-                  </svg>
-
-                  <span className="text-sm">42</span>
-                </button>
-                <button className="flex justify-center items-center gap-2 px-2 hover:bg-gray-50 rounded-full p-1">
-                  <svg
-                    className="w-6 h-6 text-gray-500 "
+                    className="w-7 h-7 text-gray-500 "
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -235,17 +266,81 @@ const Posts:React.FC<PostProps> = ({ post })=> {
 
                   <span className="text-sm">3</span>
                 </button>
+                <button
+                  onClick={() => handleSave(post._id, user._id)}
+                  className="flex justify-center items-center gap-2 px-2 hover:bg-gray-50 rounded-full p-1 transform transition-all duration-300 hover:scale-105"
+                >
+                  <svg
+                    className="w-7 h-7 text-gray-500  "
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    fill={isSavedByUser ? "grey" : "none"}
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="m17 21-5-4-5 4V3.889a.92.92 0 0 1 .244-.629.808.808 0 0 1 .59-.26h8.333a.81.81 0 0 1 .589.26.92.92 0 0 1 .244.63V21Z"
+                    />
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
-         
         </div>
+        <Modal
+          show={deletePostId !== null}
+          size="sm"
+          onClose={() => setDeletePostId(null)}
+          popup
+        >
+          <Modal.Body>
+            <div className="text-center p-3">
+              <p className="text-gray-600 mb-4">
+                Are you sure you want to delete this post?
+              </p>
+              <div className="flex justify-center gap-4">
+                <Button color="failure" onClick={confirmDeletePost}>
+                  Delete
+                </Button>
+                <Button onClick={() => setDeletePostId(null)}>Cancel</Button>
+              </div>
+            </div>
+          </Modal.Body>
+        </Modal>
       </div>
       {editPostData && (
         <EditPost post={editPostData} onCancelEdit={handleCancelEdit} />
       )}
+
+      {showCommentModal && (
+        <div className="addpost-popup z-50">
+          <div className="addpost-popup">
+          <ViewPost
+                post={post}
+                isLikedByUser={isLikedByUser}
+                likeCount={likeCount}
+                isSavedByUser={isSavedByUser}
+                handleLike={handleLike}
+                handleSave={handleSave}
+              />
+            <div className="fixed right-10 top-10">
+              <button
+                className="close-button me-5"
+                onClick={() => setShowCommentModal(false)}
+              >
+                <X size={25} color="white" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
-}
+};
 
 export default Posts;

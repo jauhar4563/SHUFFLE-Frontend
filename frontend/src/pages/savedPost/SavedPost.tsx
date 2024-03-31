@@ -1,25 +1,26 @@
-import Posts from "../../components/Posts";
-import UserSuggestionBar from "../../components/UserSuggestionBar";
-import AddPost from "../../components/AddPost";
 import { useEffect, useState } from "react";
-import { getAllPosts } from "../../services/api/user/apiMethods";
 import PostShimmer from "../../components/shimmerUI/postShimmer";
+import Posts from "../../components/Posts";
+import { getSavedPost } from "../../services/api/user/apiMethods";
 import { toast } from "sonner";
+import { useSelector } from "react-redux";
 
-function HomePage() {
+function SavedPost() {
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
+  const selectUser = (state: any) => state.auth.user;
+  const user = useSelector(selectUser);
 
   useEffect(() => {
     try {
       setLoading(true);
       setTimeout(() => {
-        getAllPosts()
+        getSavedPost({ userId: user._id })
           .then((response: any) => {
             const postsData = response.data;
+            console.log(response.data);
             setPosts(postsData);
 
-            console.log(postsData);
           })
           .catch((error) => {
             toast.error(error.message);
@@ -27,17 +28,15 @@ function HomePage() {
           .finally(() => {
             setLoading(false);
           });
-      }, 1000);
+      }, 2000);
     } catch (error) {
       console.log(error);
     }
-  }, [setPosts]);
+  }, []);
+
   return (
-    <>
+    <div>
       <div className="flex flex-col  h-full">
-        <div className="z-40">
-          <AddPost />
-        </div>
         {loading ? (
           // Render shimmer UI when loading
           <div className="">
@@ -56,9 +55,8 @@ function HomePage() {
           </div>
         )}
       </div>
-      <UserSuggestionBar />
-    </>
+    </div>
   );
 }
 
-export default HomePage;
+export default SavedPost;

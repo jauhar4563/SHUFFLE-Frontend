@@ -9,25 +9,28 @@ import {
 } from "../../utils/validations/loginValidations";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { postLogin,googleAuthenticate } from "../../services/api/user/apiMethods";
+import {
+  postLogin,
+  googleAuthenticate,
+} from "../../services/api/user/apiMethods";
 import TextError from "../../components/textError";
-import { useDispatch, useSelector } from 'react-redux';
-import { loginSuccess } from "../../utils/context/reducers/authSlice"; 
+import { useDispatch, useSelector } from "react-redux";
+import { loginSuccess } from "../../utils/context/reducers/authSlice";
 import { signInWithPopup } from "firebase/auth";
-import {provider,auth} from '../../utils/firebase/config'
+import { provider, auth } from "../../utils/firebase/config";
 import { useEffect } from "react";
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const selectUser = (state:any)=>state.auth.user;
+  const selectUser = (state: any) => state.auth.user;
   const user = useSelector(selectUser);
-   //authenticator
-   useEffect(() => {
+  //authenticator
+  useEffect(() => {
     if (user) {
       navigate("/");
     }
-  },[user,  navigate]);
+  }, [user, navigate]);
   const submit = (values: FormValues) => {
     postLogin(values)
       .then((response: any) => {
@@ -47,32 +50,34 @@ function Login() {
       });
   };
 
-
-  const handlegoogleSignUp = ()=>{
+  const handlegoogleSignUp = () => {
     signInWithPopup(auth, provider).then((data: any) => {
       console.log(data);
-  
+
       const userData = {
         username: data.user.displayName,
         email: data.user.email,
-        imageUrl: data.user.photoURL
+        imageUrl: data.user.photoURL,
       };
-  
-      googleAuthenticate(userData).then((response: any) => {
-        const data = response.data;
-        if (response.status === 200) {
-          toast.success(data.message);
-          dispatch(loginSuccess({ user: data }));
-          navigate('/');
-        } else {
-          console.log(response.message);
-          toast.error(data.message);
-        }
-      }).catch((error) => {
-        console.log(error?.message);
-      });
+
+      googleAuthenticate(userData)
+        .then((response: any) => {
+          const data = response.data;
+          if (response.status === 200) {
+            toast.success(data.message);
+            dispatch(loginSuccess({ user: data }));
+            navigate("/");
+          } else {
+            console.log(response.message);
+            toast.error(data.message);
+          }
+        })
+        .catch((error: any) => {
+          console.log(error?.message);
+          toast.error(error?.message);
+        });
     });
-  }
+  };
 
   return (
     <>

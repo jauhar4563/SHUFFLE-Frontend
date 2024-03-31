@@ -24,24 +24,23 @@ interface EditPostProps {
 }
 
 const EditPost: React.FC<EditPostProps> = ({ post, onCancelEdit }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const selectUser = (state: any) => state.auth.user || "";
   const user = useSelector(selectUser) || "";
   const userId = user._id || "";
-    const [hideLikes, setHideLikes] = useState(post.hideLikes);
-    const [hideComment, setHideComment] = useState(post.hideComment);
+  const [hideLikes, setHideLikes] = useState(post.hideLikes);
+  const [hideComment, setHideComment] = useState(post.hideComment);
   const formik = useFormik({
     initialValues: {
       title: post.title,
       description: post.description,
-      
     },
     validationSchema: Yup.object({
       title: Yup.string().required("Title is required"),
       description: Yup.string().required("Description is required"),
     }),
     onSubmit: async (values) => {
-        const postId = post._id;
+      const postId = post._id;
       const { title, description } = values;
       try {
         await editPost({
@@ -50,15 +49,13 @@ const EditPost: React.FC<EditPostProps> = ({ post, onCancelEdit }) => {
           title,
           description,
           hideComment,
-          hideLikes
-
-        }).then((response:any)=>{
+          hideLikes,
+        }).then((response: any) => {
           const postData = response.data;
           dispatch(setPosts({ posts: postData.posts }));
           toast.info("Post updated successfully");
           onCancelEdit();
-        })
-        
+        });
       } catch (error) {
         console.error("Error updating post:", error);
         toast.error("Failed to update post");
@@ -83,7 +80,11 @@ const EditPost: React.FC<EditPostProps> = ({ post, onCancelEdit }) => {
             <div className="flex ">
               <div className=" flex items-center bg-white shadow-lg justify-center h-64 cursor-pointer">
                 {/* Image Preview */}
-                <img  style={{  height:'250px',borderRadius:'10px'}} src={post.imageUrl} alt="" />
+                <img
+                  style={{ height: "250px", borderRadius: "10px" }}
+                  src={post.imageUrl}
+                  alt=""
+                />
               </div>
               <div className="flex flex-col ml-3 w-6/12">
                 <p className="font-semibold">Title</p>
@@ -97,9 +98,7 @@ const EditPost: React.FC<EditPostProps> = ({ post, onCancelEdit }) => {
                   name="title"
                 />
                 {formik.touched.title && formik.errors.title && (
-                  <p className="text-red-600 text-xs">
-                    {formik.errors.title}
-                  </p>
+                  <p className="text-red-600 text-xs">{formik.errors.title}</p>
                 )}
                 <p className="font-semibold mb-2">Description</p>
                 <textarea
@@ -120,32 +119,32 @@ const EditPost: React.FC<EditPostProps> = ({ post, onCancelEdit }) => {
             </div>
             {/* Buttons */}
             <div className="icons flex text-gray-500 m-2">
-            <label className="inline-flex items-center me-5 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      value=""
-                      className="sr-only peer"
-                      checked={hideComment}
-                      onChange={handleHideCommentToggle}
-                    />
-                    <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
-                    <span className="ms-3 text-sm font-semibold text-gray-900 dark:text-gray-900">
-                      Hide Comments
-                    </span>
-                  </label>
-                  <label className="inline-flex items-center me-5 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      value=""
-                      className="sr-only peer"
-                      checked={hideLikes}
-                      onChange={handleHideLikesToggle}
-                    />
-                    <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
-                    <span className="ms-3 text-sm font-semibold text-gray-900 dark:text-gray-900">
-                      Hide Likes
-                    </span>
-                  </label>
+              <label className="inline-flex items-center me-5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  value=""
+                  className="sr-only peer"
+                  checked={hideComment}
+                  onChange={handleHideCommentToggle}
+                />
+                <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+                <span className="ms-3 text-sm font-semibold text-gray-900 dark:text-gray-900">
+                  Hide Comments
+                </span>
+              </label>
+              <label className="inline-flex items-center me-5 cursor-pointer">
+                <input
+                  type="checkbox"
+                  value=""
+                  className="sr-only peer"
+                  checked={hideLikes}
+                  onChange={handleHideLikesToggle}
+                />
+                <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+                <span className="ms-3 text-sm font-semibold text-gray-900 dark:text-gray-900">
+                  Hide Likes
+                </span>
+              </label>
             </div>
             <div className="buttons flex">
               <div
@@ -166,6 +165,6 @@ const EditPost: React.FC<EditPostProps> = ({ post, onCancelEdit }) => {
       </div>
     </div>
   );
-}
+};
 
 export default EditPost;

@@ -8,7 +8,7 @@ import * as Yup from "yup";
 import { toast } from "sonner";
 
 function ForgotPassword() {
-  localStorage.removeItem('otpTimer')
+  localStorage.removeItem("otpTimer");
   const navigate = useNavigate();
 
   const email: string = "";
@@ -19,15 +19,14 @@ function ForgotPassword() {
       .required("Email is required"),
   });
 
-  const submit = (values:any) => {
+  const submit = (values: any) => {
     forgotPassword({ email: values.email })
-      .then((response:any) => {
+      .then((response: any) => {
         const data = response.data;
         toast.success(data.message);
         navigate(`/forgot-otp?email=${data.email}`);
       })
       .catch((error) => {
-        
         toast.error(error?.message);
       });
   };
@@ -57,8 +56,12 @@ function ForgotPassword() {
             validationSchema={emailValidationSchema}
             onSubmit={submit}
           >
-            {({ handleSubmit }) => ( // Destructure handleSubmit from props
-              <Form onSubmit={handleSubmit}> {/* Pass handleSubmit to onSubmit */}
+            {(
+              { handleSubmit } // Destructure handleSubmit from props
+            ) => (
+              <Form onSubmit={handleSubmit}>
+                {" "}
+                {/* Pass handleSubmit to onSubmit */}
                 {/* Email Input */}
                 <div className="mb-4">
                   <Field

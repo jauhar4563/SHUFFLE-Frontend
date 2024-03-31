@@ -1,20 +1,17 @@
-import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom';
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-function Protect({children}) {
+function Protect({ children }) {
+  const navigate = useNavigate();
+  const selectUser = (state: any) => state.auth.user;
+  const user = useSelector(selectUser);
+  // const isValid = useSelector((state)=> state?.auth?.user);
 
-    const navigate = useNavigate()
-    const selectUser = (state:any)=>state.auth.user;
-    const user = useSelector(selectUser);
-    // const isValid = useSelector((state)=> state?.auth?.user);
-
-    if(user){
-      return children
-    } else {
-      navigate("/login")
-    }
-
-  
+  if (user) {
+    return children;
+  } else {
+    navigate("/login");
+  }
 }
 
-export default Protect
+export default Protect;

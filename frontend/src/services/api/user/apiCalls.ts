@@ -1,13 +1,10 @@
+import { toast } from "sonner";
 import { api } from "./api";
+import { store } from "../../../utils/context/store";
+import { logout } from "../../../utils/context/reducers/authSlice";
 
-
-
-
-
-
-
-export const apiCall = async<T> (method:string, url:string, data:T) => {
-  return await new Promise(async(resolve, reject) => {
+export const apiCall = async <T>(method: string, url: string, data: T) => {
+  return await new Promise(async (resolve, reject) => {
     try {
       let response, error;
 
@@ -27,28 +24,25 @@ export const apiCall = async<T> (method:string, url:string, data:T) => {
         response = await api.delete(url, data).catch((err) => {
           error = err;
         });
-      } else if (method === "put"){
+      } else if (method === "put") {
         response = await api.put(url, data).catch((err) => {
           error = err;
-        })
+        });
       }
-      
-      if(response){
+
+      if (response) {
         resolve(response);
-
       } else if (error) {
+        if (error?.response?.status == 401) {
+          toast.error("User is blocked");
+          store.dispatch(logout(null));
+          return;
+        }
 
-        
         reject(error?.response?.data);
       }
-    } catch (err:any) {
-        reject(err.response.data);
+    } catch (err: any) {
+      reject(err.response.data);
     }
   });
 };
-
-
-
-
-
-

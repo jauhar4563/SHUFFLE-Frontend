@@ -1,29 +1,33 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface AuthState {
   user: UserData | null;
   token: string | null;
-  posts:any[];
+  posts: any[];
 }
 
 interface UserData {
   id: number;
-  username: string;
+  userName: string;
   email: string;
-  token:string;
+  bio:string;
+  phone:string;
+  gender:string;
+  isPrivate:boolean;
+  token: string;
 }
 
 const userInitialState: AuthState = {
   user: null,
   token: null,
-  posts:[]
+  posts: [],
 };
 
 const authSlice = createSlice({
-  name: 'auth',
-  initialState:userInitialState,
+  name: "auth",
+  initialState: userInitialState,
   reducers: {
-    loginSuccess: (state, action: PayloadAction<{ user: UserData}>) => {
+    loginSuccess: (state, action: PayloadAction<{ user: UserData }>) => {
       state.user = action.payload.user;
       state.token = action.payload.user.token;
     },
@@ -32,13 +36,11 @@ const authSlice = createSlice({
       state.token = null;
       state.posts = [];
     },
-    setPosts:(state,action:PayloadAction<{posts:any[]}>)=>{
-      state.posts=action.payload.posts
-     }
+    setPosts: (state, action: PayloadAction<{ posts: any[] }>) => {
+      state.posts = action.payload.posts;
+    },
   },
 });
 
-export const { loginSuccess, logout,setPosts } = authSlice.actions;
+export const { loginSuccess, logout, setPosts } = authSlice.actions;
 export default authSlice.reducer;
-
-

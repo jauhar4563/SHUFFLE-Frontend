@@ -1,34 +1,31 @@
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import {  Outlet,useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Protect from "./routes/protect";
 import Header from "./components/Header";
 import SideNavBar from "./components/SideNavBar";
 
 function App() {
-  const selectUser = (state:any)=>state.auth.user;
+  const selectUser = (state: any) => state.auth.user;
   const user = useSelector(selectUser);
   const navigate = useNavigate();
-   //authenticator
-   useEffect(() => {
-    if (!user ) {
+  //authenticator
+  useEffect(() => {
+    if (!user) {
       navigate("/login");
     }
-  },[user,  navigate]);
+  }, [user, navigate]);
 
   return (
     <>
-        <Protect>
-      <Header />
-        <div className="flex bg-gray-100  mt-20 h-fit ">
-
-            <SideNavBar />
-            <Outlet />
-
+      <Protect>
+        <Header />
+        <div className="flex bg-gray-100  mt-20 h-screen ">
+          <SideNavBar />
+          <Outlet />
         </div>
-    </Protect>
+      </Protect>
     </>
-
   );
 }
 

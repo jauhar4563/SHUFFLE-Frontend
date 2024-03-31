@@ -1,75 +1,79 @@
-import {toast} from 'sonner'
+import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import TextError from "../../components/textError";
-import { validationSchema,FormValues,initialValues } from "../../utils/validations/registerValidation";
-import { postRegister,googleAuthenticate } from "../../services/api/user/apiMethods";
+import {
+  validationSchema,
+  FormValues,
+  initialValues,
+} from "../../utils/validations/registerValidation";
+import {
+  postRegister,
+  googleAuthenticate,
+} from "../../services/api/user/apiMethods";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from 'react-redux';
+import { useDispatch } from "react-redux";
 import logo from "../../../public/images/logo/shuffle.png";
-import signupImg from '../../../public/images/signup-img.png';
-import {provider,auth} from '../../utils/firebase/config'
-import { signInWithPopup } from 'firebase/auth';
-import { loginSuccess } from '../../utils/context/reducers/authSlice'; 
-
+import signupImg from "../../../public/images/signup-img.png";
+import { provider, auth } from "../../utils/firebase/config";
+import { signInWithPopup } from "firebase/auth";
+import { loginSuccess } from "../../utils/context/reducers/authSlice";
 
 function Signup() {
   const dispatch = useDispatch();
-  localStorage.removeItem('otpTimer');
+  localStorage.removeItem("otpTimer");
   const navigate = useNavigate();
-  const submit = (values:FormValues) => {
-    postRegister(values).then((response:any) => {
-      const data = response.data
-      if(response.status === 200) {
-        toast.success(data.message)
-        navigate(`/otp?email=${data.email}`);
-      } else {
-        toast.error(data.message)
-
-      }
-    }).catch((error) => {
-      toast.error(error?.message);
-    })
-  };
-  const handlegoogleSignUp = ()=>{
-    signInWithPopup(auth, provider).then((data: any) => {
-      console.log(data);
-  
-      const userData = {
-        username: data.user.displayName,
-        email: data.user.email,
-        imageUrl: data.user.photoURL
-      };
-  
-      googleAuthenticate(userData).then((response: any) => {
+  const submit = (values: FormValues) => {
+    postRegister(values)
+      .then((response: any) => {
         const data = response.data;
         if (response.status === 200) {
           toast.success(data.message);
-          dispatch(loginSuccess({ user: data }));
-          navigate('/');
+          navigate(`/otp?email=${data.email}`);
         } else {
-          console.log(response.message);
           toast.error(data.message);
         }
-      }).catch((error) => {
-        console.log(error?.message);
+      })
+      .catch((error) => {
+        toast.error(error?.message);
       });
+  };
+  const handlegoogleSignUp = () => {
+    signInWithPopup(auth, provider).then((data: any) => {
+      console.log(data);
+
+      const userData = {
+        username: data.user.displayName,
+        email: data.user.email,
+        imageUrl: data.user.photoURL,
+      };
+
+      googleAuthenticate(userData)
+        .then((response: any) => {
+          const data = response.data;
+          if (response.status === 200) {
+            toast.success(data.message);
+            dispatch(loginSuccess({ user: data }));
+            navigate("/");
+          } else {
+            console.log(response.message);
+            toast.error(data.message);
+          }
+        })
+        .catch((error) => {
+          console.log(error?.message);
+        });
     });
-  }
+  };
 
   return (
     <>
-
       <div className="bg-gray-100 flex justify-center items-center h-screen">
         {/* Left: Image */}
 
         <div className="w-8/12 h-screen hidden lg:block">
           <div className="flex justify-start">
-            <img
-              src={logo}
-              className=" w-32 m-3"
-              alt="Logo"
-            />
+            <img src={logo} className=" w-32 m-3" alt="Logo" />
           </div>
 
           <img

@@ -1,24 +1,24 @@
 import { useEffect } from "react";
-import Navbar from "../../../components/admin/Navbar"
-import { Outlet, useNavigate } from "react-router-dom"
+import Navbar from "../../../components/admin/Navbar";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 function AdminDashboard() {
-  const selectAdmin= (state:any)=>state.adminAuth.admin;
+  const selectAdmin = (state: any) => state.adminAuth.admin;
   const admin = useSelector(selectAdmin);
   const Navigate = useNavigate();
   useEffect(() => {
-    if (!admin ) {
+    if (!admin) {
       Navigate("/admin/login");
     }
-  },[admin,Navigate]);
+  }, [admin, Navigate]);
 
   return (
     <div className="flex">
-        <Navbar />
-        <Outlet />
+      <Navbar />
+      <Outlet />
     </div>
-  )
+  );
 }
 
-export default AdminDashboard
+export default AdminDashboard;

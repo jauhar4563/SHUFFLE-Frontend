@@ -1,14 +1,14 @@
 import React, { useState, useRef, FormEvent, useEffect } from "react";
-import { useNavigate,useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import logo from "../../../public/images/logo/shuffle.png";
 import signup from "../../../public/images/signup-img.png";
-import { postOTP,postResendOTP } from "../../services/api/user/apiMethods";
+import { postOTP, postResendOTP } from "../../services/api/user/apiMethods";
 import { toast } from "sonner";
 
 function Otp() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const email = queryParams.get('email') || '';
+  const email = queryParams.get("email") || "";
 
   const [otp1, setOtp1] = useState<string>("");
   const [otp2, setOtp2] = useState<string>("");
@@ -28,7 +28,7 @@ function Otp() {
     const countdownInterval = setInterval(() => {
       if (timer > 0) {
         setTimer(timer - 1);
-        localStorage.setItem("otpTimer", (timer-1).toString());
+        localStorage.setItem("otpTimer", (timer - 1).toString());
       } else {
         clearInterval(countdownInterval);
         setResend(true);
@@ -46,17 +46,19 @@ function Otp() {
   };
 
   const handleResendClick = () => {
-    console.log("hello")
+    console.log("hello");
     startResendTimer();
-    setOtp1('')
-    setOtp2('')
-    setOtp3('')
-    setOtp4('')
-    postResendOTP({email:email}).then((response:any) => {
-      toast.success("OTP has been resend to"+response.data.email);
-    }).catch((error) => {
-      console.log(error)
-    });
+    setOtp1("");
+    setOtp2("");
+    setOtp3("");
+    setOtp4("");
+    postResendOTP({ email: email })
+      .then((response: any) => {
+        toast.success("OTP has been resend to" + response.data.email);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleOtpChange = (
@@ -92,7 +94,7 @@ function Otp() {
 
     postOTP({ otp: otp })
       .then((response: any) => {
-        localStorage.removeItem('otpTimer');
+        localStorage.removeItem("otpTimer");
         const data = response.data;
         if (response.status === 200) {
           toast.success(data.message);
@@ -182,14 +184,18 @@ function Otp() {
               </div>
             </div>
             <div className="flex justify-between mb-4  items-center ">
-            <div className="flex gap-2  items-center">
-              {!resend?
-                <p className="text-s text-grey-600">
-                  Resend in <span className="text-blue-600 text-lg">{timer}</span> seconds
-                </p>
-              :""}
+              <div className="flex gap-2  items-center">
+                {!resend ? (
+                  <p className="text-s text-grey-600">
+                    Resend in{" "}
+                    <span className="text-blue-600 text-lg">{timer}</span>{" "}
+                    seconds
+                  </p>
+                ) : (
+                  ""
+                )}
               </div>
-              
+
               {resend ? (
                 <button
                   onClick={handleResendClick}
