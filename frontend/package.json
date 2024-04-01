@@ -12,8 +12,10 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.1",
     "@types/axios": "^0.14.0",
+    "@types/date-fns": "^2.6.0",
     "@types/react-easy-crop": "^2.0.0",
     "axios": "^1.6.8",
+    "date-fns": "^3.6.0",
     "firebase": "^10.9.0",
     "flowbite": "^2.3.0",
     "flowbite-react": "^0.7.5",

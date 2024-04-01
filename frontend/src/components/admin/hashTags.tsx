@@ -6,36 +6,45 @@ import {
   adminHashtagBlock,
   getHashtags,
 } from "../../services/api/admin/apiMethods";
-import { Modal, Button } from "flowbite-react";
+import { Modal, Button,Pagination } from "flowbite-react";
 import { BookLockIcon } from "lucide-react";
 
 function HashTags() {
   const [loading, setLoading] = useState(true);
   const [hashtags, setHashtags] = useState<any[]>([]);
+  const [filteredHashtags, setFilteredHashtags] = useState<any[]>([]);
   const [tag, setTag] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [selectedHashtagId, setSelectedHashtagId] = useState("");
   const [blockAction, setBlockAction] = useState<"block" | "unblock">("block");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount , setTotalCount] =useState(0);
+
+  const onPageChange = (page: number) => setCurrentPage(page);
 
   useEffect(() => {
-    try {
-      getHashtags()
-        .then((response: any) => {
-          const hashtagData = response.data;
-          setHashtags(hashtagData.hashtags);
+    fetchHashtags();
+  }, [currentPage]); 
 
-          console.log(hashtagData.hashtags);
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    } catch (error) {
-      toast.error(error.message);
-    }
-  }, []);
+  const fetchHashtags = ()=>{
+    getHashtags(currentPage)
+    .then((response: any) => {
+      const hashtagData = response.data;
+      setHashtags(hashtagData.hashtags);
+      setFilteredHashtags(hashtagData.hashtags);
+      const totalhashtagCount = Math.ceil(hashtagData.totalHashtags/6)
+
+      setTotalCount(totalhashtagCount)
+
+      console.log(hashtagData.pagination);
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+  }
 
   const handleSubmit = async () => {
     if (tag.trim() === "") {
@@ -92,6 +101,14 @@ function HashTags() {
             return hashtag;
           })
         );
+        setFilteredHashtags((prevFilteredHashtags) =>
+          prevFilteredHashtags.map((hashtag) => {
+            if (hashtag._id === selectedHashtagId) {
+              return { ...hashtag, isBlocked: !hashtag.isBlocked };
+            }
+            return hashtag;
+          })
+        );
       })
       .catch((error) => {
         toast.error(error.message);
@@ -99,6 +116,12 @@ function HashTags() {
   };
 
   const handleHashtagEdit = () => {};
+  const handleSearch = (searchText: string) => {
+    const filtered = hashtags.filter((hashtag) =>
+      hashtag.hashtag.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setFilteredHashtags(filtered);
+  };
 
   return (
     <div className="w-full overflow-hidden rounded-lg border border-gray-200 shadow-md m-5">
@@ -152,6 +175,7 @@ function HashTags() {
             <input
               type="search"
               id="search"
+              onChange={(e) => handleSearch(e.target.value)}
               className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               placeholder="Search"
               required
@@ -189,8 +213,8 @@ function HashTags() {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-          {hashtags.length &&
-            hashtags.map((hashtag: any) => (
+          {filteredHashtags.length &&
+            filteredHashtags.map((hashtag: any) => (
               <tr key={hashtag._id} className="hover:bg-gray-50">
                 <th className="flex gap-3 px-6 py-4 font-normal text-gray-900">
                   <div className="text-sm">
@@ -271,6 +295,14 @@ function HashTags() {
             ))}
           {/* Additional rows can be added here */}
         </tbody>
+        <div className="flex overflow-x-auto sm:justify-center">
+        <Pagination
+          layout="table"
+          currentPage={currentPage}
+          totalPages={totalCount} // Change this to the total number of pages
+          onPageChange={onPageChange}
+          showIcons
+        />    </div>
       </table>
       <Modal
         show={openModal}

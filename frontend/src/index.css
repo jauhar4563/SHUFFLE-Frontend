@@ -28,3 +28,31 @@ body{
    border-radius: 10px;
 
 }
+.home-scroll{
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+
+}
+.home-scrollbox{
+   width: 100%;
+   height: 100%;
+
+}
+.home-scroll-post{
+   width: 100%;
+   height: 100%;
+   overflow: auto;
+ 
+
+}
+.home-scrollbox-post{
+    width: 100%;
+    height: 100px;
+
+
+
+}
+::-webkit-scrollbar{
+   width: 0px;
+}

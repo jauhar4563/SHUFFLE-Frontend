@@ -23,7 +23,7 @@ function UserDetails({ user, connections ,isConnected}) {
   const [isFollowersgModal, setIsFollowersgModal] = useState(false);
 
   useEffect(() => {
-    const followingUserId: string = user._id;
+    const followingUserId: string = user?._id;
     console.log(followingUserId);
     getUserConnection({ userId: followingUserId })
       .then((response: any) => {
@@ -42,6 +42,7 @@ function UserDetails({ user, connections ,isConnected}) {
     const followingUser = user._id;
     followUser({ userId, followingUser })
       .then((response: any) => {
+   
         response.data.followed
           ? setIsFollowed(true)
           : setIsFollowRequested(true);
@@ -93,11 +94,11 @@ function UserDetails({ user, connections ,isConnected}) {
       >
         <div className="flex mt-5 justify-between ">
           <div className="flex flex-col gap-4">
-            <img className=" w-28  " src={user.profileImg} alt="" />
-            <p className="font-semibold text-lg">{user.userName}</p>
+            <img className=" w-28  " src={user?.profileImg} alt="" />
+            <p className="font-semibold text-lg">{user?.userName}</p>
           </div>
           <div className="flex flex-col gap-4">
-            {user._id !== userId && (
+            {user?._id !== userId && (
               <div className="flex justify-around">
                 {isFollowed ? (
                   <span
@@ -152,8 +153,8 @@ function UserDetails({ user, connections ,isConnected}) {
         <div className="w-11/12">
           <p className="font-semibold">About Me</p>
           <p className="">
-            {user.bio
-              ? user.bio
+            {user?.bio
+              ? user?.bio
               : " Lorem Ipsum is simply dummy text of the printing and typesetting industry."}
           </p>
         </div>

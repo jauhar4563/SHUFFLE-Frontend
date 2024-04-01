@@ -36,7 +36,7 @@ function FollowRequests() {
         rejectFollowRequest({userId,requestedUser}).then((response:any)=>{
             setRequests(response.data.connections)
             toast.info("Request Rejected")
-            console.log(response.data.connections)
+            console.log(response.data.connections);
         })
     }
 

@@ -13,6 +13,7 @@ import ViewPost from "./ViewPost";
 import { X } from "lucide-react";
 import { PostProps } from "../utils/types/postType";
 import { Link } from "react-router-dom";
+import { Carousel } from "flowbite-react";
 
 const Posts: React.FC<PostProps> = ({ post }) => {
   const dispatch = useDispatch();
@@ -24,13 +25,14 @@ const Posts: React.FC<PostProps> = ({ post }) => {
   const [deletePostId, setDeletePostId] = useState<string | null>(null);
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [isLikedByUser, setIsLikedByUser] = useState(
-    post.likes.includes(userId) ||post.likes.some((user) => user._id === userId)
+    post.likes.includes(userId) ||
+      post.likes.some((user) => user._id === userId)
   );
   const [isSavedByUser, setIsSavedByUser] = useState(
     user.savedPost.includes(post._id)
   );
   const [likeCount, setLikeCount] = useState(post.likes.length);
-  const images:string[] = post.imageUrl;
+  const images: string[] = post.imageUrl;
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -104,7 +106,7 @@ const Posts: React.FC<PostProps> = ({ post }) => {
       console.log(error.message);
     }
   };
-  
+
   return (
     <>
       <div className="lg:col-span-2 ms-96 w-12/12 p-4" id="posted">
@@ -207,15 +209,16 @@ const Posts: React.FC<PostProps> = ({ post }) => {
             </div>
             {/* Image */}
             <div className="mb-4 " style={{ width: "580px" }}>
-  {images && images.map((image, index) => (
-    <img
-      key={index}
-      src={image}
-      alt="Post Image"
-      className="w-full h-80 object-cover rounded-md"
-    />
-  ))}
-</div>
+            <div className="h-56 sm:h-64 xl:h-80 2xl:h-96">
+
+              <Carousel pauseOnHover slideInterval={5000}>
+                {images &&
+                  images.map((image) => (
+                    <img className=" " src={image} alt="Description" />
+                  ))}
+              </Carousel>
+              </div>
+            </div>
 
             {/* Like and Comment Section */}
             <div className="flex items-center justify-between text-gray-500">
@@ -324,14 +327,14 @@ const Posts: React.FC<PostProps> = ({ post }) => {
       {showCommentModal && (
         <div className="addpost-popup z-50">
           <div className="addpost-popup">
-          <ViewPost
-                post={post}
-                isLikedByUser={isLikedByUser}
-                likeCount={likeCount}
-                isSavedByUser={isSavedByUser}
-                handleLike={handleLike}
-                handleSave={handleSave}
-              />
+            <ViewPost
+              post={post}
+              isLikedByUser={isLikedByUser}
+              likeCount={likeCount}
+              isSavedByUser={isSavedByUser}
+              handleLike={handleLike}
+              handleSave={handleSave}
+            />
             <div className="fixed right-10 top-10">
               <button
                 className="close-button me-5"

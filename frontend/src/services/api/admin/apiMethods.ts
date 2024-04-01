@@ -22,10 +22,12 @@ export const adminPostLogin = (adminData: FormValues) => {
 
 //@dec      All Users List
 //@method   Get
-export const adminUserList = () => {
+export const adminUserList = (page:number,limit=6) => {
   return new Promise((resolve, reject) => {
     try {
-      adminApiCalls("get", adminUrl.userList, null)
+      console.log(page,limit)
+      const queryParams = `?page=${page}&limit=${limit}`;
+      adminApiCalls("get", adminUrl.userList+queryParams, null)
         .then((response) => {
           resolve(response);
         })
@@ -77,10 +79,12 @@ export const addHashTags = (hashtag: { hashtag: string }) => {
 //@dec      Get Hashtags
 //method    get
 
-export const getHashtags = () => {
+export const getHashtags = (page:number,limit=6) => {
   return new Promise((resolve, reject) => {
     try {
-      adminApiCalls("get", adminUrl.hashtagList, null)
+      const queryParams = `?page=${page}&limit=${limit}`;
+
+      adminApiCalls("get", adminUrl.hashtagList+queryParams, null)
         .then((response) => {
           resolve(response);
         })
@@ -120,6 +124,49 @@ export const adminHashtagEdit = (hashtagData: {
   return new Promise((resolve, reject) => {
     try {
       adminApiCalls("post", adminUrl.editHashtag, hashtagData)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+
+
+
+//@dec      All Posts List
+//@method   Get
+export const adminPostList = (page:number,limit=6) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const queryParams = `?page=${page}&limit=${limit}`;
+      console.log(page,limit)
+      adminApiCalls("get", adminUrl.postList+queryParams, null)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+
+
+//@dec      Admin Post Block
+//@method   Post
+export const adminPostBlock = (postId: { postId: string }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      adminApiCalls("post", adminUrl.postBlock, postId)
         .then((response) => {
           resolve(response);
         })

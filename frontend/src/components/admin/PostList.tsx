@@ -1,43 +1,53 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
+    adminPostBlock,
+    adminPostList,
   adminUserBlock,
   adminUserList,
 } from "../../services/api/admin/apiMethods";
 import { CheckCheck } from "lucide-react";
-import { Button, Modal } from "flowbite-react";
+import { Button, Modal,Pagination  } from "flowbite-react";
 import { BookLockIcon } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
 
 const PostList: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState<any[]>([]);
+  const [posts, setPosts] = useState<any[]>([]);
+  const [filteredPosts,setFilteredPosts] = useState<any[]>([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string>("");
   const [blockAction, setBlockAction] = useState<"block" | "unblock">("block");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount , setTotalCount] =useState(0);
+
+  const onPageChange = (page: number) => setCurrentPage(page);
 
   useEffect(() => {
-    try {
-      adminUserList()
-        .then((response: any) => {
-          const usersData = response.data;
-          setUsers(usersData.users);
+    fetchUsers();
+  }, [currentPage]); 
 
-          console.log(usersData.users);
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    } catch (error) {
-      toast.error(error.message);
-    }
-  }, [setUsers]);
+  const fetchUsers=()=>{
+    adminPostList(currentPage)
+    .then((response: any) => {
+      const postsData = response.data;
+      setPosts(postsData.posts);
+      setFilteredPosts(postsData.posts);
+      const totalpostCount = Math.ceil(postsData.totalPosts/6)
+      setTotalCount(totalpostCount)
+      console.log(postsData.posts);
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+    .finally(() => {
+      setLoading(false);
+    });
+  }
 
-  const handleUserBlock = (userId: string, status: string) => {
+  const handlePostBlock = (postId: string, status: string) => {
     try {
-      setSelectedUserId(userId);
+      setSelectedUserId(postId);
       setBlockAction(status === "block" ? "unblock" : "block");
       setOpenModal(true);
     } catch (err) {
@@ -45,11 +55,11 @@ const PostList: React.FC = () => {
     }
   };
 
-  const confirmBlockUser = (userId: string, status: string) => {
+  const confirmBlockPost = (postId: string, status: string) => {
     setOpenModal(false);
-    const requestData = { userId };
-    console.log("block");
-    adminUserBlock(requestData)
+    const requestData = { postId };
+    console.log(requestData);
+    adminPostBlock(requestData)
       .then((response: any) => {
         const data = response.data;
         if (status == "block") {
@@ -57,22 +67,77 @@ const PostList: React.FC = () => {
         } else {
           toast.info(data.message);
         }
-        setUsers((prevUsers) =>
-          prevUsers.map((user) => {
-            if (user._id === userId) {
-              return { ...user, isBlocked: !user.isBlocked };
+        setPosts((prevposts) =>
+          prevposts.map((post) => {
+            if (post._id === postId) {
+              return { ...post, isBlocked: !post.isBlocked };
             }
-            return user;
+            return post;
           })
         );
+        setFilteredPosts((prevposts) =>
+        prevposts.map((post) => {
+          if (post._id === postId) {
+            return { ...post, isBlocked: !post.isBlocked };
+          }
+          return post;
+        })
+      );
       })
       .catch((error) => {
         toast.error(error.message);
       });
   };
 
+  const handleSearch = (searchText: string) => {
+    const filtered = posts.filter((post) =>
+      post.userId.userName.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setFilteredPosts(filtered);
+  };
   return (
     <div className="w-full overflow-hidden rounded-lg border border-gray-200 shadow-md m-5">
+       <div className="w-12/12">
+          <label
+            htmlFor="search"
+            className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+          >
+            Search
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <svg
+                className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                />
+              </svg>
+            </div>
+            <input
+              type="search"
+              id="search"
+              onChange={(e) => handleSearch(e.target.value)}
+              className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Search"
+              required
+            />
+            <button
+              type="submit"
+              className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              Search
+            </button>
+          </div>
+        </div>
       <table className=" w-full border-collapse bg-white text-left text-sm text-gray-500">
         <thead className="bg-gray-50">
           <tr>
@@ -80,13 +145,13 @@ const PostList: React.FC = () => {
               Name
             </th>
             <th scope="col" className="px-6 py-4 font-medium text-gray-900">
-              State
+              User
             </th>
             <th scope="col" className="px-6 py-4 font-medium text-gray-900">
-              Google
+              Likes
             </th>
             <th scope="col" className="px-6 py-4 font-medium text-gray-900">
-              Facebook
+              Date
             </th>
             <th scope="col" className="px-6 py-4 font-medium text-gray-900">
               Status
@@ -100,59 +165,57 @@ const PostList: React.FC = () => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-          {users.length > 0 &&
-            users.map((user: any) => (
-              <tr key={user._id} className="hover:bg-gray-50">
+          {filteredPosts.length > 0 &&
+            filteredPosts.map((post: any) => (
+              <tr key={post._id} className="hover:bg-gray-50">
                 <th className="flex gap-3 px-6 py-4 font-normal text-gray-900">
                   <div className="relative h-10 w-10">
                     <img
                       className="h-full w-full rounded-full object-cover object-center"
-                      src={user.profileImg}
+                      src={post.imageUrl}
                       alt=""
                     />
                     <span className="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-green-400 ring ring-white"></span>
                   </div>
                   <div className="text-sm">
                     <div className="font-medium text-gray-700">
-                      {user.userName}
+                      {post.title}
                     </div>
-                    <div className="text-gray-400">{user.email}</div>
+                    <div className="text-gray-400">{post.description}</div>
                   </div>
                 </th>
                 <td className="px-6 py-4">
-                  {user.isOnline ? (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs font-semibold text-green-600">
-                      <span className="h-1.5 w-1.5 rounded-full bg-green-600"></span>
-                      Active
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1 rounded-full  px-2 py-1 text-xs font-semibold text-red-600">
-                      <span className="h-1.5 w-1.5 rounded-full bg-red-600"></span>
-                      Not Active
-                    </span>
-                  )}
+                <div className="relative  h-10 w-10">
+                    <div>
+
+                    <img
+                      className="h-full w-full rounded-full object-cover object-center"
+                      src={post.userId.profileImg}
+                      alt=""
+                    />
+                    <span className="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-green-400 ring ring-white"></span>
+                    </div>
+                  </div>
+                  <div className="text-sm">
+                    <div className="font-medium text-gray-700">
+                      {post.userId.userName}
+                    </div>
+                  </div>
                 </td>
                 <td className="px-6 py-4">
-                  {user.isGoogle ? (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-600">
-                      Yes
-                    </span>
-                  ) : (
-                    "No"
-                  )}
+                {post.likes.length}
+
                 </td>
                 <td className="px-6 py-4">
-                  {user.isFacebook ? (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-blue-600">
-                      Yes
-                    </span>
-                  ) : (
-                    "No"
-                  )}
+                    {post.date}
+                {/* {formatDistanceToNow(
+                                    new Date(user.timestamp),
+                                    { addSuffix: true }
+                                  )} */}
                 </td>
 
                 <td className="px-6 py-4">
-                  {user.isBlocked ? (
+                  {post.isBlocked ? (
                     <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-1 text-xs font-semibold text-red-600">
                       Blocked
                     </span>
@@ -165,10 +228,10 @@ const PostList: React.FC = () => {
 
                 <td className="px-6 py-4">
                   <div className="flex justify-end gap-4">
-                    {user.isBlocked ? (
+                    {post.isBlocked ? (
                       <button
                         type="button"
-                        onClick={() => handleUserBlock(user._id, "unblock")}
+                        onClick={() => handlePostBlock(post._id, "unblock")}
                         className=" bg-white text-blue-600 hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2 mb-2"
                       >
                         <CheckCheck />
@@ -177,7 +240,7 @@ const PostList: React.FC = () => {
                     ) : (
                       <button
                         type="button"
-                        onClick={() => handleUserBlock(user._id, "block")}
+                        onClick={() => handlePostBlock(post._id, "block")}
                         className=" bg-white text-red-600 hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-gray-600 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700 me-2 mb-2"
                       >
                         <svg
@@ -222,6 +285,14 @@ const PostList: React.FC = () => {
             ))}
           {/* Additional rows can be added here */}
         </tbody>
+        <div className="flex overflow-x-auto sm:justify-center">
+        <Pagination
+          layout="table"
+          currentPage={currentPage}
+          totalPages={totalCount} // Change this to the total number of pages
+          onPageChange={onPageChange}
+          showIcons
+        />    </div>
       </table>
       <Modal
         show={openModal}
@@ -239,7 +310,7 @@ const PostList: React.FC = () => {
             <div className="flex justify-center gap-4">
               <Button
                 color={blockAction === "block" ? "blue" : "failure"}
-                onClick={() => confirmBlockUser(selectedUserId, "block")}
+                onClick={() => confirmBlockPost(selectedUserId, "block")}
               >
                 Yes, {blockAction === "unblock" ? "block" : "unblock"}
               </Button>

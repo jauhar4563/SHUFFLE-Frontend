@@ -22,6 +22,10 @@ export const postUrls = {
   likePost:'/post/like-post',
   savePost:'post/save-post',
   getSavedPosts:'post/user-saved-post',
+  getAllPostComments:'/post/get-post-comments',
+  addComment:'/post/add-comment',
+  replyComment:'/post/reply-comment',
+  deleteComment:'/post/delete-post-comment'
 
 };
 
@@ -42,4 +46,6 @@ export const adminUrl = {
   addHashtag: "/admin/add-hashtag",
   blockHashtag: "/admin/block-hashtag",
   editHashtag: "/admin/edit-hashtag",
+  postList: "/admin/get-posts",
+  postBlock:"/admin/post-block"
 };

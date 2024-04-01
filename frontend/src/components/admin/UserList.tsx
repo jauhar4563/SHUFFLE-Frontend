@@ -5,35 +5,46 @@ import {
   adminUserList,
 } from "../../services/api/admin/apiMethods";
 import { CheckCheck } from "lucide-react";
-import { Button, Modal } from "flowbite-react";
+import { Button, Modal,Pagination } from "flowbite-react";
 import { BookLockIcon } from "lucide-react";
 
 const UserList: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<any[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
+
   const [openModal, setOpenModal] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<string>("");
   const [blockAction, setBlockAction] = useState<"block" | "unblock">("block");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount , setTotalCount] =useState(0);
+
+  const onPageChange = (page: number) => setCurrentPage(page);
 
   useEffect(() => {
-    try {
-      adminUserList()
-        .then((response: any) => {
-          const usersData = response.data;
-          setUsers(usersData.users);
+    fetchUsers();
+  }, [currentPage]); 
 
-          console.log(usersData.users);
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    } catch (error) {
-      toast.error(error.message);
-    }
-  }, [setUsers]);
+  const fetchUsers = () => {
+    setLoading(true);
+    adminUserList(currentPage)
+      .then((response: any) => {
+        const usersData = response.data;
+        setUsers(usersData.users);
+        setFilteredUsers(usersData.users);
+        console.log(usersData.users);
+        const totaluserCount = Math.ceil(usersData.totalUsers/6)
+
+        setTotalCount(totaluserCount)
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("Failed to fetch users.");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
 
   const handleUserBlock = (userId: string, status: string) => {
     try {
@@ -65,14 +76,69 @@ const UserList: React.FC = () => {
             return user;
           })
         );
+        setFilteredUsers((prevUsers) =>
+        prevUsers.map((user) => {
+          if (user._id === userId) {
+            return { ...user, isBlocked: !user.isBlocked };
+          }
+          return user;
+        })
+      );
       })
       .catch((error) => {
         toast.error(error.message);
       });
   };
+  const handleSearch = (searchText: string) => {
+    const filtered = users.filter((user) =>
+      user.userName.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setFilteredUsers(filtered);
+  };
 
   return (
     <div className="w-full overflow-hidden rounded-lg border border-gray-200 shadow-md m-5">
+       <div className="w-12/12">
+          <label
+            htmlFor="search"
+            className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+          >
+            Search
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <svg
+                className="w-4 h-4 text-gray-500 dark:text-gray-400"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                />
+              </svg>
+            </div>
+            <input
+              type="search"
+              id="search"
+              onChange={(e) => handleSearch(e.target.value)}
+              className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              placeholder="Search"
+              required
+            />
+            <button
+              type="submit"
+              className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              Search
+            </button>
+          </div>
+        </div>
       <table className=" w-full border-collapse bg-white text-left text-sm text-gray-500">
         <thead className="bg-gray-50">
           <tr>
@@ -100,8 +166,8 @@ const UserList: React.FC = () => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-          {users.length > 0 &&
-            users.map((user: any) => (
+          {filteredUsers.length > 0 &&
+            filteredUsers.map((user: any) => (
               <tr key={user._id} className="hover:bg-gray-50">
                 <th className="flex gap-3 px-6 py-4 font-normal text-gray-900">
                   <div className="relative h-10 w-10">
@@ -222,6 +288,15 @@ const UserList: React.FC = () => {
             ))}
           {/* Additional rows can be added here */}
         </tbody>
+        
+        <div className="flex overflow-x-auto sm:justify-center">
+        <Pagination
+          layout="table"
+          currentPage={currentPage}
+          totalPages={totalCount} // Change this to the total number of pages
+          onPageChange={onPageChange}
+          showIcons
+        />    </div>
       </table>
       <Modal
         show={openModal}
