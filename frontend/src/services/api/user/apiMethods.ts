@@ -194,7 +194,7 @@ export const getAllHashtag = () => {
 
 export const addPost = (postData: {
   userId: string;
-  imageUrl: string;
+  imageUrls: string[];
   title: string;
   description: string;
   hideLikes: boolean;
@@ -507,6 +507,7 @@ export const getUserConnection = (userId: { userId: string }) => {
 
 export const editProfile = (userData: {
   userId: string;
+  image:string;
   name: string;
   phone: string;
   bio: string;

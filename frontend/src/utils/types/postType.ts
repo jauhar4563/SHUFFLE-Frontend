@@ -7,7 +7,7 @@ export interface PostProps {
         profileImg: string;
       };
       title: string;
-      imageUrl: string;
+      imageUrl: string[];
       description: string;
       likes: any[];
       isHidden: boolean;

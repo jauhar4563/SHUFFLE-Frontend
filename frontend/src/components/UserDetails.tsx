@@ -1,19 +1,43 @@
 import { Pencil, Share2Icon } from "lucide-react";
 import { useSelector } from "react-redux";
-import { UnFollowUser, followUser, rejectFollowRequest } from "../services/api/user/apiMethods";
-import { useState } from "react";
+import {
+  UnFollowUser,
+  followUser,
+  getUserConnection,
+  rejectFollowRequest,
+} from "../services/api/user/apiMethods";
+import { useEffect, useState } from "react";
+import Followers from "./FollowersList";
+import Following from "./FollowingList";
+import { toast } from "sonner";
 
-function UserDetails({ user, connections }) {
+function UserDetails({ user, connections ,isConnected}) {
   const selectUser = (state: any) => state.auth.user;
   const userData = useSelector(selectUser);
   const userId = userData._id || "";
-  const [isFollowed, setIsFollowed] = useState(
-    connections.followers.includes(userId)
-  );
-  const [isFollowRequested, setIsFollowRequested] = useState(
-    connections.requested.includes(userId)
-  );
+  const [isFollowed, setIsFollowed] = useState(false);
+  const [isFollowRequested, setIsFollowRequested] = useState(false);
+  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
+  const [isFollowingModal, setIsFollowingModal] = useState(false);
+  const [isFollowersgModal, setIsFollowersgModal] = useState(false);
 
+  useEffect(() => {
+    const followingUserId: string = user._id;
+    console.log(followingUserId);
+    getUserConnection({ userId: followingUserId })
+      .then((response: any) => {
+        const connectionData = response.data.connection;
+        console.log(response.data.connection);
+        setFollowing(connectionData.following);
+        setFollowers(connectionData.followers);
+        setIsFollowed(connections.followers.includes(userId));
+        setIsFollowRequested(connections.requested.includes(userId));
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  }, []);
   const handleFollow = () => {
     const followingUser = user._id;
     followUser({ userId, followingUser })
@@ -39,13 +63,28 @@ function UserDetails({ user, connections }) {
       });
   };
 
-  const handleReject = ()=>{
+  const handleReject = () => {
     const requestedUser = user._id;
-    rejectFollowRequest({userId,requestedUser}).then((response:any)=>{
+    rejectFollowRequest({ userId, requestedUser }).then((response: any) => {
       setIsFollowRequested(false);
-        console.log(response.data.connections)
-    })
-}
+      console.log(response.data.connections);
+    });
+  };
+  const handleFollwersModal = () => {
+    if(!isConnected){
+      toast.warning("This account is private. Follow to view posts.");
+      return;
+    }
+    return setIsFollowersgModal(!isFollowersgModal);
+  };
+
+  const handleFollwingModal = () => {
+    if(!isConnected){
+      toast.warning("This account is private. Follow to view posts.");
+      return;
+    }
+    return setIsFollowingModal(!isFollowingModal);
+  };
   return (
     <div>
       <div
@@ -68,7 +107,10 @@ function UserDetails({ user, connections }) {
                     UnFollow
                   </span>
                 ) : isFollowRequested ? (
-                  <span onClick={handleReject} className="text-blue-500 cursor-pointer">
+                  <span
+                    onClick={handleReject}
+                    className="text-blue-500 cursor-pointer"
+                  >
                     Requested
                   </span>
                 ) : (
@@ -83,23 +125,28 @@ function UserDetails({ user, connections }) {
               </div>
             )}
             <div className="flex gap-6 ">
-              <div className="flex flex-col items-center">
-                <p>57</p>
+              <div
+                onClick={handleFollwingModal}
+                className="flex cursor-pointer flex-col items-center"
+              >
+                <p>{following.length}</p>
                 <p>Following</p>
               </div>
-              <div className="flex flex-col items-center">
-                <p>48K</p>
+              <div
+                onClick={handleFollwersModal}
+                className="flex cursor-pointer flex-col items-center"
+              >
+                <p>{followers.length}</p>
                 <p>Followers</p>
               </div>
               <div className="flex flex-col items-center">
-                <p>21</p>
+                <p>0</p>
                 <p>Posts</p>
               </div>
             </div>
           </div>
           <div className="flex gap-5 mr-14">
-            <Pencil />
-            <Share2Icon />
+           
           </div>
         </div>
         <div className="w-11/12">
@@ -111,6 +158,23 @@ function UserDetails({ user, connections }) {
           </p>
         </div>
       </div>
+      {isFollowersgModal && (
+        <Followers
+          followers={followers}
+          followingUsers={following}
+          setFollowingUsers={setFollowing}
+          onClose={handleFollwersModal}
+        />
+      )}
+      {isFollowingModal && (
+        <Following
+
+          followingUsers={following}
+          setFollowingUsers={setFollowing}
+          onClose={handleFollwingModal}
+          currentUser={user._id}
+        />
+      )}
     </div>
   );
 }

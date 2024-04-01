@@ -66,6 +66,10 @@ function Profile() {
     return setIsFollowingModal(!isFollowingModal)
   }
 
+  const handleEditClose=()=>{
+    return setIsProfileEdit(!isProfileEdit)
+  }
+
   return (
     <div className="ml-5 w-9/12">
       <div className='ms-96 flex mt-5 flex-col bg-white p-4 pl-10 w-11/12'>
@@ -118,9 +122,9 @@ function Profile() {
         )}
         <div className=" bg-white"></div>
       </div>
-      {isProfileEdit && (<ProfileEdit user={user}/>)}
+      {isProfileEdit && (<ProfileEdit user={user} onClose={handleEditClose}/>)}
       {isFollowersgModal && (<Followers followers={followers} followingUsers={following} setFollowingUsers={setFollowing} onClose={handleFollwersModal} />)}
-      {isFollowingModal && (<Following followingUsers={following} setFollowingUsers={setFollowing} onClose={handleFollwingModal}/>)}
+      {isFollowingModal && (<Following followingUsers={following} setFollowingUsers={setFollowing} onClose={handleFollwingModal} currentUser={ userId }/>)}
     </div>
   );
 }

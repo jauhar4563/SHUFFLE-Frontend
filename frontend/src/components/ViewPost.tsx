@@ -26,12 +26,18 @@ const ViewPost = ({
       style={{ width: "1000px" }}
     >
       <div className="grid grid-cols-3 min-w-full">
-        <div className="col-span-2 w-full">
+        <div className=" col-span-2 w-full">
+          <div className="flex w-2/4">
+
+          {post.imageUrl && post.imageUrl.map((image)=>(
+
           <img
-            className="w-full max-w-full min-w-full"
-            src={post.imageUrl}
+            className=" w-full max-w-full min-w-full"
+            src={image}
             alt="Description"
           />
+          ))}
+          </div>
         </div>
 
         <div className="col-span-1 relative pl-4">

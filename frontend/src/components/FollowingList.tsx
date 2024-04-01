@@ -8,38 +8,39 @@ import {
 } from "../services/api/user/apiMethods";
 import { useSelector } from "react-redux";
 
-function Following({ followingUsers,setFollowingUsers, onClose }) {
+function Following({ followingUsers,setFollowingUsers, onClose,currentUser }) {
   const selectUser = (state: any) => state.auth.user;
   const user = useSelector(selectUser);
   const userId = user._id || "";
-  const [following, setFollowing] = useState(followingUsers);
+  const [following, setFollowing] = useState([]);
   const [requested, setRequested] = useState([]);
 
   useEffect(() => {
     getUserConnection({ userId })
       .then((response: any) => {
         const connectionData = response.data.connection;
-        // setFollowing(connectionData.following);
-        setRequested(connectionData.requestSent);
+        const followingIds = connectionData.following.map((user) => user._id);
+      setFollowing(followingIds);
+      const requestedIds = connectionData.requestSent.map((user) => user._id);
+      setRequested(requestedIds);
         console.log(response.data.connection);
+
       })
       .catch((error) => {
         console.log(error.message);
       });
   }, []);
-  const isFollowing = (likedUserId) => {
-    return following.some(user => user._id === likedUserId);
-  };
 
-  const isRequested = (likedUserId) => {
-    return requested.some(user => user._id === likedUserId);
-  };
   const handleFollow = (likedUserId) => {
     followUser({ userId, followingUser: likedUserId })
       .then((response: any) => {
-        response.data.followed
-          ? setFollowing([...following, likedUserId])
-          : setRequested([...requested, likedUserId]);
+        if (response.data.followed) {
+          setFollowing([...following, likedUserId]);
+          console.log(isFollowing(likedUserId))
+        } else {
+          setRequested(prevRequested => [...prevRequested, likedUserId]);
+          console.log(requested+"Requested")
+        }
 
         console.log(response.data);
       })
@@ -51,8 +52,11 @@ function Following({ followingUsers,setFollowingUsers, onClose }) {
   const handleUnFollow = (likedUserId) => {
     UnFollowUser({ userId, unfollowingUser: likedUserId })
       .then((response: any) => {
-        setFollowing(following.filter((user) => user._id !== likedUserId));
-        setFollowingUsers(followingUsers.filter((user) => user._id !== likedUserId));
+        setFollowing(following.filter((userId) => userId !== likedUserId));
+        if(currentUser==userId){
+
+          setFollowingUsers(followingUsers.filter((user) => user._id !== likedUserId));
+        }
       })
       .catch((error) => {
         console.log(error.message);
@@ -64,6 +68,13 @@ function Following({ followingUsers,setFollowingUsers, onClose }) {
         setRequested(requested.filter((id) => id !== likedUserId));
     })
 }
+const isFollowing = (likedUserId) => {
+  return following.includes(likedUserId);
+};
+
+const isRequested = (likedUserId) => {
+  return requested.includes(likedUserId);
+};
 
   return (
     <div className="absolute top-0 left-0 w-full z-40 h-full flex justify-center items-center bg-gray-900 bg-opacity-50">

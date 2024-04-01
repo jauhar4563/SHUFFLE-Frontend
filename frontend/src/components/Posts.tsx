@@ -24,12 +24,13 @@ const Posts: React.FC<PostProps> = ({ post }) => {
   const [deletePostId, setDeletePostId] = useState<string | null>(null);
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [isLikedByUser, setIsLikedByUser] = useState(
-    post.likes.includes(userId)
+    post.likes.includes(userId) ||post.likes.some((user) => user._id === userId)
   );
   const [isSavedByUser, setIsSavedByUser] = useState(
     user.savedPost.includes(post._id)
   );
   const [likeCount, setLikeCount] = useState(post.likes.length);
+  const images:string[] = post.imageUrl;
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -205,14 +206,17 @@ const Posts: React.FC<PostProps> = ({ post }) => {
               </p>
             </div>
             {/* Image */}
-            <div className="mb-4">
-              <img
-                src={post.imageUrl}
-                style={{ width: "580px" }}
-                alt="Post Image"
-                className="w-full h-80 object-cover rounded-md"
-              />
-            </div>
+            <div className="mb-4 " style={{ width: "580px" }}>
+  {images && images.map((image, index) => (
+    <img
+      key={index}
+      src={image}
+      alt="Post Image"
+      className="w-full h-80 object-cover rounded-md"
+    />
+  ))}
+</div>
+
             {/* Like and Comment Section */}
             <div className="flex items-center justify-between text-gray-500">
               <div className="flex items-center space-x-4">

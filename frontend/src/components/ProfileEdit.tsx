@@ -1,19 +1,30 @@
 import { useFormik } from "formik";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
-import * as Yup from 'yup';
+import * as Yup from "yup";
 import { loginSuccess } from "../utils/context/reducers/authSlice";
 import { editProfile } from "../services/api/user/apiMethods";
 import { useNavigate } from "react-router-dom";
+import CropImage from "./CropImg";
+import axios from "axios";
 
-function ProfileEdit({ user }) {
+function ProfileEdit({ user, onClose }) {
   const dispatch = useDispatch();
-  const Navigate = useNavigate()
+  const Navigate = useNavigate();
+  const [croppedImage, setCroppedImage] = useState("");
+  const [isCroppeSelected, setIsCroppeSelected] = useState(false);
   const [isPrivate, setIsPrivate] = useState(user.isPrivate);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
+  };
 
   const formik = useFormik({
     initialValues: {
+      image: user.profileImg,
       name: user.userName,
       phone: user.phone,
       bio: user.bio,
@@ -24,20 +35,33 @@ function ProfileEdit({ user }) {
     }),
     onSubmit: async (values) => {
       const userId = user._id;
-      const { name, phone, bio, gender } = values;
+      const { name,  phone, bio, gender } = values;
       try {
+        const response = await fetch(croppedImage);
+        const blob = await response.blob();
+      
+        const formData = new FormData();
+        formData.append("file", blob);
+        formData.append("upload_preset", "bnaqltis");
+        const res = await axios.post(
+          "https://api.cloudinary.com/v1_1/dgkfbywof/image/upload",
+          formData
+        );
+        const imageUrl = res.data.secure_url;
+          console.log(imageUrl)
         await editProfile({
           userId,
+          image:imageUrl,
           name,
           phone,
           bio,
           gender,
-          isPrivate
+          isPrivate,
         }).then((response: any) => {
           const userData = response.data;
           dispatch(loginSuccess({ user: userData }));
           toast.info("Profile updated successfully");
-          Navigate('/profile')
+          onClose();
         });
       } catch (error) {
         console.error("Error updating profile:", error);
@@ -48,6 +72,9 @@ function ProfileEdit({ user }) {
 
   const handlePrivateToggle = () => {
     setIsPrivate(!isPrivate);
+  };
+  const handleCloseCanvas = () => {
+    setIsCroppeSelected(!isCroppeSelected);
   };
 
   return (
@@ -60,13 +87,35 @@ function ProfileEdit({ user }) {
             <form onSubmit={formik.handleSubmit}>
               <div className="flex">
                 <div className="w-6/12">
-                  <div className="image-preview flex items-center bg-white shadow-lg justify-center h-36 cursor-pointer">
+                  <div
+                    onClick={handleButtonClick}
+                    className="image-preview flex items-center bg-white shadow-lg justify-center h-36 cursor-pointer"
+                  >{!croppedImage && (
                     <img
                       style={{ height: "100px", borderRadius: "10px" }}
                       src={user.profileImg}
                       alt=""
                     />
+                  )}
+                    
+                    {croppedImage && !formik.errors.image && (
+                        <img
+                          style={{height: "140px", borderRadius: "10px" }}
+                          src={croppedImage}
+                          alt={`Preview`}
+                        />
+                    )}
                   </div>
+                    {formik.values.image &&
+                      isCroppeSelected &&
+                      !formik.errors.image && (
+                        <CropImage
+                          imgUrl={formik.values.image}
+                          aspectInit={{ value: 1 / 1 }}
+                          setCroppedImg={setCroppedImage}
+                          handleNextImage={handleCloseCanvas}
+                        />
+                      )}
                 </div>
                 <div className="flex flex-col w-6/12">
                   <p className="font-semibold">Name</p>
@@ -80,9 +129,7 @@ function ProfileEdit({ user }) {
                     name="name"
                   />
                   {formik.touched.name && formik.errors.name && (
-                    <p className="text-red-600 text-xs">
-                      {formik.errors.name}
-                    </p>
+                    <p className="text-red-600 text-xs">{formik.errors.name}</p>
                   )}
                   <p className="font-semibold">Email</p>
                   <input
@@ -148,10 +195,25 @@ function ProfileEdit({ user }) {
                 </div>
               </div>
               <div className="icons flex text-gray-500 m-2">
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  style={{ display: "none" }}
+                  onChange={(e) => {
+                    const files = e.target.files;
+                    if (files && files.length > 0) {
+                      const file = files[0];
+                      const imageUrl = URL.createObjectURL(file);
+
+                      formik.setFieldValue("image", imageUrl);
+                      setIsCroppeSelected(!isCroppeSelected);
+                    }
+                  }}
+                />
                 <label className="inline-flex items-center me-5 cursor-pointer">
-                  <input 
-                    type="checkbox" 
-                    value="" 
+                  <input
+                    type="checkbox"
+                    value=""
                     className="sr-only peer"
                     checked={isPrivate}
                     onChange={handlePrivateToggle}
@@ -163,7 +225,10 @@ function ProfileEdit({ user }) {
                 </label>
               </div>
               <div className="buttons flex">
-                <div className="text-xs  btn border border-gray-300 px-6 py-3 rounded-lg cursor-pointer text-gray-500 ml-auto hover:bg-red-600  hover:text-white ">
+                <div
+                  onClick={() => onClose()}
+                  className="text-xs  btn border border-gray-300 px-6 py-3 rounded-lg cursor-pointer text-gray-500 ml-auto hover:bg-red-600  hover:text-white "
+                >
                   Cancel
                 </div>
                 <button

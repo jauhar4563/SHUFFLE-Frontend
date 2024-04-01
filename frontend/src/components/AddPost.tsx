@@ -7,6 +7,7 @@ import axios from "axios";
 import { addPost, getAllHashtag } from "../services/api/user/apiMethods";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
+import CropImage from "./CropImg";
 
 function AddPost() {
   const selectUser = (state: any) => state.auth.user || "";
@@ -17,6 +18,8 @@ function AddPost() {
   const [hideComment, setHideComment] = useState(false);
   const [hashtags, setHashtags] = useState([]);
   const [hashtagSuggestions, setHashtagSuggestions] = useState([]);
+  const [croppedImage, setCroppedImage] = useState([]);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     try {
@@ -39,88 +42,90 @@ function AddPost() {
     setShowModal(true);
   };
   const fileInputRef = useRef<HTMLInputElement>(null);
+  console.log("hello")
 
   const handleButtonClick = () => {
     fileInputRef.current?.click();
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    console.log("Selected file:", file);
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const fileList = Array.from(files);
+      console.log("Selected files:", fileList);
+      formik.setFieldValue("images", fileList);
+    }
   };
 
   const formik = useFormik({
     initialValues: {
-      image: "",
+      images: [],
       title: "",
       description: "",
       hashtag: "",
     },
     validationSchema: Yup.object({
-      image: Yup.mixed()
-        .required("Image file required")
-        .test(
-          "FILE_TYPE",
-          "Invalid file type",
-          (value: any) =>
-            value && ["image/png", "image/jpeg"].includes(value.type)
-        )
-        .test(
-          "FILE_SIZE",
-          "File size too big",
-          (value: any) => value && value.size < 1024 * 1024
-        ),
+      images: Yup.mixed().required("Image file required"),
+
       title: Yup.string().required("Title is required"),
       description: Yup.string().required("Description is required"),
     }),
     onSubmit: async () => {
       console.log("hello", userId);
-
-      const { image, title, description, hashtag } = formik.values;
-      const formData = new FormData();
-
-      try {
-        formData.append("file", image);
+      console.log(croppedImage)
+      const { title, description, hashtag } = formik.values;
+      const imageUrls = [];
+      for (const image of formik.values.images) {
+        const response = await fetch(image);
+        const blob = await response.blob();
+      
+        const formData = new FormData();
+        formData.append("file", blob);
         formData.append("upload_preset", "bnaqltis");
-        const res = await axios.post(
-          "https://api.cloudinary.com/v1_1/dgkfbywof/image/upload",
-          formData
-        );
-        if (res.status === 200) {
+      
+        try {
+          const res = await axios.post(
+            "https://api.cloudinary.com/v1_1/dgkfbywof/image/upload",
+            formData
+          );
+          console.log(res.data.secure_url);
+      
           const imageUrl = res.data.secure_url;
-          addPost({
-            userId,
-            imageUrl,
-            title,
-            description,
-            hideLikes,
-            hideComment,
-            hashtag,
-          })
-            .then((response: any) => {
-              const data = response.data;
-              if (response.status === 200) {
-                toast.info(data.message);
-                handleCancelClick();
-              } else {
-                console.log(response.message);
-                toast.error(data.message);
-              }
-            })
-            .catch((error) => {
-              toast.error(error?.message);
-              console.log(error?.message);
-            });
+          imageUrls.push(imageUrl);
+        } catch (error) {
+          console.log("Error uploading image:", error);
         }
-        console.log(res);
-      } catch (error) {
-        console.log(error);
       }
+      addPost({
+        userId,
+        imageUrls,
+        title,
+        description,
+        hideLikes,
+        hideComment,
+        hashtag,
+      })
+        .then((response: any) => {
+          const data = response.data;
+          if (response.status === 200) {
+            toast.info(data.message);
+            handleCancelClick();
+          } else {
+            console.log(response.message);
+            toast.error(data.message);
+          }
+        })
+        .catch((error) => {
+          toast.error(error?.message);
+          console.log(error?.message);
+        });
     },
   });
 
   const handleCancelClick = () => {
-    formik.values.image = "";
+    formik.values.images = [];
+    setCroppedImage([]);
+    console.log(croppedImage);
     setShowModal(false);
   };
   const handleHashtagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -144,6 +149,9 @@ function AddPost() {
   const handleHashtagSelect = (hashtag: string) => {
     formik.setFieldValue("hashtag", hashtag);
     setHashtagSuggestions([]);
+  };
+  const handleNextImage = () => {
+    setCurrentImageIndex((prevIndex) => prevIndex + 1);
   };
 
   return (
@@ -201,9 +209,9 @@ function AddPost() {
                       onClick={handleButtonClick}
                       className="image-preview flex items-center bg-white shadow-lg justify-center h-64 cursor-pointer"
                     >
-                      {!formik.values.image && (
+                      {!formik.values.images.length && (
                         <div className="flex flex-col gap 10 items-center">
-                          {(!formik.values.image || formik.errors.image) && (
+                          {(!formik.values.images.length || formik.errors.images) && (
                             <div className="flex flex-col gap 10 items-center">
                               <ImagePlus
                                 color="gray"
@@ -215,13 +223,41 @@ function AddPost() {
                           )}
                         </div>
                       )}
-                      {formik.values.image && !formik.errors.image && (
-                        <PreviewImage file={formik.values.image} />
+
+                      {croppedImage && !formik.errors.images && (
+                         <div className="flex  gap-4">
+                         {croppedImage.map((preview, index) => (
+                           <div key={index}>
+                             {preview && (
+                               <img
+                                 style={{  borderRadius: "10px" }}
+                                 src={preview}
+                                 alt={`Preview ${index + 1}`}
+                               />
+                             )}
+                           </div>
+                         ))}
+                       </div>
                       )}
                     </div>
-                    {formik.errors.image && (
+                    {formik.values.images &&
+                      !formik.errors.images &&
+                      formik.values.images.map((imageFile, index) => (
+                        <React.Fragment key={index}>
+                          {index === currentImageIndex && (
+                            <CropImage
+                              imgUrl={imageFile}
+                              aspectInit={{ value: 1 / 1 }}
+                              setCroppedImg={setCroppedImage}
+                              handleNextImage={handleNextImage}
+                            />
+                          )}
+                        </React.Fragment>
+                      ))}
+
+                    {formik.errors.images && (
                       <p className="text-red-600 text-xs">
-                        {formik.errors.image}
+                        {formik.errors.images}
                       </p>
                     )}
                   </div>
@@ -297,10 +333,15 @@ function AddPost() {
                     onChange={(e) => {
                       const files = e.target.files;
                       if (files && files.length > 0) {
-                        const file = files[0];
-                        formik.setFieldValue("image", file);
+                        const fileList = Array.from(files);
+                        const imageUrls = fileList.map((imageFile) =>
+                          URL.createObjectURL(imageFile)
+                        );
+
+                        formik.setFieldValue("images", imageUrls);
                       }
                     }}
+                    multiple
                   />
                   <label className="inline-flex items-center me-5 cursor-pointer">
                     <input

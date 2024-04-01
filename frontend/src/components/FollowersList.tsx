@@ -80,7 +80,7 @@ function Followers({ followers,followingUsers,setFollowingUsers, onClose }) {
     <div className="absolute top-0 left-0 z-40 w-full h-full flex justify-center items-center bg-gray-900 bg-opacity-50">
       <div className="bg-white p-4 rounded-lg" style={{ height: "350px" }}>
         <div className="flex justify-between">
-          <h2 className="text-lg font-semibold mb-4">Liked Users</h2>
+          <h2 className="text-lg font-semibold mb-4">Follwers</h2>
           <X onClick={onClose} className=" cursor-pointer" />
         </div>
         <hr className="border-gray-300 w-full mb-2" />

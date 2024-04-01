@@ -1,35 +1,46 @@
 import React, { useState, useEffect } from "react";
 
 interface PreviewImageProps {
-  file: any;
+  files: string[];
 }
 
-const PreviewImage: React.FC<PreviewImageProps> = ({ file }) => {
-  const [preview, setPreview] = useState<string | ArrayBuffer | null>(null);
+const PreviewImage: React.FC<PreviewImageProps> = ({ files }) => {
+  const [previews, setPreviews] = useState([...files]);
 
-  useEffect(() => {
-    if (file) {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        if (typeof reader.result === "string") {
-          setPreview(reader.result);
-        }
-      };
-    } else {
-      setPreview(null);
-    }
-  }, [file]);
+  // useEffect(() => {
+  //   const newPreviews: (string | ArrayBuffer | null)[] = [];
+
+  //   const readAndPreview = (file: File) => {
+  //     const reader = new FileReader();
+
+  //     reader.onload = () => {
+  //       if (typeof reader.result === "string") {
+  //         newPreviews.push(reader.result);
+  //         setPreviews([...newPreviews]);
+  //       }
+  //     };
+
+  //     reader.readAsDataURL(file);
+  //   };
+
+  //   files.forEach((file) => {
+  //     readAndPreview(file);
+  //   });
+  // }, [files]);
 
   return (
-    <div>
-      {preview && (
-        <img
-          style={{ height: "250px", borderRadius: "10px" }}
-          src={preview.toString()}
-          alt=""
-        />
-      )}
+    <div className="flex  gap-4">
+      {previews.map((preview, index) => (
+        <div key={index}>
+          {preview && (
+            <img
+              style={{  borderRadius: "10px" }}
+              src={preview.toString()}
+              alt={`Preview ${index + 1}`}
+            />
+          )}
+        </div>
+      ))}
     </div>
   );
 };
