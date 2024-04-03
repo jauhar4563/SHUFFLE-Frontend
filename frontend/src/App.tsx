@@ -20,7 +20,7 @@ function App() {
     <>
       <Protect>
         <Header />
-        <div className="flex bg-gray-100  mt-20 h-screen ">
+        <div className=" flex   mt-20 h-screen " >
           <SideNavBar />
           <Outlet />
         </div>

@@ -9,6 +9,7 @@ export interface PostProps {
       title: string;
       imageUrl: string[];
       description: string;
+      hashtags:string[];
       likes: any[];
       isHidden: boolean;
       isBlocked: boolean;

@@ -219,10 +219,10 @@ export const addPost = (postData: {
 //@dec      Get All Posts
 //method    get
 
-export const getAllPosts = () => {
+export const getAllPosts = (userId: { userId: string }) => {
   return new Promise((resolve, reject) => {
     try {
-      apiCall("get", postUrls.getAllPosts, null)
+      apiCall("post", postUrls.getAllPosts, userId)
         .then((response) => {
           resolve(response);
         })
@@ -262,6 +262,7 @@ export const editPost = (postData: {
   postId: string;
   title: string;
   description: string;
+  hashtags:any[];
   hideLikes: boolean;
   hideComment: boolean;
 }) => {

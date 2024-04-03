@@ -170,6 +170,7 @@ const ViewPost = ({
 
         <div className="col-span-1 relative pl-4">
           <header className="border-b border-grey-400">
+           
             <a
               href="#"
               className="block cursor-pointer py-4 flex items-center text-sm outline-none focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out"
@@ -179,67 +180,28 @@ const ViewPost = ({
                 className="h-9 w-9 rounded-full object-cover"
                 alt="user"
               />
-              <p className="block ml-2 font-bold">Paul</p>
+              <p className="block ml-2 font-bold">{post.userId.userName}</p>
             </a>
           </header>
-
-          {/* <div>
-            <div className="pt-1">
-              <div className="text-sm mb-2 flex flex-start items-center">
-                <div>
-                  <a
-                    href="#"
-                    className="cursor-pointer flex items-center text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out"
-                  >
-                    <img
-                      className="h-8 w-8 rounded-full object-cover"
-                      src="https://images.pexels.com/photos/1450082/pexels-photo-1450082.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260"
-                      alt="user"
-                    />
-                  </a>
-                </div>
-                <p className="font-bold ml-2">
-                  <a className="cursor-pointer">Joshua:</a>
-                  <span className="text-gray-700 font-medium ml-1">
-                    Good post
-                  </span>
-                </p>
-              </div>
-            </div>
-            <div className="text-sm mb-2 flex flex-start items-center">
-              <div>
-                <a
-                  href="#"
-                  className="cursor-pointer flex items-center text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out"
-                >
-                  <img
-                    className="h-8 w-8 rounded-full object-cover"
-                    src="https://images.pexels.com/photos/3861456/pexels-photo-3861456.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260"
-                    alt="user"
-                  />
-                </a>
-              </div>
-              <p className="font-bold ml-2">
-                <a className="cursor-pointer">Kesha:</a>
-                <span className="text-gray-700 font-medium ml-1">
-                  This is amazing
-                </span>
-              </p>
-            </div>
-          </div> */}
-           {isComment && (
+                  {
+                    isComment && post.hideComment&& (
+                      <div className="home-scroll-post">
+                      <div className="home-scrollbox-post flex items-center justify-center">
+                        <div >
+                            <h1 className="text-md font-semibold">Comments are hidden.</h1>
+                        </div>
+                      </div>
+      
+                   
+                    </div>
+                    )
+                  }
+           {isComment  && !post.hideComment && (
             <>
-              {/* <div className="flex justify-end me-3">
-                <button
-                  onClick={handleIsBack}
-                  className="undo  text-xs flex items-center text-green-600 mt-1 "
-                >
-                  back <Undo2 size={15} />
-                </button>
-              </div> */}
+            
 
               <div className="home-scroll-post">
-                <div className="home-scrollbox-post pb-96">
+                <div className="home-scrollbox-post ">
                   {comments.map((comment: any) => (
                     <div key={comment._id}>
                       <div className="mb-6">
@@ -269,7 +231,7 @@ const ViewPost = ({
                             <button
                               onClick={() => handleReplyComments(comment._id)}
                               style={{ fontSize: "10px" }}
-                              className="text-xs text-green-600 flex"
+                              className="text-xs text-purple-600 flex"
                             >
                               Reply{" "}
                             </button>
@@ -340,11 +302,11 @@ const ViewPost = ({
                   <Form>
                     <div className="w-full items-center absolute bottom-0 pe-6 bg-white h-20">
                       <div>
-                        <p className="text-xs font-bold mb-1">@{user.name}</p>
+                        <p className="text-xs font-bold mb-1">@{user.userName}</p>
                       </div>
                       <div className="flex">
                         <Field
-                          className="w-full ps-3 border-gray-200 border  focus:border-gray-200 focus:outline-none focus:ring-1 focus:ring-offset-0 focus:ring-green-600   rounded-md text-xs resize-none outline-none appearance-none"
+                          className="w-full ps-3 border-gray-200 border  focus:border-gray-200 focus:outline-none focus:ring-1 focus:ring-offset-0 focus:ring-purple-600   rounded-md text-xs resize-none outline-none appearance-none"
                           aria-label="post your comments..."
                           placeholder="post your comments..."
                           autoComplete="off"
@@ -354,7 +316,7 @@ const ViewPost = ({
                         />
                         <button
                           type="submit"
-                          className="mx-4 text-xs  focus:outline-none border-none bg-transparent text-green-600"
+                          className="mx-4 text-xs  focus:outline-none border-none bg-transparent text-purple-600"
                         >
                           Reply
                         </button>
@@ -377,9 +339,9 @@ const ViewPost = ({
                   onSubmit={commentHandleSubmit}
                 >
                   <Form>
-                    <div className="w-full flex items-center absolute bottom-0 pe-6 bg-white h-20">
+                    <div className="w-full flex items-center absolute bottom-0 pe-6 bg-white h-14">
                       <Field
-                        className="w-full ps-3 border-gray-200 border  focus:border-gray-200 focus:outline-none focus:ring-1 focus:ring-offset-0 focus:ring-green-600   rounded-md text-xs resize-none outline-none appearance-none"
+                        className="w-full ps-3 border-gray-200 border  focus:border-gray-200 focus:outline-none focus:ring-1 focus:ring-offset-0 focus:ring-purple-600   rounded-md text-xs resize-none outline-none appearance-none"
                         aria-label="post your comments..."
                         placeholder="post your comments..."
                         autoComplete="off"
@@ -389,7 +351,7 @@ const ViewPost = ({
                       />
                       <button
                         type="submit"
-                        className="mx-2 text-xs  focus:outline-none border-none bg-transparent text-green-600"
+                        className="mx-2 text-xs  focus:outline-none border-none bg-transparent text-purple-600"
                       >
                         Comment
                       </button>
@@ -421,7 +383,7 @@ const ViewPost = ({
                       </h3>
                       <div className="flex justify-center gap-4 ">
                         <button
-                          className="text-xs flex gap-1 text-green-600 font-semibold border px-2 py-1 rounded-md border-green-600"
+                          className="text-xs flex gap-1 text-purple-600 font-semibold border px-2 py-1 rounded-md border-purple-600"
                           onClick={() => {
                             setOpenModal(false);
                             handleDeleteComments(parentCommentId);

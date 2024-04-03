@@ -14,6 +14,7 @@ import { X } from "lucide-react";
 import { PostProps } from "../utils/types/postType";
 import { Link } from "react-router-dom";
 import { Carousel } from "flowbite-react";
+import LikedUsers from "./LikedUsers";
 
 const Posts: React.FC<PostProps> = ({ post }) => {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ const Posts: React.FC<PostProps> = ({ post }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [editPostData, setEditPostData] = useState<any>(null);
   const [deletePostId, setDeletePostId] = useState<string | null>(null);
+  const [showLikedUsersPopup, setShowLikedUsersPopup] = useState(false);
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [isLikedByUser, setIsLikedByUser] = useState(
     post.likes.includes(userId) ||
@@ -31,6 +33,7 @@ const Posts: React.FC<PostProps> = ({ post }) => {
   const [isSavedByUser, setIsSavedByUser] = useState(
     user.savedPost.includes(post._id)
   );
+
   const [likeCount, setLikeCount] = useState(post.likes.length);
   const images: string[] = post.imageUrl;
 
@@ -38,6 +41,9 @@ const Posts: React.FC<PostProps> = ({ post }) => {
     setIsOpen(!isOpen);
   };
 
+  const toggleLikedUsersPopup = () => {
+    setShowLikedUsersPopup(!showLikedUsersPopup);
+  };
   const handleEdit = () => {
     console.log(post);
     setEditPostData(post);
@@ -117,7 +123,7 @@ const Posts: React.FC<PostProps> = ({ post }) => {
           >
             <div className="flex items-center justify-between mb-2">
               <Link
-                to={`/users-profile/${post.userId._id}`}
+                to={user._id===post.userId._id?'/profile': `/users-profile/${post.userId._id}`}
                 className="flex items-center space-x-2"
               >
                 <img
@@ -209,46 +215,53 @@ const Posts: React.FC<PostProps> = ({ post }) => {
             </div>
             {/* Image */}
             <div className="mb-4 " style={{ width: "580px" }}>
-            <div className="h-56 sm:h-64 xl:h-80 2xl:h-96">
-
-              <Carousel pauseOnHover slideInterval={5000}>
-                {images &&
-                  images.map((image) => (
-                    <img className=" " src={image} alt="Description" />
-                  ))}
-              </Carousel>
+              <div className="h-56 sm:h-64 xl:h-80 2xl:h-96">
+                <Carousel pauseOnHover slideInterval={5000}>
+                  {images &&
+                    images.map((image) => (
+                      <img className=" " src={image} alt="Description" />
+                    ))}
+                </Carousel>
               </div>
             </div>
 
             {/* Like and Comment Section */}
             <div className="flex items-center justify-between text-gray-500">
-              <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => handleLike(post._id, user._id)}
-                  className="flex justify-center items-center gap-2 px-2 hover:bg-gray-50 rounded-full p-1 transform transition-all duration-300 hover:scale-105"
-                >
-                  <svg
-                    className={`w-7 h-7 ${
-                      isLikedByUser ? "text-red-500" : "text-gray-500"
-                    }  `}
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    fill={isLikedByUser ? "red" : "none"}
-                    viewBox="0 0 24 24"
+              <div className="flex items-start space-x-4">
+                <div className="flex flex-col items-center">
+                  <button
+                    onClick={() => handleLike(post._id, user._id)}
+                    className="flex justify-center items-center gap-2 px-2 hover:bg-gray-50 rounded-full p-1 transform transition-all duration-300 hover:scale-105"
                   >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"
-                    />
-                  </svg>
-
-                  <span className="text-sm">{likeCount} Likes</span>
-                </button>
+                    <svg
+                      className={`w-7 h-7 ${
+                        isLikedByUser ? "text-red-500" : "text-gray-500"
+                      }  `}
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      fill={isLikedByUser ? "red" : "none"}
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M12.01 6.001C6.5 1 1 8 5.782 13.001L12.011 20l6.23-7C23 8 17.5 1 12.01 6.002Z"
+                      />
+                    </svg>
+                  </button>
+                 {!post.hideLikes &&(
+                  <span
+                  onClick={toggleLikedUsersPopup}
+                  className=" cursor-pointer text-sm"
+                >
+                  {likeCount} Likes
+                </span>
+                 )} 
+                </div>
                 <button
                   onClick={() => setShowCommentModal(true)}
                   className="flex justify-center items-center gap-2 px-2 hover:bg-gray-50 rounded-full p-1 transform transition-all duration-300 hover:scale-105"
@@ -271,7 +284,7 @@ const Posts: React.FC<PostProps> = ({ post }) => {
                     />
                   </svg>
 
-                  <span className="text-sm">3</span>
+                  <span className="text-sm"></span>
                 </button>
                 <button
                   onClick={() => handleSave(post._id, user._id)}
@@ -345,6 +358,9 @@ const Posts: React.FC<PostProps> = ({ post }) => {
             </div>
           </div>
         </div>
+      )}
+      {showLikedUsersPopup && (
+        <LikedUsers likedUsers={post.likes} onClose={toggleLikedUsersPopup} />
       )}
     </>
   );

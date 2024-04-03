@@ -5,38 +5,46 @@ import { useEffect, useState } from "react";
 import { getAllPosts } from "../../services/api/user/apiMethods";
 import PostShimmer from "../../components/shimmerUI/postShimmer";
 import { toast } from "sonner";
+import { useSelector } from "react-redux";
 
 function HomePage() {
+  const selectUser = (state: any) => state.auth.user;
+  const user = useSelector(selectUser);
+  const userId = user._id || "";
+
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     try {
-      setLoading(true);
-      setTimeout(() => {
-        getAllPosts()
-          .then((response: any) => {
-            const postsData = response.data;
-            setPosts(postsData);
-
-            console.log(postsData);
-          })
-          .catch((error) => {
-            toast.error(error.message);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      }, 1000);
+     fetchposts();
     } catch (error) {
       console.log(error);
     }
-  }, [setPosts]);
+  }, []);
+
+  const fetchposts=()=>{
+    setLoading(true);
+      getAllPosts({userId:userId})
+        .then((response: any) => {
+          const postsData = response.data;
+          setPosts(postsData);
+
+          console.log(postsData);
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+  }
+
   return (
     <>
       <div className="flex flex-col  h-full">
         <div className="z-40">
-          <AddPost />
+          <AddPost setNewPost={setPosts}/>
         </div>
         {loading ? (
           // Render shimmer UI when loading

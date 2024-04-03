@@ -2,14 +2,16 @@ import React, { useState, useRef, useEffect } from "react";
 import { Bell, Bookmark, Mail, LucideKeySquare, ImagePlus } from "lucide-react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import PreviewImage from "./previewImg";
 import axios from "axios";
 import { addPost, getAllHashtag } from "../services/api/user/apiMethods";
 import { toast } from "sonner";
 import { useSelector } from "react-redux";
 import CropImage from "./CropImg";
+import { Spinner } from "flowbite-react";
+import Select from "react-select";
 
-function AddPost() {
+
+function AddPost({ setNewPost }: any) {
   const selectUser = (state: any) => state.auth.user || "";
   const user = useSelector(selectUser) || "";
   const userId = user._id || "";
@@ -20,6 +22,8 @@ function AddPost() {
   const [hashtagSuggestions, setHashtagSuggestions] = useState([]);
   const [croppedImage, setCroppedImage] = useState([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedHashtag, setSelectedHashtag] = useState<any>([]);
 
   useEffect(() => {
     try {
@@ -42,11 +46,16 @@ function AddPost() {
     setShowModal(true);
   };
   const fileInputRef = useRef<HTMLInputElement>(null);
-  console.log("hello")
+  console.log("hello");
 
   const handleButtonClick = () => {
     fileInputRef.current?.click();
   };
+  // Options for react-select
+  const selectOptions = hashtags.map((tag: any) => ({
+    value: tag.hashtag,
+    label: tag.hashtag,
+  }));
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -71,25 +80,26 @@ function AddPost() {
       description: Yup.string().required("Description is required"),
     }),
     onSubmit: async () => {
+      setIsLoading(true);
       console.log("hello", userId);
-      console.log(croppedImage)
+      console.log(croppedImage);
       const { title, description, hashtag } = formik.values;
       const imageUrls = [];
       for (const image of formik.values.images) {
         const response = await fetch(image);
         const blob = await response.blob();
-      
+
         const formData = new FormData();
         formData.append("file", blob);
         formData.append("upload_preset", "bnaqltis");
-      
+
         try {
           const res = await axios.post(
             "https://api.cloudinary.com/v1_1/dgkfbywof/image/upload",
             formData
           );
           console.log(res.data.secure_url);
-      
+
           const imageUrl = res.data.secure_url;
           imageUrls.push(imageUrl);
         } catch (error) {
@@ -103,12 +113,14 @@ function AddPost() {
         description,
         hideLikes,
         hideComment,
-        hashtag,
+        hashtag:selectedHashtag,
       })
         .then((response: any) => {
           const data = response.data;
           if (response.status === 200) {
             toast.info(data.message);
+            setNewPost(response.data.posts);
+            setIsLoading(false);
             handleCancelClick();
           } else {
             console.log(response.message);
@@ -125,6 +137,7 @@ function AddPost() {
   const handleCancelClick = () => {
     formik.values.images = [];
     setCroppedImage([]);
+    setSelectedHashtag([])
     console.log(croppedImage);
     setShowModal(false);
   };
@@ -211,7 +224,8 @@ function AddPost() {
                     >
                       {!formik.values.images.length && (
                         <div className="flex flex-col gap 10 items-center">
-                          {(!formik.values.images.length || formik.errors.images) && (
+                          {(!formik.values.images.length ||
+                            formik.errors.images) && (
                             <div className="flex flex-col gap 10 items-center">
                               <ImagePlus
                                 color="gray"
@@ -225,19 +239,19 @@ function AddPost() {
                       )}
 
                       {croppedImage && !formik.errors.images && (
-                         <div className="flex  gap-4">
-                         {croppedImage.map((preview, index) => (
-                           <div key={index}>
-                             {preview && (
-                               <img
-                                 style={{  borderRadius: "10px" }}
-                                 src={preview}
-                                 alt={`Preview ${index + 1}`}
-                               />
-                             )}
-                           </div>
-                         ))}
-                       </div>
+                        <div className="flex  gap-4">
+                          {croppedImage.map((preview, index) => (
+                            <div key={index}>
+                              {preview && (
+                                <img
+                                  style={{ borderRadius: "10px" }}
+                                  src={preview}
+                                  alt={`Preview ${index + 1}`}
+                                />
+                              )}
+                            </div>
+                          ))}
+                        </div>
                       )}
                     </div>
                     {formik.values.images &&
@@ -294,14 +308,16 @@ function AddPost() {
                         </p>
                       )}
                     <p className=" font-semibold">Hashtag</p>
-                    <input
-                      type="text"
-                      placeholder="hashtag"
-                      className="rounded-lg shadow-lg p-2 py-3 mb-3 outline-none text-xs font-normal"
-                      value={formik.values.hashtag}
-                      onChange={handleHashtagChange}
-                      onBlur={formik.handleBlur}
-                      name="hashtag"
+                    <Select
+                      options={selectOptions}
+                      value={selectedHashtag} // Set selected value
+                      onChange={(selectedOption) =>{
+                        console.log(selectedOption)
+                        
+                        setSelectedHashtag(selectedOption) 
+                      }
+                      }
+                      isMulti
                     />
                     <div className="">
                       {hashtagSuggestions.length > 0 && (
@@ -385,6 +401,12 @@ function AddPost() {
                     type="submit"
                     className="text-xs rounded-lg btn border px-6 py-3 cursor-pointer text-white ml-2 bg-gradient-to-b from-purple-600 to-blue-400  hover:bg-green-600"
                   >
+                    {isLoading && (
+                      <Spinner
+                        aria-label="Extra small spinner example"
+                        size="sm"
+                      />
+                    )}
                     Publish Post
                   </button>
                 </div>

@@ -7,8 +7,9 @@ import {
   rejectFollowRequest,
 } from "../services/api/user/apiMethods";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
-function Followers({ followers,followingUsers,setFollowingUsers, onClose }) {
+function Followers({ followers, followingUsers, setFollowingUsers, onClose }) {
   const selectUser = (state: any) => state.auth.user;
   const user = useSelector(selectUser);
   const userId = user._id || "";
@@ -31,24 +32,23 @@ function Followers({ followers,followingUsers,setFollowingUsers, onClose }) {
   const isFollowing = (likedUserId) => {
     return following.some((user) => user._id === likedUserId);
   };
-  
+
   const isRequested = (likedUserId) => {
     return requested.includes(likedUserId);
   };
-  
+
   const handleFollow = (likedUserId) => {
     followUser({ userId, followingUser: likedUserId })
       .then((response: any) => {
-        if(response.data.followed){
-            
-            const followedUser = followers.find(user => user._id === likedUserId);
-            setFollowing([...following, followedUser])
-        setFollowingUsers([...followingUsers, followedUser]);
+        if (response.data.followed) {
+          const followedUser = followers.find(
+            (user) => user._id === likedUserId
+          );
+          setFollowing([...following, followedUser]);
+          setFollowingUsers([...followingUsers, followedUser]);
+        } else {
+          setRequested([...requested, likedUserId]);
         }
-          else{
-            
-              setRequested([...requested, likedUserId]);
-          }
 
         console.log(response.data);
       })
@@ -61,7 +61,9 @@ function Followers({ followers,followingUsers,setFollowingUsers, onClose }) {
     UnFollowUser({ userId, unfollowingUser: likedUserId })
       .then((response: any) => {
         setFollowing(following.filter((user) => user._id !== likedUserId));
-        setFollowingUsers(followingUsers.filter((user) => user._id !== likedUserId));
+        setFollowingUsers(
+          followingUsers.filter((user) => user._id !== likedUserId)
+        );
         console.log(response.data);
       })
       .catch((error) => {
@@ -90,7 +92,14 @@ function Followers({ followers,followingUsers,setFollowingUsers, onClose }) {
               <>
                 <div className="lg:col-span-2 w-12/12  pb-2 mb-2" id="posted">
                   <div className="flex justify-between bg-white rounded-lg">
-                    <div className="info flex items-center mr-24 gap-2">
+                    <Link
+                      to={
+                        user._id === userId
+                          ? "/profile"
+                          : `/users-profile/${user._id}`
+                      }
+                      className="info flex items-center mr-24 gap-2"
+                    >
                       <img
                         src={user.profileImg}
                         alt="User"
@@ -99,7 +108,7 @@ function Followers({ followers,followingUsers,setFollowingUsers, onClose }) {
                       <p className="text-gray-800 text-sm mx-1">
                         {user.userName}
                       </p>
-                    </div>
+                    </Link>
                     {userId !== user._id && (
                       <div className="items-center flex gap-5 actions">
                         {!isFollowing(user._id) && !isRequested(user._id) && (

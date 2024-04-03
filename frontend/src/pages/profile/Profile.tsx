@@ -72,7 +72,7 @@ function Profile() {
 
   return (
     <div className="ml-5 w-9/12">
-      <div className='ms-96 flex mt-5 flex-col bg-white p-4 pl-10 w-11/12'>
+      <div className='ms-96 flex mt-5 flex-col bg-white p-4 pl-10 w-11/12 rounded-lg'>
         <div className='flex mt-24 justify-between '>
           <div className='flex flex-col gap-4'>
             <img className=' h-28 ' src={user.profileImg} alt="" />
@@ -114,7 +114,7 @@ function Profile() {
             <PostShimmer />
           </div>
         ) : (
-          <div className="">
+          <div className="-ml-4">
             {posts.map((post: any) => (
               <Posts key={post._id} post={post} />
             ))}

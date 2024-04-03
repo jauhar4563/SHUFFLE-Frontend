@@ -12,6 +12,7 @@ import Profile from "../pages/profile/Profile";
 import SavedPost from "../pages/savedPost/SavedPost";
 import UsersProfile from "../pages/UsersProfile/UsersProfile";
 import FollowRequests from "../pages/followRequests/FollowRequests";
+import Chat from "../pages/chat/Chat";
 
 const appRouter = createBrowserRouter([
   {
@@ -39,7 +40,12 @@ const appRouter = createBrowserRouter([
         path: "/follow-requests",
         element: <FollowRequests />,
       },
+      
     ],
+  },
+  {
+    path: "/chat",
+    element: <Chat />,
   },
   {
     path: "/login",

@@ -8,6 +8,7 @@ import {
 } from "../services/api/user/apiMethods";
 import { useSelector } from "react-redux";
 import { error } from "console";
+import { Link } from "react-router-dom";
 
 function LikedUsers({ likedUsers, onClose }) {
   const selectUser = (state: any) => state.auth.user;
@@ -59,28 +60,39 @@ function LikedUsers({ likedUsers, onClose }) {
         console.log(error.message);
       });
   };
-  const handleReject = (likedUserId)=>{
-
-    rejectFollowRequest({userId,requestedUser:likedUserId}).then((response:any)=>{
+  const handleReject = (likedUserId) => {
+    rejectFollowRequest({ userId, requestedUser: likedUserId }).then(
+      (response: any) => {
         setRequested(requested.filter((id) => id !== likedUserId));
-    })
-}
+      }
+    );
+  };
 
   return (
-    <div className="absolute top-0 left-0 w-full h-full flex justify-center items-center bg-gray-900 bg-opacity-50">
-      <div className="bg-white p-4 rounded-lg" style={{height:"350px"}}>
+    <div
+      className="fixed top-0 left-0 z-50 w-full h-screen flex justify-center items-center bg-gray-900 bg-opacity-50"
+      style={{ height: "100vh" }}
+    >
+      <div className="bg-white p-4 rounded-lg" style={{ height: "350px" }}>
         <div className="flex justify-between">
           <h2 className="text-lg font-semibold mb-4">Liked Users</h2>
           <X onClick={onClose} className=" cursor-pointer" />
         </div>
-        <hr className="border-gray-300 w-full mb-2" /> 
+        <hr className="border-gray-300 w-full mb-2" />
 
         <ul>
           {likedUsers.map((user) => (
             <>
               <div className="lg:col-span-2 w-12/12  pb-2 mb-2" id="posted">
                 <div className="flex justify-between bg-white rounded-lg">
-                  <div className="info flex items-center mr-24 gap-2">
+                  <Link
+                    to={
+                      user._id === userId
+                        ? "/profile"
+                        : `/users-profile/${user._id}`
+                    }
+                    className="info flex items-center mr-24 gap-2"
+                  >
                     <img
                       src={user.profileImg}
                       alt="User"
@@ -89,7 +101,7 @@ function LikedUsers({ likedUsers, onClose }) {
                     <p className="text-gray-800 text-sm mx-1">
                       {user.userName}
                     </p>
-                  </div>
+                  </Link>
                   {userId !== user._id && (
                     <div className="items-center flex gap-5 actions">
                       {!isFollowing(user._id) && !isRequested(user._id) && (
@@ -109,9 +121,10 @@ function LikedUsers({ likedUsers, onClose }) {
                         </button>
                       )}
                       {isRequested(user._id) && (
-                        <button 
-                        onClick={() => handleReject(user._id)}
-                         className="text-sm text-gray-800 px-4 py-1 bg-gray-100 rounded-md">
+                        <button
+                          onClick={() => handleReject(user._id)}
+                          className="text-sm text-gray-800 px-4 py-1 bg-gray-100 rounded-md"
+                        >
                           Requested
                         </button>
                       )}

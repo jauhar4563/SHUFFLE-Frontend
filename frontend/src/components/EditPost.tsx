@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import { toast } from "sonner";
 import * as Yup from "yup";
-import { editPost } from "../services/api/user/apiMethods";
+import { editPost, getAllHashtag } from "../services/api/user/apiMethods";
 import { useDispatch, useSelector } from "react-redux";
 import { setPosts } from "../utils/context/reducers/authSlice";
-
+import Select from "react-select";
 interface EditPostProps {
   post: {
     _id: string;
@@ -19,6 +19,7 @@ interface EditPostProps {
     imageUrl: string;
     hideLikes: boolean;
     hideComment: boolean;
+    hashtags:string[];
   };
   onCancelEdit: () => void;
 }
@@ -30,6 +31,36 @@ const EditPost: React.FC<EditPostProps> = ({ post, onCancelEdit }) => {
   const userId = user._id || "";
   const [hideLikes, setHideLikes] = useState(post.hideLikes);
   const [hideComment, setHideComment] = useState(post.hideComment);
+  const [hashtags, setHashtags] = useState([]);
+  const [selectedHashtags, setSelectedHashtags] = useState<any[]>([]);
+
+
+  useEffect(() => {
+    try {
+      getAllHashtag().then((response: any) => {
+        setHashtags(response.data.hashtags);
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }, []);
+
+
+  useEffect(() => {
+    const seletedTags = post.hashtags.map((tag: any) => ({
+      value: tag,
+      label: tag,
+    }));
+  
+    setSelectedHashtags(seletedTags);
+  }, [post.hashtags]);
+
+  const selectOptions = hashtags.map((tag: any) => ({
+    value: tag.hashtag,
+    label: tag.hashtag,
+  }));
+
+
   const formik = useFormik({
     initialValues: {
       title: post.title,
@@ -48,10 +79,12 @@ const EditPost: React.FC<EditPostProps> = ({ post, onCancelEdit }) => {
           postId,
           title,
           description,
+          hashtags:selectedHashtags,
           hideComment,
           hideLikes,
         }).then((response: any) => {
           const postData = response.data;
+          console.log(postData)
           dispatch(setPosts({ posts: postData.posts }));
           toast.info("Post updated successfully");
           onCancelEdit();
@@ -82,7 +115,7 @@ const EditPost: React.FC<EditPostProps> = ({ post, onCancelEdit }) => {
                 {/* Image Preview */}
                 <img
                   style={{ height: "250px", borderRadius: "10px" }}
-                  src={post.imageUrl}
+                  src={post.imageUrl[0]}
                   alt=""
                 />
               </div>
@@ -115,6 +148,18 @@ const EditPost: React.FC<EditPostProps> = ({ post, onCancelEdit }) => {
                     {formik.errors.description}
                   </p>
                 )}
+                 <p className="font-semibold">Hashtags</p>
+                <Select
+                  options={selectOptions}
+                  isMulti
+                  value={selectedHashtags}
+                  onChange={(selectedOption) =>{
+                    console.log(selectedOption)
+                    
+                    setSelectedHashtags(selectedOption) 
+                  }
+                  }
+                />
               </div>
             </div>
             {/* Buttons */}
