@@ -18,12 +18,11 @@ function Messages({ messages, setMessages, user, currentChat, socket }) {
     });
   }, [currentChat]);
 
-  const getMessages=()=>{
-    
-    socket.current.on('getMessage',(data)=>{
-      console.log( data);
-    })
-  }
+  const getMessages = () => {
+    socket.current.on("getMessage", (data) => {
+      console.log(data);
+    });
+  };
   const scrollRef = useRef();
 
   const handleSubmit = () => {
@@ -144,8 +143,8 @@ function Messages({ messages, setMessages, user, currentChat, socket }) {
                 </div>
                 {messages.length &&
                   messages.map((message, index) => {
-                    return message.sender._id === user._id ||
-                      message.sender === user._id ? (
+                    return message?.sender._id === user._id ||
+                      message?.sender === user._id ? (
                       <div className="self-end w-3/4 my-2">
                         <SendedChat message={message} />
                       </div>
