@@ -8,31 +8,40 @@ import {
 } from "../../services/api/user/apiMethods";
 import { toast } from "sonner";
 
-function Messages({ user, currentChat, socket }) {
+function Messages({ messages, setMessages, user, currentChat, socket }) {
   const [newMessage, setNewMessage] = useState("");
-  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    socket?.current?.emit("addUser", user._id);
-    socket?.current?.on("getUsers", (users) => {
-      console.log(users);
-      console.log("hello");
-    });
-  }, [user, socket]);
-
-  console.log(socket);
-
-  useEffect(() => {
-    getUserMessages(currentChat).then((response) => {
+    const currentChatId = currentChat?._id;
+    getUserMessages(currentChatId).then((response) => {
       setMessages(response.data);
     });
   }, [currentChat]);
+
+  const getMessages=()=>{
+    
+    socket.current.on('getMessage',(data)=>{
+      console.log( data);
+    })
+  }
   const scrollRef = useRef();
 
   const handleSubmit = () => {
+    const currentChatId = currentChat?._id;
     const userId = user._id;
+    const receiver = currentChat.members.find(
+      (member) => member._id !== user._id
+    );
+    console.log(receiver);
+    const receiverId = receiver ? receiver._id : null;
+    socket.current.emit("sendMessage", {
+      senderId: userId,
+      receiverId,
+      text: newMessage,
+    });
+    getMessages();
     addMessage({
-      conversationId: currentChat,
+      conversationId: currentChatId,
       sender: userId,
       text: newMessage,
     }).then((response) => {
@@ -134,7 +143,7 @@ function Messages({ user, currentChat, socket }) {
                   May 6
                 </div>
                 {messages.length &&
-                  messages.map((message ,index) => {
+                  messages.map((message, index) => {
                     return message.sender._id === user._id ||
                       message.sender === user._id ? (
                       <div className="self-end w-3/4 my-2">

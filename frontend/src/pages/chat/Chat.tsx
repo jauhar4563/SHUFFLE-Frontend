@@ -2,7 +2,7 @@ import ChatUsers from "../../components/ChatComponents/ChatUsers";
 import Messages from "../../components/ChatComponents/Messages";
 import ChatingUser from "../../components/ChatComponents/ChatingUser";
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getUserConversations, getUserMessages } from "../../services/api/user/apiMethods";
 import {io} from 'socket.io-client';
 import { BASE_URL } from "../../constants/baseUrls";
@@ -13,16 +13,36 @@ function Chat() {
   const user = useSelector(selectUser);
   const userId = user._id;
   const [conversations, setConversations] = useState([]);
-  const [currentChat,setCurrentChat] = useState('');
-  // const [socket, setSocket] = useState(null);
+  const [currentChat,setCurrentChat] = useState(null);
+  const socket = useRef();
+  const [messages, setMessages] = useState([]);
+  const [arrivalMessage,setArrivalMessage]=useState(null)
 
-  
-  const socket = io.connect(BASE_URL);
-  useEffect(()=> {
-    socket.emit("newUser", currentChat);
-    console.log("connected")
-    return () => socket.disconnect()
-  })
+  useEffect(() => {
+    socket.current = io(BASE_URL);
+    socket.current.on("getMessage", (data) => {
+      console.log('Received message:', data);
+      setArrivalMessage({
+        sender: data.senderId,
+        text: data.text,
+        createdAt: Date.now(),
+      });
+    });
+  }, []);
+  useEffect(() => {
+    arrivalMessage &&
+      currentChat?.members.includes(arrivalMessage.sender) || currentChat?.members._id.includes(arrivalMessage.sender) &&
+      setMessages((prev) => [...prev, arrivalMessage]);
+  }, [arrivalMessage, currentChat]);
+
+  useEffect(() => {
+    socket?.current?.emit("addUser", user._id);
+    console.log("hello");
+    socket?.current?.on("getUsers", users=> {
+      console.log(users);
+    });
+    
+  }, [user]);
 
 
   useEffect(()=>{
@@ -38,7 +58,7 @@ function Chat() {
       <ChatUsers conversations={conversations} user={user} setCurrentChat={setCurrentChat}/>
       {(
 
-      <Messages user={user} currentChat={currentChat} socket={socket}/>
+      <Messages messages={messages} setMessages={setMessages} user={user} currentChat={currentChat} socket={socket}/>
       )}
       {/* <ChatingUser /> */}
     </div>

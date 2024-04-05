@@ -52,7 +52,7 @@ function ChatUsers({conversations,user,setCurrentChat}) {
     <ul className="flex flex-col inline-block w-full h-screen px-2 select-none">
    
    {conversations && conversations.map((conversation)=>(
-    <div onClick={()=>setCurrentChat(conversation._id)}>
+    <div onClick={()=>setCurrentChat(conversation)}>
 
       <Friend CurrentUser={user} conversation={conversation}/>
     </div>
