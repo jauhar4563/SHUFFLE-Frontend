@@ -1,5 +1,5 @@
 import { apiCall } from "./apiCalls";
-import { connectionUrls, postUrls, userUrls } from "../endPoints";
+import { chatUrl, connectionUrls, postUrls, userUrls } from "../endPoints";
 import { FormValues } from "../../../utils/validations/registerValidation";
 
 //@dec      Register user
@@ -262,7 +262,7 @@ export const editPost = (postData: {
   postId: string;
   title: string;
   description: string;
-  hashtags:any[];
+  hashtags: any[];
   hideLikes: boolean;
   hideComment: boolean;
 }) => {
@@ -300,11 +300,10 @@ export const deletePost = (postData: { postId: string; userId: string }) => {
   });
 };
 
-
 //@dec      Like a post
 //method    POST
 
-export const    likePost = (postData:{postId:string,userId:string}) => {
+export const likePost = (postData: { postId: string; userId: string }) => {
   return new Promise((resolve, reject) => {
     try {
       apiCall("post", postUrls.likePost, postData)
@@ -320,11 +319,10 @@ export const    likePost = (postData:{postId:string,userId:string}) => {
   });
 };
 
-
 //@dec      Like a post
 //method    POST
 
-export const    savePost = (postData:{postId:string,userId:string}) => {
+export const savePost = (postData: { postId: string; userId: string }) => {
   return new Promise((resolve, reject) => {
     try {
       apiCall("post", postUrls.savePost, postData)
@@ -339,7 +337,6 @@ export const    savePost = (postData:{postId:string,userId:string}) => {
     }
   });
 };
-
 
 //@dec      Get Saved Post
 //method    POST
@@ -359,8 +356,6 @@ export const getSavedPost = (userId: { userId: string }) => {
     }
   });
 };
-
-
 
 //@dec      Get User Details
 //method    POST
@@ -384,7 +379,7 @@ export const getUserDetails = (userId: { userId: string }) => {
 //@dec      followUser
 //method    POST
 
-export const followUser = (data: { userId: string ,followingUser:string}) => {
+export const followUser = (data: { userId: string; followingUser: string }) => {
   return new Promise((resolve, reject) => {
     try {
       apiCall("post", connectionUrls.follow, data)
@@ -403,7 +398,10 @@ export const followUser = (data: { userId: string ,followingUser:string}) => {
 //@dec      UnFollowUser
 //method    POST
 
-export const UnFollowUser = (data: { userId: string ,unfollowingUser:string}) => {
+export const UnFollowUser = (data: {
+  userId: string;
+  unfollowingUser: string;
+}) => {
   return new Promise((resolve, reject) => {
     try {
       apiCall("post", connectionUrls.unFollow, data)
@@ -419,7 +417,6 @@ export const UnFollowUser = (data: { userId: string ,unfollowingUser:string}) =>
   });
 };
 
-
 //@dec      Get all follow requested Users
 //method    POST
 
@@ -427,7 +424,7 @@ export const getRequestedUsers = (userId: { userId: string }) => {
   return new Promise((resolve, reject) => {
     try {
       console.log(userId);
-      
+
       apiCall("post", connectionUrls.requestedUsers, userId)
         .then((response) => {
           resolve(response);
@@ -441,11 +438,13 @@ export const getRequestedUsers = (userId: { userId: string }) => {
   });
 };
 
-
 //@dec      accept follow Request
 //method    POST
 
-export const acceptFollowRequest = (data: { userId: string ,requestedUser:string}) => {
+export const acceptFollowRequest = (data: {
+  userId: string;
+  requestedUser: string;
+}) => {
   return new Promise((resolve, reject) => {
     try {
       apiCall("post", connectionUrls.acceptRequest, data)
@@ -464,7 +463,10 @@ export const acceptFollowRequest = (data: { userId: string ,requestedUser:string
 //@dec      accept follow Request
 //method    POST
 
-export const rejectFollowRequest = (data: { userId: string ,requestedUser:string}) => {
+export const rejectFollowRequest = (data: {
+  userId: string;
+  requestedUser: string;
+}) => {
   return new Promise((resolve, reject) => {
     try {
       apiCall("post", connectionUrls.rejectRequest, data)
@@ -480,7 +482,6 @@ export const rejectFollowRequest = (data: { userId: string ,requestedUser:string
   });
 };
 
-
 //@dec      get connections of a user
 //method    POST
 
@@ -488,7 +489,7 @@ export const getUserConnection = (userId: { userId: string }) => {
   return new Promise((resolve, reject) => {
     try {
       console.log(userId);
-      
+
       apiCall("post", connectionUrls.getConnection, userId)
         .then((response) => {
           resolve(response);
@@ -502,19 +503,17 @@ export const getUserConnection = (userId: { userId: string }) => {
   });
 };
 
-
 //@dec      Edit User post
 //method    POST
 
 export const editProfile = (userData: {
   userId: string;
-  image:string;
+  image: string;
   name: string;
   phone: string;
   bio: string;
   gender: string;
   isPrivate: boolean;
-  
 }) => {
   return new Promise((resolve, reject) => {
     try {
@@ -531,14 +530,12 @@ export const editProfile = (userData: {
   });
 };
 
-
-
 //@dec      get connections of a user
 //method    POST
 
 export const getUserSuggestions = (userId: { userId: string }) => {
   return new Promise((resolve, reject) => {
-    try {      
+    try {
       apiCall("post", userUrls.userSuggestions, userId)
         .then((response) => {
           resolve(response);
@@ -552,11 +549,9 @@ export const getUserSuggestions = (userId: { userId: string }) => {
   });
 };
 
-
-
 //@dec      get all comment
 //method    POST
-export const    getPostComments = (postId:{postId:any}) => {
+export const getPostComments = (postId: { postId: string }) => {
   return new Promise((resolve, reject) => {
     try {
       apiCall("post", postUrls.getAllPostComments, postId)
@@ -572,11 +567,14 @@ export const    getPostComments = (postId:{postId:any}) => {
   });
 };
 
-
 //@dec      Add a comment
 //method    POST
 
-export const addComment = (commentData: {postId:any,userId:any,comment:string }) => {
+export const addComment = (commentData: {
+  postId: string;
+  userId: string;
+  comment: string;
+}) => {
   return new Promise((resolve, reject) => {
     try {
       apiCall("post", postUrls.addComment, commentData)
@@ -592,10 +590,13 @@ export const addComment = (commentData: {postId:any,userId:any,comment:string })
   });
 };
 
-
 //@dec      Add a reply comment
 //method    POST
-export const replyComment = (commentData: {commentId:string,userId:string,replyComment:any }) => {
+export const replyComment = (commentData: {
+  commentId: string;
+  userId: string;
+  replyComment: string;
+}) => {
   return new Promise((resolve, reject) => {
     try {
       apiCall("post", postUrls.replyComment, commentData)
@@ -611,18 +612,74 @@ export const replyComment = (commentData: {commentId:string,userId:string,replyC
   });
 };
 
-
-
 //@dec      Delete a comment
 //method    post
-export const deleteComment = ( commentId:{commentId:any}) => {
-
+export const deleteComment = (commentId: { commentId: string }) => {
   return new Promise((resolve, reject) => {
-   
-    
     try {
       const url = `${postUrls.deleteComment}?commentId=${commentId}`;
-      apiCall("get", url,commentId)
+      apiCall("get", url, commentId)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+//@dec      Add New Conversation
+//method    post
+export const addConversation = (conversationData: {
+  senderId: string;
+  receiverId: string;
+}) => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("post", chatUrl.addConversation, conversationData)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+//@dec      Get User Conversations
+//method    get
+export const getUserConversations = (userId) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const url = `${chatUrl.getUserConversation}/${userId}`;
+
+      apiCall("get", url, null)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+//@dec      Get Conversation Between two users
+//method    get
+export const findConversation = (conversationData :{ firstUser: string,secondUser:string }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const url = `${chatUrl.findConversation}/${conversationData.firstUser}/${conversationData.secondUser}`;
+
+      apiCall("get", url, null)
         .then((response) => {
           resolve(response);
         })
@@ -636,3 +693,42 @@ export const deleteComment = ( commentId:{commentId:any}) => {
 };
 
 
+
+//@dec      Add New Message
+//method    post
+export const addMessage = (messageData: {conversationId:string,sender:string,text:string}) => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("post", chatUrl.addMessage, messageData)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+
+//@dec      Get User Conversations
+//method    get
+export const getUserMessages = (conversationId) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const url = `${chatUrl.getMessages}/${conversationId}`;
+
+      apiCall("get", url, null)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
