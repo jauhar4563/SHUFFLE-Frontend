@@ -10,12 +10,12 @@ function SavedPost() {
   const [posts, setPosts] = useState([]);
   const selectUser = (state: any) => state.auth.user;
   const user = useSelector(selectUser);
-
+  const userId = user._id;
   useEffect(() => {
     try {
       setLoading(true);
       setTimeout(() => {
-        getSavedPost({ userId: user._id })
+        getSavedPost( userId)
           .then((response: any) => {
             const postsData = response.data;
             console.log(response.data);

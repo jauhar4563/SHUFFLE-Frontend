@@ -11,6 +11,9 @@ export const userUrls = {
   getUserDetails: "/user-details",
   editProfile: "/edit-profile",
   userSuggestions: "/user-suggestions",
+  checkout: "/checkout-user",
+  validate: "/validate-payment",
+  allTransactions: "/get-transactions",
 };
 
 export const postUrls = {
@@ -26,6 +29,8 @@ export const postUrls = {
   addComment: "/post/add-comment",
   replyComment: "/post/reply-comment",
   deleteComment: "/post/delete-post-comment",
+  commentsCount: "/post/get-comments-count",
+  reportPost: "/post/report-post",
 };
 
 export const connectionUrls = {
@@ -43,6 +48,11 @@ export const chatUrl = {
   findConversation: "/chat/find-conversation",
   addMessage: "/chat/add-message",
   getMessages: "/chat/get-messages",
+  getEligibleUsers: "/chat/chat-eligible-users",
+  addChatGroup: "/chat/add-chat-group",
+  getUserGroups: "/chat/get-groups",
+  addGroupMessage: "/chat/add-group-message",
+  getGroupMessages: "/chat/get-group-messages",
 };
 
 export const adminUrl = {
@@ -55,4 +65,5 @@ export const adminUrl = {
   editHashtag: "/admin/edit-hashtag",
   postList: "/admin/get-posts",
   postBlock: "/admin/post-block",
+  getReports: "/admin/get-reports",
 };

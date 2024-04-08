@@ -16,7 +16,13 @@ const adminApiCalls = async (method: string, url: string, data: any) => {
         response = await adminApi.get(url, data).catch((err) => {
           error = err;
         });
-      } else if (method === "patch") {
+      }
+      else if (method === "put") {
+        response = await adminApi.put(url, data).catch((err) => {
+          error = err;
+        });
+      }
+       else if (method === "patch") {
         response = await adminApi.patch(url, data).catch((err) => {
           error = err;
         });

@@ -102,7 +102,7 @@ export const getHashtags = (page:number,limit=6) => {
 export const adminHashtagBlock = (hashtagId: { hashtagId: string }) => {
   return new Promise((resolve, reject) => {
     try {
-      adminApiCalls("post", adminUrl.blockHashtag, hashtagId)
+      adminApiCalls("put", adminUrl.blockHashtag, hashtagId)
         .then((response) => {
           resolve(response);
         })
@@ -123,7 +123,7 @@ export const adminHashtagEdit = (hashtagData: {
 }) => {
   return new Promise((resolve, reject) => {
     try {
-      adminApiCalls("post", adminUrl.editHashtag, hashtagData)
+      adminApiCalls("patch", adminUrl.editHashtag, hashtagData)
         .then((response) => {
           resolve(response);
         })
@@ -166,7 +166,28 @@ export const adminPostList = (page:number,limit=6) => {
 export const adminPostBlock = (postId: { postId: string }) => {
   return new Promise((resolve, reject) => {
     try {
-      adminApiCalls("post", adminUrl.postBlock, postId)
+      adminApiCalls("put", adminUrl.postBlock, postId)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+
+//@dec      All Posts List
+//@method   Get
+export const adminReportList = (page:number,limit=6) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const queryParams = `?page=${page}&limit=${limit}`;
+      console.log(page,limit)
+      adminApiCalls("get", adminUrl.getReports+queryParams, null)
         .then((response) => {
           resolve(response);
         })

@@ -14,6 +14,7 @@ interface UserData {
   phone:string;
   gender:string;
   isPrivate:boolean;
+  isVerified:boolean;
   token: string;
 }
 
@@ -31,6 +32,10 @@ const authSlice = createSlice({
       state.user = action.payload.user;
       state.token = action.payload.user.token;
     },
+    updateUser:(state,action:PayloadAction<{user:UserData}>)=>{
+      state.user=action.payload.user;
+
+    },
     logout: (state) => {
       state.user = null;
       state.token = null;
@@ -42,5 +47,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { loginSuccess, logout, setPosts } = authSlice.actions;
+export const { loginSuccess, logout, setPosts,updateUser  } = authSlice.actions;
 export default authSlice.reducer;

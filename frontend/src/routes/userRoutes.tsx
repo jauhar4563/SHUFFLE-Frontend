@@ -13,6 +13,10 @@ import SavedPost from "../pages/savedPost/SavedPost";
 import UsersProfile from "../pages/UsersProfile/UsersProfile";
 import FollowRequests from "../pages/followRequests/FollowRequests";
 import Chat from "../pages/chat/Chat";
+import PremiumPlans from "../pages/premium/PremiumPage";
+import Premium from "../components/Premium";
+import PaymentSuccess from "../components/PymentSuccess";
+import PaymentFailed from "../components/PaymentFailed";
 
 const appRouter = createBrowserRouter([
   {
@@ -46,6 +50,24 @@ const appRouter = createBrowserRouter([
   {
     path: "/chat",
     element: <Chat />,
+  },
+  {
+    path: "/premium",
+    element: <PremiumPlans />,
+    children:[
+      {
+        path:"/premium/plans",
+        element:<Premium/>,
+      },
+      {
+        path:"/premium/payment-success",
+        element:<PaymentSuccess/>,
+      },
+      {
+        path:"/premium/payment-failed",
+        element:<PaymentFailed/>,
+      }
+    ]
   },
   {
     path: "/login",

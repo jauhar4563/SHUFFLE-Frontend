@@ -3,28 +3,20 @@ import RecievedChat from "./RecievedChat";
 import SendedChat from "./SendedChat";
 import { useEffect, useRef, useState } from "react";
 import {
+    addGroupMessage,
   addMessage,
+  getGroupMessages,
   getUserMessages,
 } from "../../services/api/user/apiMethods";
 import { toast } from "sonner";
 
-function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers }) {
+function GroupMessages({ messages, setMessages, user, currentChat, socket,userGroups }) {
   const [newMessage, setNewMessage] = useState("");
-  const [friend, setFriend] = useState(null);
-  const [isOnline,setIsOnline] = useState(false);
-
   useEffect(() => {
-    const friend = currentChat?.members.find((m) => m._id !== user._id);
-    setIsOnline(() => {
-      if (onlineUsers.find((user) => user.userId === friend?._id)) {
-        return true;
-      } else {
-        return false;
-      }
-    });
-    setFriend(friend);
+  
     const currentChatId = currentChat?._id;
-    getUserMessages(currentChatId).then((response) => {
+    getGroupMessages(currentChatId).then((response) => {
+        console.log(response.data)
       setMessages(response.data);
     });
 
@@ -34,26 +26,22 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
   const scrollRef = useRef();
 
   const handleSubmit = () => {
-    const currentChatId = currentChat?._id;
+    const group_id = currentChat?._id;
     const userId = user._id;
-    const receiver = currentChat.members.find(
-      (member) => member._id !== user._id
-    );
-    console.log(receiver);
-    const receiverId = receiver ? receiver._id : null;
-    socket.current.emit("sendMessage", {
-      senderId: userId,
-      receiverId,
-      text: newMessage,
-    });
-    addMessage({
-      conversationId: currentChatId,
+    const data = {
+      group_id,
+      sender_id: userId,
+      content: newMessage,
+      lastUpdate: Date.now(),
+    };
+    socket.current.emit("GroupMessage",data);
+    addGroupMessage({
+      groupId:group_id,
       sender: userId,
       text: newMessage,
     }).then((response) => {
       toast.info("message has been send");
       setNewMessage("");
-      setMessages([...messages, response.data]);
       scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
     });
   };
@@ -64,16 +52,14 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
         <div
           className="w-12 h-12 mx-4 my-2 bg-blue-500 bg-center bg-no-repeat bg-cover rounded-full cursor-pointer"
           style={{
-            backgroundImage: `url(${friend?.profileImg})`,
+            backgroundImage: `url(${currentChat?.profile})`,
           }}
         ></div>
         <div className="flex flex-col justify-center flex-1 overflow-hidden cursor-pointer">
           <div className="overflow-hidden text-sm font-medium leading-tight text-gray-600 whitespace-no-wrap">
-            {friend?.userName}
+            {currentChat?.name}
           </div>
-          {isOnline && (<div className="overflow-hidden text-xs text-green-600  leading-tight text-gray-600 whitespace-no-wrap">
-            Online
-          </div>)}
+          
         </div>
 
         <button className="flex self-center p-2 ml-2 text-gray-500 rounded-full focus:outline-none hover:text-gray-600 hover:bg-gray-300">
@@ -151,11 +137,11 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
                   messages.map((message, index) => {
                     return message?.sender._id === user._id ||
                       message?.sender === user._id ? (
-                      <div className="self-end w-3/4 my-2">
+                      <div key={index} className="self-end w-3/4 my-2">
                         <SendedChat message={message} />
                       </div>
                     ) : (
-                      <div className="self-start w-3/4 my-2">
+                      <div key={index} className="self-start w-3/4 my-2">
                         <RecievedChat message={message} />
                       </div>
                     );
@@ -204,4 +190,4 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
   );
 }
 
-export default Messages;
+export default GroupMessages;

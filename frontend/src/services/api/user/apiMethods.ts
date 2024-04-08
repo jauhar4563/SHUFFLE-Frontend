@@ -238,10 +238,11 @@ export const getAllPosts = (userId: { userId: string }) => {
 //@dec      Get User Post
 //method    POST
 
-export const getUserPost = (userId: { userId: string }) => {
+export const getUserPost = (userId: string) => {
   return new Promise((resolve, reject) => {
     try {
-      apiCall("post", postUrls.getUserPosts, userId)
+      const url:string=`${postUrls.getUserPosts}/${userId}`
+      apiCall("get", url, null)
         .then((response) => {
           resolve(response);
         })
@@ -268,7 +269,7 @@ export const editPost = (postData: {
 }) => {
   return new Promise((resolve, reject) => {
     try {
-      apiCall("post", postUrls.editPost, postData)
+      apiCall("put", postUrls.editPost, postData)
         .then((response) => {
           resolve(response);
         })
@@ -282,12 +283,12 @@ export const editPost = (postData: {
 };
 
 //@dec      Delete a post
-//method    POST
+//method    Delete
 
 export const deletePost = (postData: { postId: string; userId: string }) => {
   return new Promise((resolve, reject) => {
     try {
-      apiCall("post", postUrls.deletePost, postData)
+      apiCall("delete", postUrls.deletePost, postData)
         .then((response) => {
           resolve(response);
         })
@@ -341,10 +342,11 @@ export const savePost = (postData: { postId: string; userId: string }) => {
 //@dec      Get Saved Post
 //method    POST
 
-export const getSavedPost = (userId: { userId: string }) => {
+export const getSavedPost = (userId: string) => {
   return new Promise((resolve, reject) => {
     try {
-      apiCall("post", postUrls.getSavedPosts, userId)
+      const url:string = `${postUrls.getSavedPosts}/${userId}`
+      apiCall("get", url, null)
         .then((response) => {
           resolve(response);
         })
@@ -517,7 +519,7 @@ export const editProfile = (userData: {
 }) => {
   return new Promise((resolve, reject) => {
     try {
-      apiCall("post", userUrls.editProfile, userData)
+      apiCall("patch", userUrls.editProfile, userData)
         .then((response) => {
           resolve(response);
         })
@@ -551,10 +553,11 @@ export const getUserSuggestions = (userId: { userId: string }) => {
 
 //@dec      get all comment
 //method    POST
-export const getPostComments = (postId: { postId: string }) => {
+export const getPostComments = (postId:string) => {
   return new Promise((resolve, reject) => {
     try {
-      apiCall("post", postUrls.getAllPostComments, postId)
+      const url:string = `${postUrls.getAllPostComments}/${postId}`
+      apiCall("get", url , null)
         .then((response) => {
           resolve(response);
         })
@@ -617,8 +620,7 @@ export const replyComment = (commentData: {
 export const deleteComment = (commentId: { commentId: string }) => {
   return new Promise((resolve, reject) => {
     try {
-      const url = `${postUrls.deleteComment}?commentId=${commentId}`;
-      apiCall("get", url, commentId)
+      apiCall("delete", postUrls.deleteComment, commentId)
         .then((response) => {
           resolve(response);
         })
@@ -721,6 +723,219 @@ export const getUserMessages = (conversationId) => {
       const url = `${chatUrl.getMessages}/${conversationId}`;
 
       apiCall("get", url, null)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+
+
+
+//@dec      Get User Conversations
+//method    get
+export const getChatElibleUsers = (userId:{userId:string}) => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("post", chatUrl.getEligibleUsers, userId)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+
+
+//@dec      Add New Conversation
+//method    post
+export const addChatGroup = (conversationData: {
+  name:string,
+  image:string,
+  users:string[]
+  description:string,
+  admins:string[]
+}) => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("post", chatUrl.addChatGroup, conversationData)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+
+//@dec      Get User Conversations
+//method    get
+export const getUserGroups = (userId:string) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const url = `${chatUrl.getUserGroups}/${userId}`;
+
+      apiCall("get", url, null)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+
+
+//@dec      Add New Message
+//method    post
+export const addGroupMessage = (messageData: {groupId:string,sender:string,text:string}) => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("post", chatUrl.addGroupMessage, messageData)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+
+//@dec      Get User Conversations
+//method    get
+export const getGroupMessages = (groupId:string) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const url = `${chatUrl.getGroupMessages}/${groupId}`;
+
+      apiCall("get", url, null)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+
+
+//@dec      Get User Conversations
+//method    get
+export const getCommentsCount = (postId:string) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const url = `${postUrls.commentsCount}/${postId}`;
+
+      apiCall("get", url, null)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+
+
+//@dec      Add New Message
+//method    post
+export const reportPost = (reportData: {userId:string,postId:string,cause:string}) => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("post", postUrls.reportPost, reportData)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+
+
+//@dec      initiate checkout 
+//method    get
+export const initiateCheckout = (userId:{userId:string}) => {
+  return new Promise((resolve, reject) => {
+    try {
+     
+       
+      apiCall("post", userUrls.checkout,userId).then((response)=>{
+
+        resolve(response);
+        
+    })   .catch((err) => {
+      reject(err);
+    });
+} catch (error) {
+    resolve({status:500, message: "Somethings wrong."})
+}
+});
+};
+
+
+
+//@dec      validate payment
+//method    post
+export const validatePayment = (paymentData: {userId:string,sessionId:string}) => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("post", userUrls.validate, paymentData)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+
+
+//@dec      Add New Message
+//method    post
+export const getAllTransactions = (userId: {userId:string}) => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("post", userUrls.allTransactions, userId)
         .then((response) => {
           resolve(response);
         })

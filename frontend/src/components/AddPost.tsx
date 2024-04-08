@@ -49,6 +49,7 @@ function AddPost({ setNewPost }: any) {
   console.log("hello");
 
   const handleButtonClick = () => {
+    fileInputRef.current?.setAttribute("accept", "image/*");
     fileInputRef.current?.click();
   };
   // Options for react-select
@@ -57,14 +58,14 @@ function AddPost({ setNewPost }: any) {
     label: tag.hashtag,
   }));
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      const fileList = Array.from(files);
-      console.log("Selected files:", fileList);
-      formik.setFieldValue("images", fileList);
-    }
-  };
+  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const files = e.target.files;
+  //   if (files && files.length > 0) {
+  //     const fileList = Array.from(files);
+  //     console.log("Selected files:", fileList);
+  //     formik.setFieldValue("images", fileList);
+  //   }
+  // };
 
   const formik = useFormik({
     initialValues: {
@@ -74,7 +75,10 @@ function AddPost({ setNewPost }: any) {
       hashtag: "",
     },
     validationSchema: Yup.object({
-      images: Yup.mixed().required("Image file required"),
+      images: Yup.array()
+    .min(1, "At least one image is required")
+    
+    .required("Image file required"),
 
       title: Yup.string().required("Title is required"),
       description: Yup.string().required("Description is required"),
@@ -141,23 +145,7 @@ function AddPost({ setNewPost }: any) {
     console.log(croppedImage);
     setShowModal(false);
   };
-  const handleHashtagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
 
-    const hashtagsArray = value.split(" ");
-
-    const lastHashtag = hashtagsArray[hashtagsArray.length - 1];
-
-    formik.setFieldValue("hashtag", value);
-
-    const suggestions = hashtags.filter(
-      (tag: any) =>
-        tag.hashtag.toLowerCase().startsWith(lastHashtag.toLowerCase()) &&
-        !hashtagsArray.includes(tag.hashtag)
-    );
-
-    setHashtagSuggestions(suggestions);
-  };
 
   const handleHashtagSelect = (hashtag: string) => {
     formik.setFieldValue("hashtag", hashtag);
@@ -351,6 +339,7 @@ function AddPost({ setNewPost }: any) {
                       if (files && files.length > 0) {
                         const fileList = Array.from(files);
                         const imageUrls = fileList.map((imageFile) =>
+                          
                           URL.createObjectURL(imageFile)
                         );
 

@@ -3,6 +3,7 @@ import AdminDashboard from "../pages/admin/dashboard/AdminDashboard";
 import UserList from "../components/admin/UserList";
 import HashTags from "../components/admin/hashTags";
 import PostList from "../components/admin/PostList";
+import ReportList from '../components/admin/ReportList'
 
 export const adminRouter = {
   path: "/admin",
@@ -24,6 +25,10 @@ export const adminRouter = {
     {
       path:"/admin/posts",
       element:<PostList />
+    },
+    {
+      path:"/admin/reports",
+      element:<ReportList />
     }
   ],
 };
