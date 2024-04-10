@@ -641,6 +641,7 @@ export const addConversation = (conversationData: {
 }) => {
   return new Promise((resolve, reject) => {
     try {
+      console.log(conversationData)
       apiCall("post", chatUrl.addConversation, conversationData)
         .then((response) => {
           resolve(response);

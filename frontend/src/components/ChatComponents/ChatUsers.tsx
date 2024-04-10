@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import Friend from "./Friend";
-import { Home, PlusCircle } from "lucide-react";
+import { Home, MessageSquarePlus, PlusCircle } from "lucide-react";
 import AddGroup from "./AddGroup";
 import { getChatElibleUsers } from "../../services/api/user/apiMethods";
 import Group from "./Group";
 import { useNavigate } from "react-router-dom";
+import MessageUsersModal from "./MessageUsersModal";
 
 function ChatUsers({
   conversations,
@@ -14,12 +15,14 @@ function ChatUsers({
   userGroups,
   isGroup,
   setIsGroup,
-  setUserGroups
+  setUserGroups,
+  setConversations
 }) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [openModal, setOpenModal] = useState(false);
   const emailInputRef = useRef<HTMLInputElement>(null);
   const [chatEligibleUsers, setChatEligibleUsers] = useState([]);
+  const [messageUsersModal, setMessageUsersModal] = useState(false);
 
   useEffect(() => {
     const userId = user._id;
@@ -40,13 +43,11 @@ function ChatUsers({
       <div className="flex justify-between px-3 pt-1 text-white">
         <div className="flex items-center w-full py-2">
           <button
-          onClick={()=>navigate('/')}
+            onClick={() => navigate("/")}
             aria-haspopup="true"
             className="p-2 text-gray-700 rounded-full focus:outline-none hover:text-gray-600 hover:bg-gray-200"
           >
-            
             <Home />
-            
           </button>
           <div className="relative flex items-center w-full pl-2 overflow-hidden text-gray-600 focus-within:text-gray-400">
             <span className="absolute inset-y-0 left-0 flex items-center pl-4">
@@ -153,19 +154,11 @@ function ChatUsers({
             <PlusCircle />
           </button>
         ) : (
-          <button className="flex items-center justify-center w-12 h-12 mr-3 text-xl font-semibold text-white bg-blue-500 rounded-full focus:outline-none flex-no-shrink">
-            <svg
-              className="w-6 h-6 text-white fill-current"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
-              <path
-                fillRule="nonzero"
-                d="M12 22C6.4771525 22 2 17.5228475 2 12S6.4771525 2 12 2s10 4.4771525 10 10-4.4771525 10-10 10zm0-1c4.963167 0 9-4.036833 9-9s-4.036833-9-9-9-9 4.036833-9 9 4.036833 9 9 9zM7.0000295 13.0029499H17.0000295V11.0029499H7.0000295z"
-              />
-            </svg>
+          <button
+            onClick={() => setMessageUsersModal(true)}
+            className="flex items-center justify-center w-12 h-12 mr-3 text-xl font-semibold text-white bg-blue-500 rounded-full focus:outline-none flex-no-shrink"
+          >
+            <MessageSquarePlus />
           </button>
         )}
       </div>
@@ -178,6 +171,16 @@ function ChatUsers({
           setUserGroups={setUserGroups}
         />
       }
+      {messageUsersModal && !isGroup && (
+        <MessageUsersModal
+          setCurrentChat={setCurrentChat}
+          setMessageUsersModal={setMessageUsersModal}
+          chatEligibleUsers={chatEligibleUsers}
+          user={user}
+          setConversations={setConversations}
+          conversations={conversations}
+        />
+      )}
     </div>
   );
 }

@@ -52,20 +52,16 @@ function PremiumPlans() {
             </h2>
 
             <p className="mt-6 text-sm leading-8 text-gray-600">
-              Distinctio et nulla eum soluta et neque labore quibusdam. Saepe et
-              quasi iusto modi velit ut non voluptas in. Explicabo id ut
-              laborum.
+            Elevate your profile with our premium subscription! Gain a coveted blue tick badge for enhanced credibility and visibility.
             </p>
           </div>
           <div className="mx-auto mt-16 max-w-2xl rounded-3xl ring-1 ring-gray-200 sm:mt-20 lg:mx-0 lg:flex lg:max-w-none">
             <div className="p-8 sm:p-10 lg:flex-auto">
               <h3 className="text-2xl font-bold tracking-tight text-gray-900">
-                Lifetime membership
+                1 Year membership
               </h3>
               <p className="mt-6 text-xs leading-7 text-gray-600">
-                Lorem ipsum dolor sit amet consect etur adipisicing elit. Itaque
-                amet indis perferendis blanditiis repellendus etur quidem
-                assumenda.
+              Upgrade to premium and stand out from the crowd with a prestigious blue tick badge on your profile, boosting your credibility and attracting more attention.
               </p>
               <div className="mt-10 flex items-center gap-x-4">
                 <h4 className="flex-none text-sm font-semibold leading-6 text-purple-600">

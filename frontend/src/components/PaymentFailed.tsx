@@ -95,7 +95,7 @@ const makePayment=async()=>{
             <p className="text-base font-semibold text-gray-600 animate-pulse">Payment Processing</p>
             <div className='flex justify-center items-center mt-5' >
             <p className="mt-6 flex items-baseline justify-center gap-x-2" >
-              <span className="text-5xl font-bold tracking-tight text-gray-900">₹ 249</span>
+              <span className="text-5xl font-bold tracking-tight text-gray-900">₹ 499</span>
               <span className="text-sm font-semibold leading-6 tracking-wide text-gray-600">/mo</span>
             </p>
 

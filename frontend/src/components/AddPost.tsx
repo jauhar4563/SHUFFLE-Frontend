@@ -10,7 +10,6 @@ import CropImage from "./CropImg";
 import { Spinner } from "flowbite-react";
 import Select from "react-select";
 
-
 function AddPost({ setNewPost }: any) {
   const selectUser = (state: any) => state.auth.user || "";
   const user = useSelector(selectUser) || "";
@@ -58,15 +57,21 @@ function AddPost({ setNewPost }: any) {
     label: tag.hashtag,
   }));
 
-  // const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const files = e.target.files;
-  //   if (files && files.length > 0) {
-  //     const fileList = Array.from(files);
-  //     console.log("Selected files:", fileList);
-  //     formik.setFieldValue("images", fileList);
-  //   }
-  // };
-
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const validImageTypes = ["image/jpeg", "image/png", "image/gif"]; // Add more image types if needed
+      const selectedFiles = Array.from(files);
+      const invalidFiles = selectedFiles.filter(file => !validImageTypes.includes(file.type));
+      if (invalidFiles.length > 0) {
+        toast.error("Please select only image files (JPEG, PNG, GIF).");
+        return;
+      }
+      const imageUrls = selectedFiles.map(file => URL.createObjectURL(file));
+      formik.setFieldValue("images", imageUrls);
+    }
+  };
+  
   const formik = useFormik({
     initialValues: {
       images: [],
@@ -76,9 +81,9 @@ function AddPost({ setNewPost }: any) {
     },
     validationSchema: Yup.object({
       images: Yup.array()
-    .min(1, "At least one image is required")
-    
-    .required("Image file required"),
+        .min(1, "At least one image is required")
+
+        .required("Image file required"),
 
       title: Yup.string().required("Title is required"),
       description: Yup.string().required("Description is required"),
@@ -117,7 +122,7 @@ function AddPost({ setNewPost }: any) {
         description,
         hideLikes,
         hideComment,
-        hashtag:selectedHashtag,
+        hashtag: selectedHashtag,
       })
         .then((response: any) => {
           const data = response.data;
@@ -141,11 +146,10 @@ function AddPost({ setNewPost }: any) {
   const handleCancelClick = () => {
     formik.values.images = [];
     setCroppedImage([]);
-    setSelectedHashtag([])
+    setSelectedHashtag([]);
     console.log(croppedImage);
     setShowModal(false);
   };
-
 
   const handleHashtagSelect = (hashtag: string) => {
     formik.setFieldValue("hashtag", hashtag);
@@ -299,12 +303,11 @@ function AddPost({ setNewPost }: any) {
                     <Select
                       options={selectOptions}
                       value={selectedHashtag} // Set selected value
-                      onChange={(selectedOption) =>{
-                        console.log(selectedOption)
-                        
-                        setSelectedHashtag(selectedOption) 
-                      }
-                      }
+                      onChange={(selectedOption) => {
+                        console.log(selectedOption);
+
+                        setSelectedHashtag(selectedOption);
+                      }}
                       isMulti
                     />
                     <div className="">
@@ -330,7 +333,7 @@ function AddPost({ setNewPost }: any) {
                   </div>
                 </div>
                 <div className="icons flex text-gray-500 m-2">
-                  <input
+                  {/* <input
                     type="file"
                     ref={fileInputRef}
                     style={{ display: "none" }}
@@ -338,6 +341,7 @@ function AddPost({ setNewPost }: any) {
                       const files = e.target.files;
                       if (files && files.length > 0) {
                         const fileList = Array.from(files);
+                        
                         const imageUrls = fileList.map((imageFile) =>
                           
                           URL.createObjectURL(imageFile)
@@ -347,7 +351,16 @@ function AddPost({ setNewPost }: any) {
                       }
                     }}
                     multiple
+                  /> */}
+
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: "none" }}
+                    onChange={handleFileChange}
+                    multiple
                   />
+
                   <label className="inline-flex items-center me-5 cursor-pointer">
                     <input
                       type="checkbox"

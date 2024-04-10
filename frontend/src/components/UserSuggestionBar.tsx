@@ -41,7 +41,7 @@ const handleFollow = (foloweduserId,followedUserName) => {
   return (
     <>
       <div
-        className="fixed right-36 lg:col-span-2 ms-10 h-5/6 w-1/5 p-4 bg-white rounded-lg  mt-6"
+        className="fixed right-36 lg:col-span-2 ms-10 h-5/6 w-1/5 p-4 bg-white rounded-lg  mt-4"
         id="posted"
       >
         <h1 className="mb-4 text-gray-600 font-semibold">SUGGESTIONS</h1>

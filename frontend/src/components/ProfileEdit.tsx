@@ -19,6 +19,7 @@ function ProfileEdit({ user, onClose }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleButtonClick = () => {
+    fileInputRef.current?.setAttribute("accept", "image/*");
     fileInputRef.current?.click();
   };
 
@@ -35,23 +36,28 @@ function ProfileEdit({ user, onClose }) {
     }),
     onSubmit: async (values) => {
       const userId = user._id;
-      const { name,  phone, bio, gender } = values;
+      const { name, phone, bio, gender } = values;
+      let imageUrl;
       try {
-        const response = await fetch(croppedImage);
-        const blob = await response.blob();
-      
-        const formData = new FormData();
-        formData.append("file", blob);
-        formData.append("upload_preset", "bnaqltis");
-        const res = await axios.post(
-          "https://api.cloudinary.com/v1_1/dgkfbywof/image/upload",
-          formData
-        );
-        const imageUrl = res.data.secure_url;
-          console.log(imageUrl)
+        if (croppedImage) {
+          const response = await fetch(croppedImage);
+          const blob = await response.blob();
+
+          const formData = new FormData();
+          formData.append("file", blob);
+          formData.append("upload_preset", "bnaqltis");
+          const res = await axios.post(
+            "https://api.cloudinary.com/v1_1/dgkfbywof/image/upload",
+            formData
+          );
+          imageUrl = res.data.secure_url;
+        } else {
+          imageUrl = user.profileImg;
+        }
+
         await editProfile({
           userId,
-          image:imageUrl,
+          image: imageUrl,
           name,
           phone,
           bio,
@@ -90,32 +96,33 @@ function ProfileEdit({ user, onClose }) {
                   <div
                     onClick={handleButtonClick}
                     className="image-preview flex items-center bg-white shadow-lg justify-center h-36 cursor-pointer"
-                  >{!croppedImage && (
-                    <img
-                      style={{ height: "100px", borderRadius: "10px" }}
-                      src={user.profileImg}
-                      alt=""
-                    />
-                  )}
-                    
+                  >
+                    {!croppedImage && (
+                      <img
+                        style={{ height: "100px", borderRadius: "10px" }}
+                        src={user.profileImg}
+                        alt=""
+                      />
+                    )}
+
                     {croppedImage && !formik.errors.image && (
-                        <img
-                          style={{height: "140px", borderRadius: "10px" }}
-                          src={croppedImage}
-                          alt={`Preview`}
-                        />
+                      <img
+                        style={{ height: "140px", borderRadius: "10px" }}
+                        src={croppedImage}
+                        alt={`Preview`}
+                      />
                     )}
                   </div>
-                    {formik.values.image &&
-                      isCroppeSelected &&
-                      !formik.errors.image && (
-                        <CropImage
-                          imgUrl={formik.values.image}
-                          aspectInit={{ value: 1 / 1 }}
-                          setCroppedImg={setCroppedImage}
-                          handleNextImage={handleCloseCanvas}
-                        />
-                      )}
+                  {formik.values.image &&
+                    isCroppeSelected &&
+                    !formik.errors.image && (
+                      <CropImage
+                        imgUrl={formik.values.image}
+                        aspectInit={{ value: 1 / 1 }}
+                        setCroppedImg={setCroppedImage}
+                        handleNextImage={handleCloseCanvas}
+                      />
+                    )}
                 </div>
                 <div className="flex flex-col w-6/12">
                   <p className="font-semibold">Name</p>
@@ -203,6 +210,10 @@ function ProfileEdit({ user, onClose }) {
                     const files = e.target.files;
                     if (files && files.length > 0) {
                       const file = files[0];
+                      if (!file.type.startsWith("image/")) {
+                        toast.error("Please select an image file.");
+                        return;
+                      }
                       const imageUrl = URL.createObjectURL(file);
 
                       formik.setFieldValue("image", imageUrl);

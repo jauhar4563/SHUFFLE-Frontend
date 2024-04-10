@@ -17,6 +17,8 @@ import PremiumPlans from "../pages/premium/PremiumPage";
 import Premium from "../components/Premium";
 import PaymentSuccess from "../components/PymentSuccess";
 import PaymentFailed from "../components/PaymentFailed";
+import VideoCall from "../components/ChatComponents/VideoCall";
+import GroupVideoCall from "../components/ChatComponents/GroupVideoCall";
 
 const appRouter = createBrowserRouter([
   {
@@ -50,6 +52,14 @@ const appRouter = createBrowserRouter([
   {
     path: "/chat",
     element: <Chat />,
+  },
+  {
+    path: "/video-call/:roomId",
+    element: <VideoCall />,
+  },
+  {
+    path: "/group-video-call/:roomId",
+    element: <GroupVideoCall />,
   },
   {
     path: "/premium",

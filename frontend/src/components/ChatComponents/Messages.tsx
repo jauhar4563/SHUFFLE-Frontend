@@ -1,4 +1,4 @@
-import { SendHorizonal, Smile } from "lucide-react";
+import { SendHorizonal, Smile, Video } from "lucide-react";
 import RecievedChat from "./RecievedChat";
 import SendedChat from "./SendedChat";
 import { useEffect, useRef, useState } from "react";
@@ -7,11 +7,15 @@ import {
   getUserMessages,
 } from "../../services/api/user/apiMethods";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers }) {
   const [newMessage, setNewMessage] = useState("");
   const [friend, setFriend] = useState(null);
   const [isOnline,setIsOnline] = useState(false);
+  // const [joinVideoCall,setJoinVidioCall]=useState(false);
+  // const [videoCallJoinRoomId,setVideoCallJoinRoomId]=useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const friend = currentChat?.members.find((m) => m._id !== user._id);
@@ -30,8 +34,59 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
 
   }, [currentChat]);
 
+  // useEffect(()=>{
+  //   console.log("Video call useEffect")
+  //   socket.current.on("videoCallResponse",(data:any)=>{
+  //     console.log("Video call coming.......")
+  //     setVideoCallJoinRoomId(data.roomId)
+  //     setJoinVidioCall(true)
+  //   })
+  // },[socket]);
+
+  // const handleJoinVidoCallRoom=()=>{
+ 
+  //   navigate(`/video-call/${videoCallJoinRoomId}`);
+   
+  // }
+
+  
+  function randomID(len:number) {
+    let result = '';
+    if (result) return result;
+    const chars = '12345qwertyuiopasdfgh67890jklmnbvcxzMNBVCZXASDQWERTYHGFUIOLKJP',
+      maxPos = chars.length;
+    len = len || 5;
+    for (let i = 0; i < len; i++) {
+      result += chars.charAt(Math.floor(Math.random() * maxPos));
+    }
+    return result;
+  }
+
+  const handleVideoCall =()=>{
+    const  roomId=randomID(10)
+    const recieverId = friend?._id;
+    console.log(recieverId+"recieverId")
+    const emitData={
+      senderId:user._id,
+      senderName:user.userName,
+      senderProfile:user.profileImg,
+      recieverId,
+      roomId:roomId,
+      
+    }
+
+    socket.current.emit('videoCallRequest',emitData)
+   
+    navigate(`/video-call/${roomId}`)
+  }
+
 
   const scrollRef = useRef();
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSubmit();
+    }
+  };
 
   const handleSubmit = () => {
     const currentChatId = currentChat?._id;
@@ -71,12 +126,21 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
           <div className="overflow-hidden text-sm font-medium leading-tight text-gray-600 whitespace-no-wrap">
             {friend?.userName}
           </div>
-          {isOnline && (<div className="overflow-hidden text-xs text-green-600  leading-tight text-gray-600 whitespace-no-wrap">
+          {isOnline && (<div className="overflow-hidden text-xs text-purple-600  leading-tight text-gray-600 whitespace-no-wrap">
             Online
           </div>)}
         </div>
-
-        <button className="flex self-center p-2 ml-2 text-gray-500 rounded-full focus:outline-none hover:text-gray-600 hover:bg-gray-300">
+        {/* {joinVideoCall ? (
+                  <>
+                  <button className="w-16 h-7 rounded-md bg-purple-400 text-sm " onClick={handleJoinVidoCallRoom}>Join</button>
+                  </>
+                ):( */}
+                  <button onClick={handleVideoCall} className="flex self-center p-2 ml-2 text-gray-500 rounded-full focus:outline-none hover:text-gray-600 hover:bg-gray-300">
+         <Video />
+        </button>
+                {/* )} */}
+       
+        {/* <button className="flex self-center p-2 ml-2 text-gray-500 rounded-full focus:outline-none hover:text-gray-600 hover:bg-gray-300">
           <svg
             className="w-6 h-6 text-gray-600 fill-current"
             xmlns="http://www.w3.org/2000/svg"
@@ -89,7 +153,7 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
               d="M11,20 L13,20 C13.5522847,20 14,20.4477153 14,21 C14,21.5128358 13.6139598,21.9355072 13.1166211,21.9932723 L13,22 L11,22 C10.4477153,22 10,21.5522847 10,21 C10,20.4871642 10.3860402,20.0644928 10.8833789,20.0067277 L11,20 L13,20 L11,20 Z M3.30352462,2.28241931 C3.6693482,1.92735525 4.23692991,1.908094 4.62462533,2.21893936 L4.71758069,2.30352462 L21.2175807,19.3035246 C21.6022334,19.6998335 21.5927842,20.332928 21.1964754,20.7175807 C20.8306518,21.0726447 20.2630701,21.091906 19.8753747,20.7810606 L19.7824193,20.6964754 L18.127874,18.9919007 L18,18.9999993 L4,18.9999993 C3.23933773,18.9999993 2.77101468,18.1926118 3.11084891,17.5416503 L3.16794971,17.4452998 L5,14.6972244 L5,8.9999993 C5,7.98873702 5.21529462,7.00715088 5.62359521,6.10821117 L3.28241931,3.69647538 C2.89776658,3.3001665 2.90721575,2.66707204 3.30352462,2.28241931 Z M7.00817933,8.71121787 L7,9 L7,14.6972244 C7,15.0356672 6.91413188,15.3676193 6.75167088,15.6624466 L6.66410059,15.8066248 L5.86851709,17 L16.1953186,17 L7.16961011,7.7028948 C7.08210009,8.02986218 7.02771758,8.36725335 7.00817933,8.71121787 Z M12,2 C15.7854517,2 18.8690987,5.00478338 18.995941,8.75935025 L19,9 L19,12 C19,12.5522847 18.5522847,13 18,13 C17.4871642,13 17.0644928,12.6139598 17.0067277,12.1166211 L17,12 L17,9 C17,6.23857625 14.7614237,4 12,4 C11.3902636,4 10.7970241,4.10872043 10.239851,4.31831953 C9.72293204,4.51277572 9.14624852,4.25136798 8.95179232,3.734449 C8.75733613,3.21753002 9.01874387,2.6408465 9.53566285,2.4463903 C10.3171048,2.15242503 11.1488212,2 12,2 Z"
             />
           </svg>
-        </button>
+        </button> */}
         <button className="flex self-center p-2 ml-2 text-gray-500 rounded-full focus:outline-none hover:text-gray-600 hover:bg-gray-300">
           <svg
             className="w-6 h-6 text-gray-600 fill-current"
@@ -137,6 +201,7 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
         </button>
       </div>
       <div className="top-0 bottom-0 left-0 right-0 flex flex-col flex-1 overflow-auto bg-transparent bg-bottom bg-cover ">
+  
         <div className="chat-scrollbox">
           <div className="chat-scroll ">
             <div className="self-center flex-1 w-full ">
@@ -151,11 +216,11 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
                   messages.map((message, index) => {
                     return message?.sender._id === user._id ||
                       message?.sender === user._id ? (
-                      <div className="self-end w-3/4 my-2">
+                      <div key={index} className="self-end w-3/4 my-2">
                         <SendedChat message={message} />
                       </div>
                     ) : (
-                      <div className="self-start w-3/4 my-2">
+                      <div key={index} className="self-start w-3/4 my-2">
                         <RecievedChat message={message} />
                       </div>
                     );
@@ -185,17 +250,18 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
               <button
                 onClick={handleSubmit}
                 type="submit"
-                className="p-1 focus:outline-none focus:shadow-none hover:text-green-600"
+                className="p-1 focus:outline-none focus:shadow-none hover:text-purple-600"
               >
-                <SendHorizonal size={18} color="green" />
+                <SendHorizonal size={18} color="purple" />
               </button>
             </span>
             <input
               type="text"
               value={newMessage}
-              className="w-full items-center h-10 pl-10 pr-4  bg-white  text-xs border border-gray-300 rounded-md focus:border-gray-200 focus:outline-none focus:ring-1 focus:ring-offset-0 focus:ring-green-600 transition-colors duration-300"
+              className="w-full items-center h-10 pl-10 pr-4  bg-white  text-xs border border-gray-300 rounded-md focus:border-gray-200 focus:outline-none focus:ring-1 focus:ring-offset-0 focus:ring-purple-600 transition-colors duration-300"
               placeholder="Type your message..."
               onChange={(e) => setNewMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
             />
           </div>
         </div>
