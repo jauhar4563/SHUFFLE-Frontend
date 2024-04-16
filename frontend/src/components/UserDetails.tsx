@@ -98,7 +98,7 @@ function UserDetails({ user, connections ,isConnected}) {
             <div className="flex items-center">
 
             <p className="font-semibold text-lg">{user?.userName}</p>
-            {user.isVerified && (<svg
+            {user?.isVerified && (<svg
                         viewBox="0 0 22 22"
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-6 w-6"

@@ -34,7 +34,7 @@ function UsersProfile() {
       .catch((error: any) => {
         toast.error(error.message);
       });
-    getUserPost({ userId: userId })
+    getUserPost(userId)
       .then((response: any) => {
         const postsData = response.data;
         setPost(postsData);
@@ -62,7 +62,7 @@ function UsersProfile() {
             </div>
           ) : (
             <div className="">
-              {Post.map((post: any) => (
+              {Post.length!==0 && Post.map((post: any) => (
                 <Posts key={post._id} post={post} />
               ))}
             </div>

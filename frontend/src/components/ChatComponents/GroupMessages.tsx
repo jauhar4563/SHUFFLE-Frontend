@@ -29,6 +29,12 @@ function GroupMessages({
 
   const scrollRef = useRef();
 
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   function randomID(len:number) {
     let result = '';
     if (result) return result;
@@ -82,7 +88,6 @@ function GroupMessages({
     }).then((response) => {
       toast.info("message has been send");
       setNewMessage("");
-      scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
     });
   };
 
@@ -152,16 +157,16 @@ function GroupMessages({
       </div>
       <div className="top-0 bottom-0 left-0 right-0 flex flex-col flex-1 overflow-auto bg-transparent bg-bottom bg-cover ">
         <div className="chat-scrollbox">
-          <div className="chat-scroll ">
+          <div className="chat-scroll" ref={scrollRef}>
             <div className="self-center flex-1 w-full ">
               <div className="relative flex flex-col px-3 py-1 m-auto w-full">
                 <div className="self-center px-2 py-1 mx-0 my-1 text-xs text-gray-700 bg-white border border-gray-200 rounded-full shadow rounded-tg">
                   Channel was created
                 </div>
                 <div className="self-center px-2 py-1 mx-0 my-1 text-xs text-gray-700 bg-white border border-gray-200 rounded-full shadow rounded-tg">
-                  May 6
+                  {currentChat?.created_at}
                 </div>
-                {messages.length &&
+                {messages.length!==0 &&
                   messages.map((message, index) => {
                     return message?.sender._id === user._id ||
                       message?.sender === user._id ? (

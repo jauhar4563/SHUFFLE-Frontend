@@ -1,5 +1,5 @@
 import { apiCall } from "./apiCalls";
-import { chatUrl, connectionUrls, postUrls, userUrls } from "../endPoints";
+import { chatUrl, connectionUrls, postUrls, storyUrl, userUrls } from "../endPoints";
 import { FormValues } from "../../../utils/validations/registerValidation";
 
 //@dec      Register user
@@ -933,10 +933,55 @@ export const validatePayment = (paymentData: {userId:string,sessionId:string}) =
 
 //@dec      Add New Message
 //method    post
+
 export const getAllTransactions = (userId: {userId:string}) => {
   return new Promise((resolve, reject) => {
     try {
       apiCall("post", userUrls.allTransactions, userId)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+//@dec      Add New story
+//method    post
+
+
+export const addStory = (postData: {
+  userId: string;
+  imageUrls: string;
+}) => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("post", storyUrl.addStory , postData)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+
+//@dec      Get All stories
+//method    POST
+
+export const getStories = (userId: string) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const url:string = `${storyUrl.getStories}/${userId}`
+      apiCall("get", url, null)
         .then((response) => {
           resolve(response);
         })

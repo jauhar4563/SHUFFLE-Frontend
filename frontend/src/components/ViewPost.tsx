@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import LikedUsers from "./LikedUsers";
 import { Carousel } from "flowbite-react";
@@ -30,6 +30,7 @@ const ViewPost = ({
   const [replyComments, setReplyComments] = useState(false);
   const [parentCommentId, setParentCommentId] = useState("");
   const [openModal, setOpenModal] = useState(false);
+  const commentBoxRef = useRef(null);
 
 
   useEffect(() => {
@@ -151,6 +152,15 @@ const ViewPost = ({
       console.error("Error submitting comment:", error);
     }
   };
+  
+
+  useEffect(() => {
+
+    if (commentBoxRef.current) {
+      commentBoxRef.current.scrollTop = commentBoxRef.current.scrollHeight;
+    }
+  }, [comments, replyComments]);
+
 
   return (
     <div
@@ -215,7 +225,7 @@ const ViewPost = ({
             
 
               <div className="home-scroll-post">
-                <div className="home-scrollbox-post ">
+                <div ref={commentBoxRef} className="home-scrollbox-post">
                   {comments.map((comment: any) => (
                     <div key={comment._id}>
                       <div className="mb-6">

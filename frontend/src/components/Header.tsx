@@ -19,7 +19,7 @@ function Header() {
   }, [prevScrollPos, visible, handleScroll]);
 
   return (
-    <header className={`fixed z-50 top-0 w-full`}>
+    <header className={`fixed z-40 top-0 w-full`}>
       <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-white">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
           <Link to="/" className="flex items-center">

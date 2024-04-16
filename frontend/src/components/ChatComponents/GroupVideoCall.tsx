@@ -47,7 +47,7 @@ function GroupVideoCall() {
   },[roomId,userId,userName,navigate]);
   return (
     <div>
-      <div ref={containerRef} />
+      <div ref={containerRef} style={{height:'100vh',width:'100vw'}}/>
     </div>
   );
 }

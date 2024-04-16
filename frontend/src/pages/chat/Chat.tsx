@@ -67,7 +67,10 @@ function Chat() {
     getGroupMessages();
   }, []);
 
+
   useEffect(()=>{
+
+    
     console.log("Video call useEffect")
     socket.current.on("videoCallResponse",(data:any)=>{
       setVideoCallJoinRoomId(data.roomId);

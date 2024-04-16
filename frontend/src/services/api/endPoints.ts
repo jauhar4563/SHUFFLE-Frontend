@@ -55,6 +55,11 @@ export const chatUrl = {
   getGroupMessages: "/chat/get-group-messages",
 };
 
+export const storyUrl = {
+  addStory :'/story/add-story',
+  getStories:'/story/get-stories'
+}
+
 export const adminUrl = {
   login: "/admin/login",
   userList: "/admin/get-users",

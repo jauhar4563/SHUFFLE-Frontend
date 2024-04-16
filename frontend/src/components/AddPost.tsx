@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import CropImage from "./CropImg";
 import { Spinner } from "flowbite-react";
 import Select from "react-select";
+import Story from "./story/Story";
 
 function AddPost({ setNewPost }: any) {
   const selectUser = (state: any) => state.auth.user || "";
@@ -23,6 +24,18 @@ function AddPost({ setNewPost }: any) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedHashtag, setSelectedHashtag] = useState<any>([]);
+
+  const resetState=()=>{
+    setHideLikes(false);
+    setHideComment(false);
+    setCroppedImage([]);
+    setCurrentImageIndex(0);
+    setSelectedHashtag([]);
+    formik.values.images=[];
+    formik.values.title='';
+    formik.values.description = '';
+    formik.values.hashtag='';
+  }
 
   useEffect(() => {
     try {
@@ -130,6 +143,7 @@ function AddPost({ setNewPost }: any) {
             toast.info(data.message);
             setNewPost(response.data.posts);
             setIsLoading(false);
+            resetState();
             handleCancelClick();
           } else {
             console.log(response.message);
@@ -148,6 +162,7 @@ function AddPost({ setNewPost }: any) {
     setCroppedImage([]);
     setSelectedHashtag([]);
     console.log(croppedImage);
+    resetState();
     setShowModal(false);
   };
 
@@ -162,6 +177,8 @@ function AddPost({ setNewPost }: any) {
   return (
     <div className=" ms-96 w-12/12">
       <div className=" m-4 home-addpost-section h-18%  rounded-xl border border-gray-200 shadow-md">
+
+        <Story />
         <div className="bg-white flex flex-col rounded-lg justify-between p-4">
           <div className="text-gray-500 font-medium text-xs">
             Whats Happening?........

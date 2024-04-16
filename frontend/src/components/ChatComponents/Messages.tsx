@@ -13,6 +13,8 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
   const [newMessage, setNewMessage] = useState("");
   const [friend, setFriend] = useState(null);
   const [isOnline,setIsOnline] = useState(false);
+  const scrollRef = useRef();
+
   // const [joinVideoCall,setJoinVidioCall]=useState(false);
   // const [videoCallJoinRoomId,setVideoCallJoinRoomId]=useState('');
   const navigate = useNavigate();
@@ -33,6 +35,12 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
     });
 
   }, [currentChat]);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   // useEffect(()=>{
   //   console.log("Video call useEffect")
@@ -81,7 +89,7 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
   }
 
 
-  const scrollRef = useRef();
+  
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       handleSubmit();
@@ -109,7 +117,6 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
       toast.info("message has been send");
       setNewMessage("");
       setMessages([...messages, response.data]);
-      scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
     });
   };
 
@@ -203,16 +210,16 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
       <div className="top-0 bottom-0 left-0 right-0 flex flex-col flex-1 overflow-auto bg-transparent bg-bottom bg-cover ">
   
         <div className="chat-scrollbox">
-          <div className="chat-scroll ">
+          <div className="chat-scroll" ref={scrollRef}>
             <div className="self-center flex-1 w-full ">
               <div className="relative flex flex-col px-3 py-1 m-auto w-full">
                 <div className="self-center px-2 py-1 mx-0 my-1 text-xs text-gray-700 bg-white border border-gray-200 rounded-full shadow rounded-tg">
                   Channel was created
                 </div>
                 <div className="self-center px-2 py-1 mx-0 my-1 text-xs text-gray-700 bg-white border border-gray-200 rounded-full shadow rounded-tg">
-                  May 6
+                  {currentChat?.createdAt}
                 </div>
-                {messages.length &&
+                {messages.length!==0 &&
                   messages.map((message, index) => {
                     return message?.sender._id === user._id ||
                       message?.sender === user._id ? (

@@ -17,6 +17,8 @@ import { Link } from "react-router-dom";
 import { Carousel } from "flowbite-react";
 import LikedUsers from "./LikedUsers";
 import ReportModal from "./ReportModal";
+import { formatDistanceToNow } from "date-fns";
+
 
 const Posts: React.FC<PostProps> = ({ post }) => {
   const dispatch = useDispatch();
@@ -182,7 +184,13 @@ const Posts: React.FC<PostProps> = ({ post }) => {
                   </svg>}
 
                   <p className="text-gray-500 text-sm mx-1">-</p>
-                  <p className="text-gray-500 text-sm">{post.date}</p>
+                  <p className="text-gray-500 text-sm">
+                    
+                  {formatDistanceToNow(
+                                  new Date(post.date),
+                                  { addSuffix: true }
+                                )}
+                    </p>
                 </div>
               </Link>
               <div className="text-gray-500 cursor-pointer">
@@ -225,12 +233,17 @@ const Posts: React.FC<PostProps> = ({ post }) => {
                         </button>
                       </>
                     )}
+                    {
+                       user._id !== post.userId._id  && (
+
                     <button
                       className="block px-4 py-2 text-red-600 hover:bg-gray-100 w-40"
                       onClick={() => openReportModal()}
                     >
                       Report
                     </button>
+                       )
+                    }
                   </div>
                 )}
               </div>

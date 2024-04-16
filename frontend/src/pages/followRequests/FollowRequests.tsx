@@ -50,7 +50,7 @@ function FollowRequests() {
               className="flex justify-between bg-white p-4 ml-2 rounded-lg"
               style={{ width: "660px" }}
             >
-              <h1 className=" text-2xl font-semibold"> Follow Requests</h1>
+              <h1 className=" text-xl font-semibold"> Follow Requests</h1>
             </div>
           </div>
         </div>
