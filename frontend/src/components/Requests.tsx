@@ -1,6 +1,6 @@
 import { Check, X } from "lucide-react";
 
-function Requests({ request, handleAcceptRequest, handleReject }) {
+function Requests({ request, handleAcceptRequest, handleReject }:any) {
   const { _id } = request; // Destructure _id from request
   console.log("Request ID:", _id); // Log the request ID
   return (

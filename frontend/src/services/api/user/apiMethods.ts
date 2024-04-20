@@ -263,7 +263,7 @@ export const editPost = (postData: {
   postId: string;
   title: string;
   description: string;
-  hashtags: any[];
+  hashtags: {value:string,label:string}[];
   hideLikes: boolean;
   hideComment: boolean;
 }) => {
@@ -657,7 +657,7 @@ export const addConversation = (conversationData: {
 
 //@dec      Get User Conversations
 //method    get
-export const getUserConversations = (userId) => {
+export const getUserConversations = (userId:string) => {
   return new Promise((resolve, reject) => {
     try {
       const url = `${chatUrl.getUserConversation}/${userId}`;
@@ -699,10 +699,11 @@ export const findConversation = (conversationData :{ firstUser: string,secondUse
 
 //@dec      Add New Message
 //method    post
-export const addMessage = (messageData: {conversationId:string,sender:string,text:string}) => {
+export const addMessage = (formData: FormData) => {
   return new Promise((resolve, reject) => {
     try {
-      apiCall("post", chatUrl.addMessage, messageData)
+      console.log(formData)
+      apiCall("post", chatUrl.addMessage, formData)
         .then((response) => {
           resolve(response);
         })
@@ -718,7 +719,7 @@ export const addMessage = (messageData: {conversationId:string,sender:string,tex
 
 //@dec      Get User Conversations
 //method    get
-export const getUserMessages = (conversationId) => {
+export const getUserMessages = (conversationId:string) => {
   return new Promise((resolve, reject) => {
     try {
       const url = `${chatUrl.getMessages}/${conversationId}`;
@@ -808,10 +809,10 @@ export const getUserGroups = (userId:string) => {
 
 //@dec      Add New Message
 //method    post
-export const addGroupMessage = (messageData: {groupId:string,sender:string,text:string}) => {
+export const addGroupMessage = (formData: FormData) => {
   return new Promise((resolve, reject) => {
     try {
-      apiCall("post", chatUrl.addGroupMessage, messageData)
+      apiCall("post", chatUrl.addGroupMessage, formData)
         .then((response) => {
           resolve(response);
         })
@@ -982,6 +983,128 @@ export const getStories = (userId: string) => {
     try {
       const url:string = `${storyUrl.getStories}/${userId}`
       apiCall("get", url, null)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+
+//@dec      Get Last Messages
+//method    POST
+
+export const getLastMessages = () => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("get", chatUrl.lastMessages, null)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+//@dec      Get Last Group Messages
+//method    POST
+
+export const getLastGroupMessages = () => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("get", chatUrl.lastGroupMessages, null)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+
+
+
+//@dec      get notifications
+//method    POST
+
+export const getNotifications= (userId: { userId: string }) => {
+  return new Promise((resolve, reject) => {
+    try {
+      
+      
+      apiCall("post", userUrls.getNotifications, userId)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+
+//@dec      Set Messages Read
+//method    Patch
+
+export const setMessageRead = (messageData:{conversationId: string,userId:string}) => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("patch", chatUrl.setMessageRead, messageData)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+//@dec      Get Unread Messages
+//method    Get
+
+export const getUnreadMessages = (messageData:{conversationId: string,userId:string}) => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("post", chatUrl.getUnreadMessages, messageData)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+
+//@dec      Read Story
+//method    patch
+export const readStory = (storyData:{storyId:string,userId:string}) => {
+  return new Promise((resolve, reject) => {
+    try {
+
+      apiCall("patch", storyUrl.readStory, storyData)
         .then((response) => {
           resolve(response);
         })

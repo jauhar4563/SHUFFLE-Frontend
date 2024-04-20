@@ -42,7 +42,7 @@ function AddPost({ setNewPost }: any) {
       getAllHashtag().then((response: any) => {
         setHashtags(response.data.hashtags);
       });
-    } catch (error) {
+    } catch (error:any) {
       console.log(error.message);
     }
   }, []);
@@ -105,7 +105,7 @@ function AddPost({ setNewPost }: any) {
       setIsLoading(true);
       console.log("hello", userId);
       console.log(croppedImage);
-      const { title, description, hashtag } = formik.values;
+      const { title, description } = formik.values;
       const imageUrls = [];
       for (const image of formik.values.images) {
         const response = await fetch(image);
@@ -175,8 +175,8 @@ function AddPost({ setNewPost }: any) {
   };
 
   return (
-    <div className=" ms-96 w-12/12">
-      <div className=" m-4 home-addpost-section h-18%  rounded-xl border border-gray-200 shadow-md">
+    <div className=" ms-96 ">
+      <div className=" mt-4 ml-4  home-addpost-section h-18%  rounded-xl border border-gray-200 " style={{width:'670px'}}>
 
         <Story />
         <div className="bg-white flex flex-col rounded-lg justify-between p-4">

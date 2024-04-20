@@ -18,7 +18,7 @@ function SideNavBar() {
 
   return (
     <>
-      <aside className="fixed top-20 left-0 z-30  flex flex-col w-64 h-5/6 mt-5 ms-32 px-4 py-5 overflow-none  border-r rounded-xl rtl:border-r-0 rtl:border-l bg-gradient-to-b from-purple-600 to-blue-400 dark:border-gray-700">
+      <aside className="fixed top-20 left-0 z-30  flex flex-col w-64 h-5/6 mt-4 ms-32 px-4 py-5 overflow-none  border-r rounded-xl rtl:border-r-0 rtl:border-l bg-white dark:border-gray-700">
         <div className="flex flex-col items-center -mx-2">
           <img
             className="object-cover w-16 h-16  mx-2 rounded-full border-2 border-white"
@@ -27,13 +27,13 @@ function SideNavBar() {
           />
           <div className="flex items-center ju">
 
-          <h4 className="mx-2 mt-4 font-medium text-white dark:text-gray-200">
+          <h4 className="mx-2 mt-4 font-medium text-black dark:text-gray-200">
             {user ? user.userName : ""}
           </h4>
           {user.isVerified && (<svg
                         viewBox="0 0 22 22"
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-6 w-6 mt-4"
+                        className="h-5 w-5 mt-4"
                       >
                         <path
                           d="M20.396 11c-.018-.646-.215-1.275-.57-1.816-.354-.54-.852-.972-1.438-1.246.223-.607.27-1.264.14-1.897-.131-.634-.437-1.218-.882-1.687-.47-.445-1.053-.75-1.687-.882-.633-.13-1.29-.083-1.897.14-.273-.587-.704-1.086-1.245-1.44S11.647 1.62 11 1.604c-.646.017-1.273.213-1.813.568s-.969.854-1.24 1.44c-.608-.223-1.267-.272-1.902-.14-.635.13-1.22.436-1.69.882-.445.47-.749 1.055-.878 1.688-.13.633-.08 1.29.144 1.896-.587.274-1.087.705-1.443 1.245-.356.54-.555 1.17-.574 1.817.02.647.218 1.276.574 1.817.356.54.856.972 1.443 1.245-.224.606-.274 1.263-.144 1.896.13.634.433 1.218.877 1.688.47.443 1.054.747 1.687.878.633.132 1.29.084 1.897-.136.274.586.705 1.084 1.246 1.439.54.354 1.17.551 1.816.569.647-.016 1.276-.213 1.817-.567s.972-.854 1.245-1.44c.604.239 1.266.296 1.903.164.636-.132 1.22-.447 1.68-.907.46-.46.776-1.044.908-1.681s.075-1.299-.165-1.903c.586-.274 1.084-.705 1.439-1.246.354-.54.551-1.17.569-1.816zM9.662 14.85l-3.429-3.428 1.293-1.302 2.072 2.072 4.4-4.794 1.347 1.246z"
@@ -50,13 +50,13 @@ function SideNavBar() {
               className={`flex items-center px-4 py-2  rounded-md ${
                 location.pathname === "/"
                   ? "text-purple-600 bg-white"
-                  : "text-white"
+                  : "text-gray-800"
               }`}
             >
               <svg
                 className={`w-5 h-5  ${
                   location.pathname !== "/"
-                    ? "text-gray-800 dark:text-white"
+                    ? "text-gray-800 dark:text-gray-800"
                     : ""
                 }`}
                 viewBox="0 0 24 24"
@@ -67,7 +67,7 @@ function SideNavBar() {
                   className={`${
                     location.pathname === "/"
                       ? "text-purple-600 bg-white"
-                      : "text-white"
+                      : "text-gray-800"
                   }`}
                   d="M19 11H5M19 11C20.1046 11 21 11.8954 21 13V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V13C3 11.8954 3.89543 11 5 11M19 11V9C19 7.89543 18.1046 7 17 7M5 11V9C5 7.89543 5.89543 7 7 7M7 7V5C7 3.89543 7.89543 3 9 3H15C16.1046 3 17 3.89543 17 5V7M7 7H17"
                   stroke="currentColor"
@@ -79,17 +79,17 @@ function SideNavBar() {
               <span className="mx-5 ">Dashboard</span>
             </NavLink>
             <NavLink
-              className={`flex items-center px-4 mt-2 py-2 ${
+              className={`flex cursor-pointer items-center px-4 mt-2 py-2 ${
                 location.pathname === "/notifications"
                   ? "text-purple-600 bg-white"
-                  : "text-white"
+                  : "text-gray-800"
               }  rounded-lg`}
-              to={"/"}
+              to={"/notifications"}
             >
               <svg
                 className={`w-5 h-5  ${
                   location.pathname !== "/notifications"
-                    ? "text-gray-800 dark:text-white"
+                    ? "text-gray-800 dark:text-gray-800"
                     : ""
                 }`}
                 aria-hidden="true"
@@ -103,7 +103,7 @@ function SideNavBar() {
                   className={`${
                     location.pathname === "/notifications"
                       ? "text-purple-600 bg-white"
-                      : "text-white"
+                      : "text-gray-800"
                   }`}
                   stroke="currentColor"
                   stroke-linecap="round"
@@ -119,14 +119,14 @@ function SideNavBar() {
               className={`flex items-center px-4 mt-2 py-2 ${
                 location.pathname === "/messages"
                   ? "text-purple-600 bg-white"
-                  : "text-white"
+                  : "text-gray-800"
               }  rounded-lg`}
               to={"/chat"}
             >
               <svg
                 className={`w-5 h-5  ${
                   location.pathname !== "/messages"
-                    ? "text-gray-800 dark:text-white"
+                    ? "text-gray-800 dark:text-gray-800"
                     : ""
                 }`}
                 aria-hidden="true"
@@ -140,7 +140,7 @@ function SideNavBar() {
                   className={`${
                     location.pathname === "/messages"
                       ? "text-purple-600 bg-white"
-                      : "text-white"
+                      : "text-gray-800"
                   }`}
                   stroke="currentColor"
                   stroke-linecap="round"
@@ -156,14 +156,14 @@ function SideNavBar() {
               className={`flex items-center px-4 mt-2 py-2 ${
                 location.pathname === "/follow-requests"
                   ? "text-purple-600 bg-white"
-                  : "text-white"
+                  : "text-gray-800"
               }  rounded-lg`}
               to={"/follow-requests"}
             >
               <svg
                 className={`w-5 h-5  ${
                   location.pathname !== "/follow-requests"
-                    ? "text-gray-800 dark:text-white"
+                    ? "text-gray-800 dark:text-gray-800"
                     : ""
                 }`}
                 aria-hidden="true"
@@ -177,7 +177,7 @@ function SideNavBar() {
                   className={`${
                     location.pathname === "/follow-requests"
                       ? "text-purple-600 bg-white"
-                      : "text-white"
+                      : "text-gray-800"
                   }`}
                   stroke="currentColor"
                   stroke-linecap="round"
@@ -193,14 +193,14 @@ function SideNavBar() {
               className={`flex items-center px-4 mt-2 py-2 ${
                 location.pathname === "/saved-post"
                   ? "text-purple-600 bg-white"
-                  : "text-white"
+                  : "text-gray-800"
               }  rounded-lg`}
               to={"/saved-post"}
             >
               <svg
                 className={`w-5 h-5  ${
                   location.pathname !== "/saved-post"
-                    ? "text-gray-800 dark:text-white"
+                    ? "text-gray-800 dark:text-gray-800"
                     : ""
                 }`}
                 aria-hidden="true"
@@ -214,7 +214,7 @@ function SideNavBar() {
                   className={`${
                     location.pathname === "/saved-post"
                       ? "text-purple-600 bg-white"
-                      : "text-white"
+                      : "text-gray-800"
                   }`}
                   stroke="currentColor"
                   stroke-linecap="round"
@@ -230,14 +230,14 @@ function SideNavBar() {
               className={`flex items-center px-4 mt-2 py-2 ${
                 location.pathname === "/profile"
                   ? "text-purple-600 bg-white"
-                  : "text-white"
+                  : "text-gray-800"
               }  rounded-lg`}
               to={"/profile"}
             >
               <svg
                 className={`w-5 h-5  ${
                   location.pathname !== "/profile"
-                    ? "text-gray-800 dark:text-white"
+                    ? "text-gray-800 dark:text-gray-800"
                     : ""
                 }`}
                 aria-hidden="true"
@@ -251,7 +251,7 @@ function SideNavBar() {
                   className={`${
                     location.pathname === "/profile"
                       ? "text-purple-600 bg-white"
-                      : "text-white"
+                      : "text-gray-800"
                   }`}
                   stroke="currentColor"
                   stroke-width="2"
@@ -265,14 +265,14 @@ function SideNavBar() {
               className={`flex items-center px-4 mt-2 py-2 ${
                 location.pathname === "/settings"
                   ? "text-purple-600 bg-white"
-                  : "text-white"
+                  : "text-gray-800"
               }  rounded-lg`}
               to={"/settings"}
             >
               <svg
-                className={`w-5 h-5 text-white ${
+                className={`w-5 h-5 text-gray-800 ${
                   location.pathname !== "/settings"
-                    ? "text-gray-800 dark:text-white"
+                    ? "text-gray-800 dark:text-gray-800"
                     : ""
                 }`}
                 viewBox="0 0 24 24"
@@ -302,10 +302,10 @@ function SideNavBar() {
         </div>
         <div
           onClick={handleLogout}
-          className="flex mt-28 cursor-pointer text-white px-4"
+          className="flex mt-28 cursor-pointer text-gray-800 px-4"
         >
           <svg
-            className="w-6 h-6 text-white "
+            className="w-6 h-6 text-gray-800 "
             aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg"
             width="24"

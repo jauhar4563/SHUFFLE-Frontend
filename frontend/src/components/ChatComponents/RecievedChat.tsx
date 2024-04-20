@@ -1,8 +1,7 @@
 
 import { formatDistanceToNow } from 'date-fns';
-import React from 'react';
 
-const RecievedChat= ({message}) => {
+const RecievedChat= ({message}:any) => {
   return (
     <div className="w-full flex items-start gap-2.5">
       <img
@@ -16,17 +15,42 @@ const RecievedChat= ({message}) => {
             {message?.sender?.userName}
           </span>
           <span className="text-xs font-normal text-gray-500 dark:text-gray-400">
-          {/* {formatDistanceToNow(
-                                  new Date(message.createdAt),
+          {message?.createdAt && formatDistanceToNow(
+                                  (message.createdAt),
                                   { addSuffix: true }
-                                )} */}
+                                )}
           </span>
         </div>
         <div className="flex flex-col leading-1.5 p-4 border-gray-200 bg-gray-100 rounded-e-xl rounded-es-xl dark:bg-gray-700">
+        {(!message?.attachment || message?.attachment?.type==='text') &&(
           <p className="text-xs font-normal text-gray-900 dark:text-white">
             {' '}
             {message?.text}
-          </p>
+          </p>)}
+          {
+            message?.attachment &&
+            message?.attachment.type==='image' && (
+              <img
+              src={`http://localhost:3000/chat/images/${message.attachment.filename}`}
+              alt=""
+              className="relative rounded-lg object-cover w-full h-full"
+            />
+            )
+           }
+           {
+            message?.attachment &&
+            message?.attachment.type==='video' && (
+              <video
+              controls
+              className="relative rounded-lg object-cover w-full h-full"
+            >
+              <source
+                src={`http://localhost:3000/chat/videos/${message.attachment.filename}`}
+              />
+              </video>
+             
+            )
+           }
         </div>
         <span className="text-xs font-normal text-gray-500 dark:text-gray-400">
           Delivered

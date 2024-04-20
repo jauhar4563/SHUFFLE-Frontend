@@ -42,8 +42,8 @@ function HomePage() {
 
   return (
     <>
-      <div className="flex flex-col  h-full">
-        <div className="z-40">
+      <div className="flex flex-col h-full">
+        <div className="">
           <AddPost setNewPost={setPosts}/>
         </div>
         {loading ? (

@@ -17,14 +17,21 @@ import PremiumPlans from "../pages/premium/PremiumPage";
 import Premium from "../components/Premium";
 import PaymentSuccess from "../components/PymentSuccess";
 import PaymentFailed from "../components/PaymentFailed";
-import VideoCall from "../components/ChatComponents/VideoCall";
-import GroupVideoCall from "../components/ChatComponents/GroupVideoCall";
+import Notifications from "../components/Notifications";
+import ProtectedVideoCall from "../components/ChatComponents/ProtectVideoCall";
+import ProtectedGroupVideoCall from "../components/ChatComponents/ProtectGroupVideoCall";
+import Error from "../components/Error/Error";
+import Protect from "./protectedRoutes/ProtectedRoutes";
 
 const appRouter = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
-    // errorElement: <Error />,
+    element: (
+      <Protect>
+        <App />
+      </Protect>
+    ),
+    errorElement: <Error message="Something Went Wrong" />,
     children: [
       {
         path: "/",
@@ -39,45 +46,52 @@ const appRouter = createBrowserRouter([
         element: <SavedPost />,
       },
       {
-        path:'/users-profile/:userId',
-        element:<UsersProfile />
+        path: "/users-profile/:userId",
+        element: <UsersProfile />,
       },
       {
         path: "/follow-requests",
         element: <FollowRequests />,
       },
-      
+      {
+        path: "/notifications",
+        element: <Notifications />,
+      },
     ],
   },
   {
     path: "/chat",
-    element: <Chat />,
+    element: (
+      <Protect>
+        <Chat />,
+      </Protect>
+    ),
   },
   {
-    path: "/video-call/:roomId",
-    element: <VideoCall />,
+    path: "/video-call/:roomId/:userId",
+    element: <ProtectedVideoCall />,
   },
   {
-    path: "/group-video-call/:roomId",
-    element: <GroupVideoCall />,
+    path: "/group-video-call/:roomId/:userId",
+    element: <ProtectedGroupVideoCall />,
   },
   {
     path: "/premium",
     element: <PremiumPlans />,
-    children:[
+    children: [
       {
-        path:"/premium/plans",
-        element:<Premium/>,
+        path: "/premium/plans",
+        element: <Premium />,
       },
       {
-        path:"/premium/payment-success",
-        element:<PaymentSuccess/>,
+        path: "/premium/payment-success",
+        element: <PaymentSuccess />,
       },
       {
-        path:"/premium/payment-failed",
-        element:<PaymentFailed/>,
-      }
-    ]
+        path: "/premium/payment-failed",
+        element: <PaymentFailed />,
+      },
+    ],
   },
   {
     path: "/login",
@@ -103,6 +117,11 @@ const appRouter = createBrowserRouter([
     path: "/renew-password",
     element: <RenewPassword />,
   },
+  {
+    path:'*',
+    element:<Error message="Page Not Found" />
+  },
+
   adminRouter,
   adminLoginRouter,
 ]);

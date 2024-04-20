@@ -79,8 +79,8 @@ function Navbar() {
             </div>
 
             <div id="menu" className="flex flex-col  mt-4 space-y-2">
-              <a
-                href=""
+              <Link
+                to={'/admin'}
                 className="text-sm font-medium text-gray-700 py-2 px-2 hover:bg-gradient-to-b hover:from-purple-600 hover:to-blue-400 hover:text-white hover:text-base rounded-md transition duration-150 ease-in-out"
               >
                 <svg
@@ -93,7 +93,7 @@ function Navbar() {
                   <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"></path>
                 </svg>
                 <span className="">Dashboard</span>
-              </a>
+              </Link>
               <Link
                 to={"/admin/users"}
                 className="text-sm flex font-medium text-gray-700 py-2 px-2 hover:bg-gradient-to-b hover:from-purple-600 hover:to-blue-400 hover:text-white hover:scale-105 rounded-md transition duration-150 ease-in-out"

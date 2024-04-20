@@ -1,51 +1,49 @@
 import { X } from "lucide-react";
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 
-function ViewStory({ story, onClose }) {
+function ViewStory({ story, onClose }:any) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const numStories = story.stories.length;
-  const segmentWidth = numStories > 0 ? 100 / numStories : 100;
+  // const segmentWidth = numStories > 0 ? 100 / numStories : 100;
 
   const handlePrevClick = () => {
     setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? numStories - 1 : prevIndex - 1
     );
-    updateProgress(); // Update progress when navigating to the previous story
+    updateProgress(); 
   };
 
   const handleNextClick = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % numStories);
-    setProgress(0); // Reset progress when moving to the next image
+    setProgress(0); 
   };
 
   const updateProgress = () => {
-    setProgress(0); // Reset progress when changing the story
+    setProgress(0);
   };
 
   useEffect(() => {
-    const incrementValue = 100 / (15 * 1000 / 300); // Adjust increment value to achieve 15s animation
+    const incrementValue = 100 / (15 * 1000 / 300); 
     const timer = setTimeout(() => {
       if (progress >= 100) {
-        // Move to the next image when progress is complete
         handleNextClick();
       } else {
         setProgress((prevProgress) =>
           prevProgress + incrementValue
         );
       }
-    }, 300); // Increase progress every 300ms (0.3s)
+    }, 300); 
 
     return () => clearTimeout(timer);
-  }, [progress]); // Add progress as a dependency
+  }, [progress]);
 
   useEffect(() => {
-    const timer = setTimeout(handleNextClick, 15000); // Auto-advance every 15 seconds
+    const timer = setTimeout(handleNextClick, 15000); 
     return () => clearTimeout(timer);
   }, [currentIndex]);
 
   useEffect(() => {
-    // Close the ViewStory component when all stories are viewed
     if (currentIndex === numStories) {
       onClose();
     }
@@ -58,7 +56,7 @@ function ViewStory({ story, onClose }) {
           className="absolute z-50 top-8 right-2 text-gray-900"
           onClick={onClose}
         >
-          <X />
+          <X color="white"/>
         </button>
         <div className="flex left-3 absolute z-50 top-7 items-center">
           <img
@@ -66,13 +64,13 @@ function ViewStory({ story, onClose }) {
             alt="User Avatar"
             className="h-9 w-9 rounded-full mr-2"
           />
-          <span className="text-md">{story.userId.userName}</span>
+          <span className="text-sm text-white font-medium">{story.userId.userName}</span>
         </div>
         <div className="relative">
-          <div className="h-2 flex gap-2 w-full rounded-lg mb-2">
+          <div className="h-1 flex gap-2 w-full rounded-lg mb-2">
             {Array.from({ length: numStories }).map((_, index) => (
               <div
-                className="w-full rounded-lg h-2"
+                className="w-full rounded-lg h-1"
                 style={{
                   backgroundColor: "rgba(255, 255, 255, 0.5)",
                   boxShadow: "0 0 10px rgba(0, 0, 0, 0.5)",
@@ -81,7 +79,7 @@ function ViewStory({ story, onClose }) {
               >
                 <div
                   key={index}
-                  className={`bg-gray-300 h-2 rounded-lg`}
+                  className={`bg-gray-300 h-1 rounded-lg`}
                   style={{
                     width: `${
                       currentIndex === index
@@ -110,7 +108,7 @@ function ViewStory({ story, onClose }) {
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8"
+                className="h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -129,7 +127,7 @@ function ViewStory({ story, onClose }) {
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8"
+                className="h-6 w-6"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"

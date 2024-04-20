@@ -5,6 +5,7 @@ export interface PostProps {
         _id: string;
         userName: string;
         profileImg: string;
+        isVerified:boolean;
       };
       title: string;
       imageUrl: string[];

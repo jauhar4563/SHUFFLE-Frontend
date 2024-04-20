@@ -1,28 +1,55 @@
-import { SendHorizonal, Smile, Video } from "lucide-react";
+import {
+  Image,
+  Paperclip,
+  SendHorizonal,
+  Smile,
+  Video,
+} from "lucide-react";
+import '../../pages/chat/Chat.css'
+import data from '@emoji-mart/data'
+import Picker from '@emoji-mart/react'
 import RecievedChat from "./RecievedChat";
 import SendedChat from "./SendedChat";
 import { useEffect, useRef, useState } from "react";
 import {
   addMessage,
   getUserMessages,
+  setMessageRead,
 } from "../../services/api/user/apiMethods";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
-function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers }) {
+function Messages({
+  messages,
+  setMessages,
+  user,
+  currentChat,
+  socket,
+  onlineUsers,
+}:any) {
   const [newMessage, setNewMessage] = useState("");
-  const [friend, setFriend] = useState(null);
-  const [isOnline,setIsOnline] = useState(false);
-  const scrollRef = useRef();
+  const [friend, setFriend] = useState<any>(null);
+  const [isOnline, setIsOnline] = useState(false);
+  const [image, setImage] = useState<any>(null);
+  const [video, setVideo] = useState<any>(null);
+  const scrollRef = useRef<any>();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   // const [joinVideoCall,setJoinVidioCall]=useState(false);
   // const [videoCallJoinRoomId,setVideoCallJoinRoomId]=useState('');
   const navigate = useNavigate();
 
+  const togglePinDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
   useEffect(() => {
-    const friend = currentChat?.members.find((m) => m._id !== user._id);
+    
+
+    const friend = currentChat?.members.find((m:any) => m._id !== user._id);
     setIsOnline(() => {
-      if (onlineUsers.find((user) => user.userId === friend?._id)) {
+      if (onlineUsers.find((user:any) => user.userId === friend?._id)) {
         return true;
       } else {
         return false;
@@ -30,10 +57,9 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
     });
     setFriend(friend);
     const currentChatId = currentChat?._id;
-    getUserMessages(currentChatId).then((response) => {
+    getUserMessages(currentChatId).then((response:any) => {
       setMessages(response.data);
     });
-
   }, [currentChat]);
 
   useEffect(() => {
@@ -42,26 +68,17 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
     }
   }, [messages]);
 
-  // useEffect(()=>{
-  //   console.log("Video call useEffect")
-  //   socket.current.on("videoCallResponse",(data:any)=>{
-  //     console.log("Video call coming.......")
-  //     setVideoCallJoinRoomId(data.roomId)
-  //     setJoinVidioCall(true)
-  //   })
-  // },[socket]);
+  useEffect(()=>{
+    setMessageRead({conversationId:currentChat._id,userId:user._id})
+  },[socket]);
 
-  // const handleJoinVidoCallRoom=()=>{
- 
-  //   navigate(`/video-call/${videoCallJoinRoomId}`);
-   
-  // }
 
-  
-  function randomID(len:number) {
-    let result = '';
+
+  function randomID(len: number) {
+    let result = "";
     if (result) return result;
-    const chars = '12345qwertyuiopasdfgh67890jklmnbvcxzMNBVCZXASDQWERTYHGFUIOLKJP',
+    const chars =
+        "12345qwertyuiopasdfgh67890jklmnbvcxzMNBVCZXASDQWERTYHGFUIOLKJP",
       maxPos = chars.length;
     len = len || 5;
     for (let i = 0; i < len; i++) {
@@ -70,54 +87,93 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
     return result;
   }
 
-  const handleVideoCall =()=>{
-    const  roomId=randomID(10)
+  const handleVideoCall = () => {
+    const roomId = randomID(10);
     const recieverId = friend?._id;
-    console.log(recieverId+"recieverId")
-    const emitData={
-      senderId:user._id,
-      senderName:user.userName,
-      senderProfile:user.profileImg,
+    console.log(recieverId + "recieverId");
+    const emitData = {
+      senderId: user._id,
+      senderName: user.userName,
+      senderProfile: user.profileImg,
       recieverId,
-      roomId:roomId,
-      
-    }
+      roomId: roomId,
+    };
 
-    socket.current.emit('videoCallRequest',emitData)
-   
-    navigate(`/video-call/${roomId}`)
-  }
+    socket.current.emit("videoCallRequest", emitData);
 
+    navigate(`/video-call/${roomId}/${user._id}`);
+  };
 
-  
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleSubmit();
+  const handleKeyPress = (e:any) => {
+    if (e.key === "Enter") {
+      handleSubmit(null);
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (file:any) => {
+    const formData = new FormData();
     const currentChatId = currentChat?._id;
     const userId = user._id;
     const receiver = currentChat.members.find(
-      (member) => member._id !== user._id
+      (member:any) => member._id !== user._id
     );
+
+    let messageType: string = "";
+
+    if (file) {
+      if (file.type.startsWith("image/")) {
+        messageType = "image";
+      } else if (file.type.startsWith("video/")) {
+        messageType = "video";
+        console.log(file);
+      }
+      formData.append("file", file);
+      setNewMessage(messageType);
+    } else {
+      messageType = "text";
+    }
+
+    // Add other message details to FormData
+    formData.append("conversationId", currentChatId);
+    formData.append("sender", userId);
+    formData.append("text", newMessage);
+    formData.append("messageType", messageType);
+
     console.log(receiver);
     const receiverId = receiver ? receiver._id : null;
     socket.current.emit("sendMessage", {
       senderId: userId,
       receiverId,
       text: newMessage,
+      messageType,
+      file: file?.name,
     });
-    addMessage({
-      conversationId: currentChatId,
-      sender: userId,
-      text: newMessage,
-    }).then((response) => {
-      toast.info("message has been send");
-      setNewMessage("");
-      setMessages([...messages, response.data]);
-    });
+
+    // Send FormData with file and other message details
+    addMessage(formData)
+      .then((response:any) => {
+        toast.info("message has been sent");
+        setNewMessage("");
+        setMessages([...messages, response.data]);
+      })
+      .catch((error) => {
+        console.error("Error sending message:", error);
+      });
+  };
+
+  const handleImageClick = () => {
+    const fileInput = document.getElementById("image");
+    if (fileInput) {
+      console.log("Image Click");
+      fileInput.click();
+    }
+  };
+
+  const handleVidoClick = () => {
+    const fileInput = document.getElementById("video");
+    if (fileInput) {
+      fileInput.click();
+    }
   };
 
   return (
@@ -133,20 +189,25 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
           <div className="overflow-hidden text-sm font-medium leading-tight text-gray-600 whitespace-no-wrap">
             {friend?.userName}
           </div>
-          {isOnline && (<div className="overflow-hidden text-xs text-purple-600  leading-tight text-gray-600 whitespace-no-wrap">
-            Online
-          </div>)}
+          {isOnline && (
+            <div className="overflow-hidden text-xs text-purple-600  leading-tight  whitespace-no-wrap">
+              Online
+            </div>
+          )}
         </div>
         {/* {joinVideoCall ? (
                   <>
                   <button className="w-16 h-7 rounded-md bg-purple-400 text-sm " onClick={handleJoinVidoCallRoom}>Join</button>
                   </>
                 ):( */}
-                  <button onClick={handleVideoCall} className="flex self-center p-2 ml-2 text-gray-500 rounded-full focus:outline-none hover:text-gray-600 hover:bg-gray-300">
-         <Video />
+        <button
+          onClick={handleVideoCall}
+          className="flex self-center p-2 ml-2 text-gray-500 rounded-full focus:outline-none hover:text-gray-600 hover:bg-gray-300"
+        >
+          <Video />
         </button>
-                {/* )} */}
-       
+        {/* )} */}
+
         {/* <button className="flex self-center p-2 ml-2 text-gray-500 rounded-full focus:outline-none hover:text-gray-600 hover:bg-gray-300">
           <svg
             className="w-6 h-6 text-gray-600 fill-current"
@@ -208,8 +269,7 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
         </button>
       </div>
       <div className="top-0 bottom-0 left-0 right-0 flex flex-col flex-1 overflow-auto bg-transparent bg-bottom bg-cover ">
-  
-        <div className="chat-scrollbox">
+        <div onClick={() => setShowEmojiPicker(false)} className="chat-scrollbox">
           <div className="chat-scroll" ref={scrollRef}>
             <div className="self-center flex-1 w-full ">
               <div className="relative flex flex-col px-3 py-1 m-auto w-full">
@@ -217,10 +277,10 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
                   Channel was created
                 </div>
                 <div className="self-center px-2 py-1 mx-0 my-1 text-xs text-gray-700 bg-white border border-gray-200 rounded-full shadow rounded-tg">
-                  {currentChat?.createdAt}
+                {currentChat?.createdAt && new Date(currentChat.createdAt).toLocaleDateString()}
                 </div>
-                {messages.length!==0 &&
-                  messages.map((message, index) => {
+                {messages.length !== 0 &&
+                  messages.map((message:any,index:any) => {
                     return message?.sender._id === user._id ||
                       message?.sender === user._id ? (
                       <div key={index} className="self-end w-3/4 my-2">
@@ -245,23 +305,103 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
         </div>
         <div className="relative flex items-center self-center w-full max-w-xl p-4 overflow-hidden text-gray-600 focus-within:text-gray-400">
           <div className="w-full">
+            <input
+              type="file"
+              name="file"
+              id="image"
+              accept="image/*"
+              onChange={(e) => {
+                const files = e.target.files;
+                if (files && files.length > 0) {
+                  const file = files[0];
+                  setImage(file);
+                  console.log(image);
+                  handleSubmit(file);
+                }
+              }}
+              hidden
+            />
+            <input
+              type="file"
+              name="file"
+              id="video"
+              accept="video/*"
+              onChange={(e) => {
+                const files = e.target.files;
+                if (files && files.length > 0) {
+                  const file = files[0];
+                  setVideo(file);
+                  console.log(video);
+                  handleSubmit(file);
+                }
+              }}
+              hidden
+            />
+
             <span className="absolute inset-y-0 left-0 flex items-center pl-6">
               <button
                 type="button"
                 className="p-1 focus:outline-none focus:shadow-none"
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
               >
                 <Smile size={18} />
               </button>
             </span>
+            {isDropdownOpen && (
+              <div className="z-50 transition-opacity duration-300">
+                <span className="absolute inset-y-0 right-24 flex items-center pr-6">
+                  <button
+                    onClick={handleVidoClick}
+                    type="submit"
+                    className="p-1 focus:outline-none focus:shadow-none hover:text-purple-600"
+                  >
+                    <Video
+                      className="size-5 lg:size-6 mr-3 md:mt-1 mt-1 ml-2  "
+                      size={18}
+                      color="purple"
+                    />
+                  </button>
+                </span>
+
+                <span className="absolute inset-y-0 right-14 flex items-center pr-6">
+                  <button
+                    onClick={handleImageClick}
+                    type="submit"
+                    className="p-1 focus:outline-none focus:shadow-none hover:text-purple-600"
+                  >
+                    <Image
+                      className="size-5 lg:size-6 mr-3 md:mt-1 mt-1 ml-2  "
+                      size={18}
+                      color="purple"
+                    />
+                  </button>
+                </span>
+              </div>
+            )}
+            <span className="absolute inset-y-0 right-4 flex items-center pr-6">
+              <button
+                onClick={togglePinDropdown}
+                type="submit"
+                className="p-1 focus:outline-none focus:shadow-none hover:text-purple-600"
+              >
+                <Paperclip
+                  className="size-5 lg:size-6 mr-3 md:mt-1 mt-4 ml-2  "
+                  size={18}
+                  color="purple"
+                />
+              </button>
+            </span>
+
             <span className="absolute inset-y-0 right-0 flex items-center pr-6">
               <button
-                onClick={handleSubmit}
+                onClick={() => handleSubmit(null)}
                 type="submit"
                 className="p-1 focus:outline-none focus:shadow-none hover:text-purple-600"
               >
                 <SendHorizonal size={18} color="purple" />
               </button>
             </span>
+     
             <input
               type="text"
               value={newMessage}
@@ -272,6 +412,15 @@ function Messages({ messages, setMessages, user, currentChat, socket,onlineUsers
             />
           </div>
         </div>
+                 {showEmojiPicker && (
+                    <Picker
+                    data={data}
+                    onEmojiSelect={(emoji:any) => {
+                        setNewMessage((prevMessage) => prevMessage + emoji.native);
+                      }}
+                      style={{ position: "fixed", bottom: "500px", right: "10px" , backgroundColor: "white" }}
+                    />
+                  )}
       </div>
     </div>
   );

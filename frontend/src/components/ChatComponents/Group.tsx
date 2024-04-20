@@ -4,14 +4,20 @@ import React, { useEffect, useState } from 'react'
  
 
 
-function Group({group,CurrentUser,onlineUsers}) {
+function Group({group,CurrentUser,onlineUsers,lastGroupMessages}) {
     const [user, setUser] = useState(null);
     const [isOnline,setIsOnline] = useState(false);
+    const [lastMessageText, setLastMessageText] = useState<string>('');
 
     useEffect(() => {
       if (group) {
         const Group = group.members.find((m) => m?._id !== CurrentUser?._id)
         setUser(Group)
+        const lastMessage = lastGroupMessages.find((message) => message.groupId === group?._id);
+        console.log(lastGroupMessages)
+        if (lastMessage) {
+          setLastMessageText(lastMessage.text);
+        }
         setIsOnline(() => {
           if (onlineUsers.find((user) => user.userId === Group._id)) {
             return true;
@@ -51,7 +57,7 @@ function Group({group,CurrentUser,onlineUsers}) {
             </div>
           </div>
           <div className="flex justify-between text-sm leading-none truncate">
-            {/* <span>Writing...</span> */}
+            <span>{lastMessageText}</span>
             {/* <span v-else className="flex items-center justify-center w-5 h-5 text-xs text-right text-white bg-purple-500 rounded-full">2</span> */}
           </div>
         </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import  { useEffect, useRef, useState } from "react";
 import Friend from "./Friend";
 import { Home, MessageSquarePlus, PlusCircle } from "lucide-react";
 import AddGroup from "./AddGroup";
@@ -16,8 +16,10 @@ function ChatUsers({
   isGroup,
   setIsGroup,
   setUserGroups,
-  setConversations
-}) {
+  setConversations,
+  lastMessages,
+  lastGroupMessages
+}:any) {
   const navigate = useNavigate();
   const [openModal, setOpenModal] = useState(false);
   const emailInputRef = useRef<HTMLInputElement>(null);
@@ -122,24 +124,26 @@ function ChatUsers({
           {!isGroup &&
             conversations &&
             !conversations?.isGroup &&
-            conversations.map((conversation) => (
+            conversations.map((conversation:any) => (
               <div onClick={() => setCurrentChat(conversation)}>
                 <Friend
                   CurrentUser={user}
                   conversation={conversation}
                   onlineUsers={onlineUsers}
+                  lastMessages={lastMessages}
                 />
               </div>
             ))}
 
           {isGroup &&
             userGroups &&
-            userGroups.map((group) => (
+            userGroups.map((group:any) => (
               <div onClick={() => setCurrentChat(group)}>
                 <Group
                   CurrentUser={user}
                   group={group}
                   onlineUsers={onlineUsers}
+                  lastGroupMessages={lastGroupMessages}
                 />
               </div>
             ))}

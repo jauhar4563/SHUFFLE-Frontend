@@ -13,7 +13,7 @@ export const useSocket = () => {
   return useContext(SocketContext);
 };
 
-export const SocketProvider: React.FC = ({ children }) => {
+export const SocketProvider: React.FC = ({ children }:any) => {
   const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {

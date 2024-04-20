@@ -5,6 +5,8 @@ import './Chat.css'
 import { useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import {
+  getLastGroupMessages,
+  getLastMessages,
   getUserConversations,
   getUserDetails,
   getUserGroups,
@@ -15,7 +17,8 @@ import GroupMessages from "../../components/ChatComponents/GroupMessages";
 import VideoCallModal from "../../components/ChatComponents/VideoCallModal";
 import { useNavigate } from "react-router-dom";
 import GroupVideoCallModal from "../../components/ChatComponents/GroupVideoCallModal";
-import { toast } from "sonner";
+// import { toast } from "sonner";
+import NochatScreen from "../../components/ChatComponents/NoChat";
 
 type EmitData = {
   group_id: string;
@@ -27,12 +30,14 @@ function Chat() {
   const user = useSelector(selectUser);
   const userId = user._id;
   const [conversations, setConversations] = useState([]);
-  const [currentChat, setCurrentChat] = useState(null);
-  const socket = useRef();
+  const [currentChat, setCurrentChat] = useState<any>(null);
+  const socket = useRef<any>();
   const navigate = useNavigate()
-  const [messages, setMessages] = useState([]);
-  const [arrivalMessage, setArrivalMessage] = useState(null);
-  const [groupArrivalMessage, setGroupArrivalMessage] = useState(null);
+  const [messages, setMessages] = useState<any[]>([]);
+  const [lastMessages,setLastMessages] = useState([]);
+  const [lastGroupMessages,setLastGroupMessages] = useState([]); 
+  const [arrivalMessage, setArrivalMessage] = useState<any>(null);
+  const [groupArrivalMessage, setGroupArrivalMessage] = useState<any>(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [userGroups, setUserGroups] = useState([]);
   const [isGroup, setIsGroup] = useState(false);
@@ -47,18 +52,31 @@ function Chat() {
     getUserConversations(userId).then((response: any) => {
       setConversations(response.data);
     });
-    getUserGroups(userId).then((response) => {
+
+    getUserGroups(userId).then((response:any) => {
       setUserGroups(response.data);
     });
 
+    getLastMessages().then((response:any)=>{
+      console.log(response.data);
+      setLastMessages(response.data);
+    })
+
+    getLastMessage();
     
 
     socket.current.on("getMessage", (data: any) => {
       const senderId = data.senderId;
+      console.log(data);
+      getLastMessage();
       getUserDetails(senderId).then((response: any) => {
         setArrivalMessage({
           sender: response.data.user,
           text: data.text,
+          attachment:{
+            type:data.messageType,
+            filename:data.file
+          },
           createdAt: Date.now(),
         });
         console.log(arrivalMessage);
@@ -66,6 +84,13 @@ function Chat() {
     });
     getGroupMessages();
   }, []);
+
+  const getLastMessage=()=>{
+    getLastGroupMessages().then((response:any)=>{
+      setLastGroupMessages(response.data)
+    })
+    
+  }
 
 
   useEffect(()=>{
@@ -88,13 +113,13 @@ function Chat() {
 
   const handleJoinVidoCallRoom=()=>{
  
-    navigate(`/video-call/${videoCallJoinRoomId}`);
+    navigate(`/video-call/${videoCallJoinRoomId}/${userId}`);
    
   }
 
   const handleJoinGroupVidoCallRoom=()=>{
  
-    navigate(`/group-video-call/${videoCallJoinRoomId}`);
+    navigate(`/group-video-call/${videoCallJoinRoomId}/${userId}`);
    
   }
 
@@ -106,6 +131,10 @@ function Chat() {
           group: data.group_id,
           sender: response.data.user,
           text: data.content,
+          attachment:{
+            type:data.messageType,
+            filename:data.file
+          },
           createdAt: Date.now(),
         };
         console.log(newGroupMessage); // Log the new message directly
@@ -121,8 +150,8 @@ function Chat() {
         userId: userId,
       };
       socket.current.emit("joinGroup", emitData);
-      socket.current.on("joinGroupResponse", (message) => {
-        console.log("joined");
+      socket.current.on("joinGroupResponse", (message:any) => {
+        console.log(message);
       });
       console.log(emitData);
     }
@@ -131,7 +160,7 @@ function Chat() {
   useEffect(() => {
     (arrivalMessage && currentChat?.members.includes(arrivalMessage?.sender)) ||
       (currentChat?.members.find(
-        (member) => member._id !== arrivalMessage?.sender
+        (member:any) => member._id !== arrivalMessage?.sender
       ) &&
         setMessages((prev) => [...prev, arrivalMessage]));
   }, [arrivalMessage, currentChat]);
@@ -144,7 +173,7 @@ function Chat() {
 
   useEffect(() => {
     socket?.current?.emit("addUser", user._id);
-    socket?.current?.on("getUsers", (users) => {
+    socket?.current?.on("getUsers", (users:any) => {
       setOnlineUsers(users);
     });
   }, [user]);
@@ -163,6 +192,8 @@ function Chat() {
         setIsGroup={setIsGroup}
         setUserGroups={setUserGroups}
         setConversations={setConversations}
+        lastMessages={lastMessages}
+        lastGroupMessages={lastGroupMessages}
       />
       {!isGroup && currentChat && (
         <Messages
@@ -174,6 +205,11 @@ function Chat() {
           onlineUsers={onlineUsers}
         />
       )}
+      {!currentChat && 
+      (
+        <NochatScreen />
+      )
+      }
       {isGroup && currentChat && (
         <GroupMessages
           messages={messages}

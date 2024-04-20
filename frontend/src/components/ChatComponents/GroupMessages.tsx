@@ -1,4 +1,11 @@
-import { SendHorizonal, Smile, Video } from "lucide-react";
+import {
+  Image,
+  Paperclip,
+  SendHorizonal,
+  Smile,
+  Video,
+  VideoIcon,
+} from "lucide-react";
 import RecievedChat from "./RecievedChat";
 import SendedChat from "./SendedChat";
 import { useEffect, useRef, useState } from "react";
@@ -6,8 +13,8 @@ import {
   addGroupMessage,
   getGroupMessages,
 } from "../../services/api/user/apiMethods";
-import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+
 
 function GroupMessages({
   messages,
@@ -15,19 +22,25 @@ function GroupMessages({
   user,
   currentChat,
   socket,
-  userGroups,
-}) {
+  // userGroups,
+}:any) {
   const [newMessage, setNewMessage] = useState("");
-  const navigate = useNavigate()
+  const [image, setImage] = useState<any>(null);
+  const [video, setVideo] = useState<any>(null);
+  const scrollRef = useRef<any>();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     const currentChatId = currentChat?._id;
-    getGroupMessages(currentChatId).then((response) => {
+    getGroupMessages(currentChatId).then((response:any) => {
       console.log(response.data);
       setMessages(response.data);
     });
   }, [currentChat]);
 
-  const scrollRef = useRef();
+  const togglePinDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -35,10 +48,11 @@ function GroupMessages({
     }
   }, [messages]);
 
-  function randomID(len:number) {
-    let result = '';
+  function randomID(len: number) {
+    let result = "";
     if (result) return result;
-    const chars = '12345qwertyuiopasdfgh67890jklmnbvcxzMNBVCZXASDQWERTYHGFUIOLKJP',
+    const chars =
+        "12345qwertyuiopasdfgh67890jklmnbvcxzMNBVCZXASDQWERTYHGFUIOLKJP",
       maxPos = chars.length;
     len = len || 5;
     for (let i = 0; i < len; i++) {
@@ -47,48 +61,84 @@ function GroupMessages({
     return result;
   }
 
-  const handleGroupVideoCall =()=>{
-    const  roomId=randomID(10)
+  const handleGroupVideoCall = () => {
+    const roomId = randomID(10);
     const groupId = currentChat?._id;
-    console.log(groupId+"recieverId")
-    const emitData={
+    console.log(groupId + "recieverId");
+    const emitData = {
       groupId,
-      groupName:currentChat.name,
-      groupProfile:currentChat.profile,
-      roomId:roomId,
-      
-    }
-    console.log(emitData)
+      groupName: currentChat.name,
+      groupProfile: currentChat.profile,
+      roomId: roomId,
+    };
+    console.log(emitData);
 
-    socket.current.emit('GroupVideoCallRequest',emitData)
-   
-    navigate(`/group-video-call/${roomId}`)
-  }
+    socket.current.emit("GroupVideoCallRequest", emitData);
 
-  const handleKeyPress = (e) => {
+    navigate(`/group-video-call/${roomId}/${user._id}`);
+  };
+
+  const handleKeyPress = (e:any) => {
     if (e.key === "Enter") {
-      handleSubmit();
+      handleSubmit(null);
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (file:any) => {
+    const formData = new FormData();
     const group_id = currentChat?._id;
     const userId = user._id;
+
+    let messageType: string = "";
+
+    if (file) {
+      if (file.type.startsWith("image/")) {
+        messageType = "image";
+      } else if (file.type.startsWith("video/")) {
+        messageType = "video";
+        console.log(file);
+      }
+      formData.append("file", file);
+      setNewMessage(messageType);
+    } else {
+      messageType = "text";
+    }
+
+    formData.append("groupId", group_id);
+    formData.append("sender", userId);
+    formData.append("text", newMessage);
+    formData.append("messageType", messageType);
+
     const data = {
       group_id,
       sender_id: userId,
       content: newMessage,
+      messageType,
+      file: file?.name,
       lastUpdate: Date.now(),
     };
+
     socket.current.emit("GroupMessage", data);
-    addGroupMessage({
-      groupId: group_id,
-      sender: userId,
-      text: newMessage,
-    }).then((response) => {
-      toast.info("message has been send");
+    addGroupMessage(formData).then((response:any) => {
+      // toast.info("message has been send");
+      console.log(response)
       setNewMessage("");
     });
+  };
+
+  const handleImageClick = () => {
+    const fileInput = document.getElementById("image");
+    if (fileInput) {
+      console.log("Image Click");
+      fileInput.click();
+    }
+  };
+
+  const handleVidoClick = () => {
+    const fileInput = document.getElementById("video");
+    if (fileInput) {
+      fileInput.click();
+    }
   };
 
   return (
@@ -106,8 +156,11 @@ function GroupMessages({
           </div>
         </div>
 
-        <button onClick={handleGroupVideoCall} className="flex self-center p-2 ml-2 text-gray-500 rounded-full focus:outline-none hover:text-gray-600 hover:bg-gray-300">
-         <Video />
+        <button
+          onClick={handleGroupVideoCall}
+          className="flex self-center p-2 ml-2 text-gray-500 rounded-full focus:outline-none hover:text-gray-600 hover:bg-gray-300"
+        >
+          <Video />
         </button>
         <button className="flex self-center p-2 ml-2 text-gray-500 rounded-full focus:outline-none hover:text-gray-600 hover:bg-gray-300">
           <svg
@@ -164,17 +217,17 @@ function GroupMessages({
                   Channel was created
                 </div>
                 <div className="self-center px-2 py-1 mx-0 my-1 text-xs text-gray-700 bg-white border border-gray-200 rounded-full shadow rounded-tg">
-                  {currentChat?.created_at}
+                  {currentChat?.created_at && new Date(currentChat.created_at).toLocaleDateString()}
                 </div>
-                {messages.length!==0 &&
-                  messages.map((message, index) => {
+                {messages.length !== 0 &&
+                  messages.map((message:any) => {
                     return message?.sender._id === user._id ||
                       message?.sender === user._id ? (
-                      <div key={index} className="self-end w-3/4 my-2">
+                      <div key={message._id} className="self-end w-3/4 my-2">
                         <SendedChat message={message} />
                       </div>
                     ) : (
-                      <div key={index} className="self-start w-3/4 my-2">
+                      <div key={message._id} className="self-start w-3/4 my-2">
                         <RecievedChat message={message} />
                       </div>
                     );
@@ -192,6 +245,38 @@ function GroupMessages({
         </div>
         <div className="relative flex items-center self-center w-full max-w-xl p-4 overflow-hidden text-gray-600 focus-within:text-gray-400">
           <div className="w-full">
+            <input
+              type="file"
+              name="file"
+              id="image"
+              accept="image/*"
+              onChange={(e) => {
+                const files = e.target.files;
+                if (files && files.length > 0) {
+                  const file = files[0];
+                  setImage(file);
+                  console.log(image);
+                  handleSubmit(file);
+                }
+              }}
+              hidden
+            />
+            <input
+              type="file"
+              name="file"
+              id="video"
+              accept="video/*"
+              onChange={(e) => {
+                const files = e.target.files;
+                if (files && files.length > 0) {
+                  const file = files[0];
+                  setVideo(file);
+                  console.log(video);
+                  handleSubmit(file);
+                }
+              }}
+              hidden
+            />
             <span className="absolute inset-y-0 left-0 flex items-center pl-6">
               <button
                 type="button"
@@ -200,9 +285,53 @@ function GroupMessages({
                 <Smile size={18} />
               </button>
             </span>
+            {isDropdownOpen && (
+              <div className="z-50 transition-opacity duration-300">
+                <span className="absolute inset-y-0 right-24 flex items-center pr-6">
+                  <button
+                    onClick={handleVidoClick}
+                    type="submit"
+                    className="p-1 focus:outline-none focus:shadow-none hover:text-purple-600"
+                  >
+                    <VideoIcon
+                      className="size-5 lg:size-6 mr-3 md:mt-1 mt-1 ml-2  "
+                      size={18}
+                      color="purple"
+                    />
+                  </button>
+                </span>
+
+                <span className="absolute inset-y-0 right-14 flex items-center pr-6">
+                  <button
+                    onClick={handleImageClick}
+                    type="submit"
+                    className="p-1 focus:outline-none focus:shadow-none hover:text-purple-600"
+                  >
+                    <Image
+                      className="size-5 lg:size-6 mr-3 md:mt-1 mt-1 ml-2  "
+                      size={18}
+                      color="purple"
+                    />
+                  </button>
+                </span>
+              </div>
+            )}
+            <span className="absolute inset-y-0 right-4 flex items-center pr-6">
+              <button
+                onClick={togglePinDropdown}
+                type="submit"
+                className="p-1 focus:outline-none focus:shadow-none hover:text-purple-600"
+              >
+                <Paperclip
+                  className="size-5 lg:size-6 mr-3 md:mt-1 mt-4 ml-2  "
+                  size={18}
+                  color="purple"
+                />
+              </button>
+            </span>
             <span className="absolute inset-y-0 right-0 flex items-center pr-6">
               <button
-                onClick={handleSubmit}
+                onClick={() => handleSubmit(null)}
                 type="submit"
                 className="p-1 focus:outline-none focus:shadow-none hover:text-green-600"
               >

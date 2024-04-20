@@ -14,3 +14,13 @@
     }
   }
   
+
+  em-emoji-picker{
+    position: fixed;
+    bottom: 70px;
+    right: 500px;
+    background-color: white;
+}
+em-emoji-picker section {
+  background-color: white;
+}

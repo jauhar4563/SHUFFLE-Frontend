@@ -32,7 +32,7 @@ const EditPost: React.FC<EditPostProps> = ({ post, onCancelEdit }) => {
   const [hideLikes, setHideLikes] = useState(post.hideLikes);
   const [hideComment, setHideComment] = useState(post.hideComment);
   const [hashtags, setHashtags] = useState([]);
-  const [selectedHashtags, setSelectedHashtags] = useState<any[]>([]);
+  const [selectedHashtags, setSelectedHashtags] = useState<{value:string,label:string}[]>([]);
 
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const EditPost: React.FC<EditPostProps> = ({ post, onCancelEdit }) => {
       getAllHashtag().then((response: any) => {
         setHashtags(response.data.hashtags);
       });
-    } catch (error) {
+    } catch (error:any) {
       console.log(error.message);
     }
   }, []);
@@ -153,7 +153,7 @@ const EditPost: React.FC<EditPostProps> = ({ post, onCancelEdit }) => {
                   options={selectOptions}
                   isMulti
                   value={selectedHashtags}
-                  onChange={(selectedOption) =>{
+                  onChange={(selectedOption:any) =>{
                     console.log(selectedOption)
                     
                     setSelectedHashtags(selectedOption) 

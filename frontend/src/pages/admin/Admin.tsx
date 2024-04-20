@@ -1,10 +1,9 @@
 import { useEffect } from "react";
-import {  useNavigate } from "react-router-dom";
+import Navbar from "../../components/admin/Navbar";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import AdminStats from "../../../components/admin/AdminStats";
-import ApexChart from "../../../components/admin/Chart";
 
-function AdminDashboard() {
+function Admin() {
   const selectAdmin = (state: any) => state.adminAuth.admin;
   const admin = useSelector(selectAdmin);
   const Navigate = useNavigate();
@@ -15,11 +14,11 @@ function AdminDashboard() {
   }, [admin, Navigate]);
 
   return (
-    <div className=" w-full ">
-     <AdminStats />
-     <ApexChart />
+    <div className="flex">
+      <Navbar />
+      <Outlet />
     </div>
   );
 }
 
-export default AdminDashboard;
+export default Admin;

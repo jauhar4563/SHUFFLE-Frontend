@@ -5,7 +5,7 @@ import UseCropImage from '../helpers/getCroppedImg'
 interface Props {
   imgUrl: string;
   aspectInit: { value: number };
-  setCroppedImg: React.Dispatch<React.SetStateAction<string[]>>; 
+  setCroppedImg: any; 
   handleNextImage: () => void;
 }
 
