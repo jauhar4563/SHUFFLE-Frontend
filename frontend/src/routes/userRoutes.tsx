@@ -22,6 +22,7 @@ import ProtectedVideoCall from "../components/ChatComponents/ProtectVideoCall";
 import ProtectedGroupVideoCall from "../components/ChatComponents/ProtectGroupVideoCall";
 import Error from "../components/Error/Error";
 import Protect from "./protectedRoutes/ProtectedRoutes";
+import Explore from "../pages/explore/Explore";
 
 const appRouter = createBrowserRouter([
   {
@@ -57,6 +58,10 @@ const appRouter = createBrowserRouter([
         path: "/notifications",
         element: <Notifications />,
       },
+      {
+        path:'/explore',
+        element:<Explore/>
+      }
     ],
   },
   {
@@ -66,6 +71,7 @@ const appRouter = createBrowserRouter([
         <Chat />,
       </Protect>
     ),
+    errorElement:<Error message="Something Went Wrong" />
   },
   {
     path: "/video-call/:roomId/:userId",

@@ -8,6 +8,7 @@ import {
 } from "../../services/api/admin/apiMethods";
 import { Modal, Button,Pagination } from "flowbite-react";
 import { BookLockIcon } from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
 
 function HashTags() {
   const [loading, setLoading] = useState(true);
@@ -229,7 +230,10 @@ function HashTags() {
                     {hashtag.posts.length}
                   </span>
                 </td>
-                <td className="px-6 py-4">{hashtag.date}</td>
+                <td className="px-6 py-4"> {formatDistanceToNow(
+                                    new Date(hashtag.date),
+                                    { addSuffix: true }
+                                  )}</td>
 
                 <td className="px-6 py-4">
                   {hashtag.isBlocked ? (

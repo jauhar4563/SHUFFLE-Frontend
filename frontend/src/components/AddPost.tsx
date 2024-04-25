@@ -10,6 +10,7 @@ import CropImage from "./CropImg";
 import { Spinner } from "flowbite-react";
 import Select from "react-select";
 import Story from "./story/Story";
+import { addHashTags } from "../services/api/admin/apiMethods";
 
 function AddPost({ setNewPost }: any) {
   const selectUser = (state: any) => state.auth.user || "";
@@ -25,24 +26,24 @@ function AddPost({ setNewPost }: any) {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedHashtag, setSelectedHashtag] = useState<any>([]);
 
-  const resetState=()=>{
+  const resetState = () => {
     setHideLikes(false);
     setHideComment(false);
     setCroppedImage([]);
     setCurrentImageIndex(0);
     setSelectedHashtag([]);
-    formik.values.images=[];
-    formik.values.title='';
-    formik.values.description = '';
-    formik.values.hashtag='';
-  }
+    formik.values.images = [];
+    formik.values.title = "";
+    formik.values.description = "";
+    formik.values.hashtag = "";
+  };
 
   useEffect(() => {
     try {
       getAllHashtag().then((response: any) => {
         setHashtags(response.data.hashtags);
       });
-    } catch (error:any) {
+    } catch (error: any) {
       console.log(error.message);
     }
   }, []);
@@ -54,6 +55,7 @@ function AddPost({ setNewPost }: any) {
   const handleHideCommentToggle = () => {
     setHideComment(!hideComment);
   };
+  
   const handleCreatePostClick = () => {
     setShowModal(true);
   };
@@ -75,16 +77,18 @@ function AddPost({ setNewPost }: any) {
     if (files && files.length > 0) {
       const validImageTypes = ["image/jpeg", "image/png", "image/gif"]; // Add more image types if needed
       const selectedFiles = Array.from(files);
-      const invalidFiles = selectedFiles.filter(file => !validImageTypes.includes(file.type));
+      const invalidFiles = selectedFiles.filter(
+        (file) => !validImageTypes.includes(file.type)
+      );
       if (invalidFiles.length > 0) {
         toast.error("Please select only image files (JPEG, PNG, GIF).");
         return;
       }
-      const imageUrls = selectedFiles.map(file => URL.createObjectURL(file));
+      const imageUrls = selectedFiles.map((file) => URL.createObjectURL(file));
       formik.setFieldValue("images", imageUrls);
     }
   };
-  
+
   const formik = useFormik({
     initialValues: {
       images: [],
@@ -174,10 +178,46 @@ function AddPost({ setNewPost }: any) {
     setCurrentImageIndex((prevIndex) => prevIndex + 1);
   };
 
+  const handleKeyPress = (e: any) => {
+    if (e.key === "Enter") {
+      addHashtag();
+    }
+  };
+
+  const addHashtag = async () => {
+    const tag = formik.values.hashtag;
+    if (tag.trim() === "") {
+      toast.error("Provide a Hashtag");
+      return;
+    }
+    if (!tag.startsWith("#")) {
+      toast.error("The hashtag should start with a '#' ");
+      return;
+    }
+    try {
+      await addHashTags({ hashtag: tag })
+        .then((response: any) => {
+          const addedHashtag = {value:tag,label:tag}
+          setSelectedHashtag(addedHashtag);
+
+          formik.values.hashtag = "";
+          toast.info("Hashtag Added");
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
+    } catch (error: any) {
+      console.log(error.message);
+      toast.error("Failed to add hashtag");
+    }
+  };
+
   return (
     <div className=" ms-96 ">
-      <div className=" mt-4 ml-4  home-addpost-section h-18%  rounded-xl border border-gray-200 " style={{width:'670px'}}>
-
+      <div
+        className=" mt-4 ml-4  home-addpost-section h-18%  rounded-xl border border-gray-200 "
+        style={{ width: "670px" }}
+      >
         <Story />
         <div className="bg-white flex flex-col rounded-lg justify-between p-4">
           <div className="text-gray-500 font-medium text-xs">
@@ -241,7 +281,9 @@ function AddPost({ setNewPost }: any) {
                                 strokeWidth={1.5}
                                 size={40}
                               />
-                              <p className="text-blue-700 mt-2">Select Image</p>{" "}
+                              <p className="text-purple-400 mt-2">
+                                Select Image
+                              </p>{" "}
                             </div>
                           )}
                         </div>
@@ -283,9 +325,49 @@ function AddPost({ setNewPost }: any) {
                         {formik.errors.images}
                       </p>
                     )}
+                    <div className="icons flex mt-7 text-gray-500 m-2">
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        style={{ display: "none" }}
+                        onChange={handleFileChange}
+                        multiple
+                      />
+
+                      <label className="flex items-center me-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          value=""
+                          className="sr-only peer"
+                          checked={hideComment}
+                          onChange={handleHideCommentToggle}
+                        />
+                        <div className="relative w-10 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+                        <span className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-900">
+                          Hide Comments
+                        </span>
+                      </label>
+                      <label className="flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          value=""
+                          className="sr-only peer"
+                          checked={hideLikes}
+                          onChange={handleHideLikesToggle}
+                        />
+                        <div className="relative w-10 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+                        <span className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-900">
+                          Hide Likes
+                        </span>
+                      </label>
+
+                      {/* <div className="count ml-auto text-gray-400 text-xs font-semibold">
+                    0/300
+                  </div> */}
+                    </div>
                   </div>
                   <div className="flex flex-col w-6/12">
-                    <p className=" font-semibold">Title</p>
+                    <p className=" font-medium">Title</p>
                     <input
                       type="text"
                       placeholder="Title"
@@ -300,7 +382,7 @@ function AddPost({ setNewPost }: any) {
                         {formik.errors.title}
                       </p>
                     )}
-                    <p className="font-semibold mb-2">Description</p>
+                    <p className="font-medium mb-2">Description</p>
                     <textarea
                       className="rounded-lg description sec p-3 h-24 shadow-lg border-gray-300 outline-none text-xs font-normal"
                       spellCheck="false"
@@ -316,7 +398,17 @@ function AddPost({ setNewPost }: any) {
                           {formik.errors.description}
                         </p>
                       )}
-                    <p className=" font-semibold">Hashtag</p>
+                    <p className=" font-medium">Hashtag</p>
+                    <input
+                      type="text"
+                      placeholder="Add hashtags"
+                      className="rounded-lg shadow-lg p-2 py-3 mb-3 outline-none text-xs font-normal"
+                      value={formik.values.hashtag}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      name="hashtag"
+                      onKeyPress={handleKeyPress}
+                    />
                     <Select
                       options={selectOptions}
                       value={selectedHashtag} // Set selected value
@@ -349,66 +441,7 @@ function AddPost({ setNewPost }: any) {
                     </div>
                   </div>
                 </div>
-                <div className="icons flex text-gray-500 m-2">
-                  {/* <input
-                    type="file"
-                    ref={fileInputRef}
-                    style={{ display: "none" }}
-                    onChange={(e) => {
-                      const files = e.target.files;
-                      if (files && files.length > 0) {
-                        const fileList = Array.from(files);
-                        
-                        const imageUrls = fileList.map((imageFile) =>
-                          
-                          URL.createObjectURL(imageFile)
-                        );
 
-                        formik.setFieldValue("images", imageUrls);
-                      }
-                    }}
-                    multiple
-                  /> */}
-
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    style={{ display: "none" }}
-                    onChange={handleFileChange}
-                    multiple
-                  />
-
-                  <label className="inline-flex items-center me-5 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      value=""
-                      className="sr-only peer"
-                      checked={hideComment}
-                      onChange={handleHideCommentToggle}
-                    />
-                    <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
-                    <span className="ms-3 text-sm font-semibold text-gray-900 dark:text-gray-900">
-                      Hide Comments
-                    </span>
-                  </label>
-                  <label className="inline-flex items-center me-5 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      value=""
-                      className="sr-only peer"
-                      checked={hideLikes}
-                      onChange={handleHideLikesToggle}
-                    />
-                    <div className="relative w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700   peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
-                    <span className="ms-3 text-sm font-semibold text-gray-900 dark:text-gray-900">
-                      Hide Likes
-                    </span>
-                  </label>
-
-                  <div className="count ml-auto text-gray-400 text-xs font-semibold">
-                    0/300
-                  </div>
-                </div>
                 <div className="buttons flex">
                   <div
                     onClick={handleCancelClick}

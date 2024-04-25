@@ -1,7 +1,7 @@
 import { useState } from "react";
 import logo from "../../../public/images/logo/shuffle.png";
 import { Link, useNavigate } from "react-router-dom";
-import { HashIcon, User2, LogOutIcon } from "lucide-react";
+import { HashIcon, User2, LogOutIcon, BadgeDollarSign } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { AdminLogout } from "../../utils/context/reducers/adminAuthSlice";
@@ -136,7 +136,13 @@ function Navbar() {
                 </svg>
                 <span className="">Reports</span>
               </Link>
-
+              <Link
+                to={"/admin/transactions"}
+                className="text-sm flex font-medium text-gray-700 py-2 px-2 hover:bg-gradient-to-b hover:from-purple-600 hover:to-blue-400 hover:text-white hover:scale-105 rounded-md transition duration-150 ease-in-out"
+              >
+                <BadgeDollarSign />
+                <span className="">Transactions</span>
+              </Link>
               <button
                 onClick={handleLogout}
                 className="text-sm flex font-medium text-gray-700 py-2 mt-80  px-2 hover:bg-gradient-to-b hover:from-purple-600 hover:to-blue-400 hover:text-white hover:scale-105 rounded-md transition duration-150 ease-in-out"

@@ -1,13 +1,7 @@
-import {
-  Image,
-  Paperclip,
-  SendHorizonal,
-  Smile,
-  Video,
-} from "lucide-react";
-import '../../pages/chat/Chat.css'
-import data from '@emoji-mart/data'
-import Picker from '@emoji-mart/react'
+import { Image, Paperclip, SendHorizonal, Smile, Video } from "lucide-react";
+import "../../pages/chat/Chat.css";
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
 import RecievedChat from "./RecievedChat";
 import SendedChat from "./SendedChat";
 import { useEffect, useRef, useState } from "react";
@@ -18,6 +12,8 @@ import {
 } from "../../services/api/user/apiMethods";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
+import VoiceRecorder from "./VoiceRecorder";
+import '../../pages/chat/Chat.css'
 
 function Messages({
   messages,
@@ -26,7 +22,7 @@ function Messages({
   currentChat,
   socket,
   onlineUsers,
-}:any) {
+}: any) {
   const [newMessage, setNewMessage] = useState("");
   const [friend, setFriend] = useState<any>(null);
   const [isOnline, setIsOnline] = useState(false);
@@ -35,6 +31,8 @@ function Messages({
   const scrollRef = useRef<any>();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [recordedAudioBlob, setRecordedAudioBlob]: any = useState(null);
+  const [isRecording, setIsRecording] = useState<boolean>(false)
 
   // const [joinVideoCall,setJoinVidioCall]=useState(false);
   // const [videoCallJoinRoomId,setVideoCallJoinRoomId]=useState('');
@@ -45,11 +43,9 @@ function Messages({
   };
 
   useEffect(() => {
-    
-
-    const friend = currentChat?.members.find((m:any) => m._id !== user._id);
+    const friend = currentChat?.members.find((m: any) => m._id !== user._id);
     setIsOnline(() => {
-      if (onlineUsers.find((user:any) => user.userId === friend?._id)) {
+      if (onlineUsers.find((user: any) => user.userId === friend?._id)) {
         return true;
       } else {
         return false;
@@ -57,7 +53,7 @@ function Messages({
     });
     setFriend(friend);
     const currentChatId = currentChat?._id;
-    getUserMessages(currentChatId).then((response:any) => {
+    getUserMessages(currentChatId).then((response: any) => {
       setMessages(response.data);
     });
   }, [currentChat]);
@@ -68,11 +64,9 @@ function Messages({
     }
   }, [messages]);
 
-  useEffect(()=>{
-    setMessageRead({conversationId:currentChat._id,userId:user._id})
-  },[socket]);
-
-
+  useEffect(() => {
+    setMessageRead({ conversationId: currentChat._id, userId: user._id });
+  }, [socket]);
 
   function randomID(len: number) {
     let result = "";
@@ -104,18 +98,18 @@ function Messages({
     navigate(`/video-call/${roomId}/${user._id}`);
   };
 
-  const handleKeyPress = (e:any) => {
+  const handleKeyPress = (e: any) => {
     if (e.key === "Enter") {
       handleSubmit(null);
     }
   };
 
-  const handleSubmit = (file:any) => {
+  const handleSubmit = (file: any) => {
     const formData = new FormData();
     const currentChatId = currentChat?._id;
     const userId = user._id;
     const receiver = currentChat.members.find(
-      (member:any) => member._id !== user._id
+      (member: any) => member._id !== user._id
     );
 
     let messageType: string = "";
@@ -125,6 +119,9 @@ function Messages({
         messageType = "image";
       } else if (file.type.startsWith("video/")) {
         messageType = "video";
+        console.log(file);
+      } else if (file.type.startsWith("audio/")) {
+        messageType = "audio";
         console.log(file);
       }
       formData.append("file", file);
@@ -151,7 +148,7 @@ function Messages({
 
     // Send FormData with file and other message details
     addMessage(formData)
-      .then((response:any) => {
+      .then((response: any) => {
         toast.info("message has been sent");
         setNewMessage("");
         setMessages([...messages, response.data]);
@@ -174,6 +171,20 @@ function Messages({
     if (fileInput) {
       fileInput.click();
     }
+  };
+
+  const addAudioElement = async (blob: any) => {
+    setIsRecording(false)
+    const url = URL.createObjectURL(blob);
+    const audio = document.createElement("audio");
+    audio.src = url;
+    audio.controls = true;
+    document.body.appendChild(audio);
+
+    const audioFile = new File([blob], `${Date.now()}+audio.mp3`, {
+      type: "audio/mpeg",
+    });
+    handleSubmit(audioFile);
   };
 
   return (
@@ -269,7 +280,10 @@ function Messages({
         </button>
       </div>
       <div className="top-0 bottom-0 left-0 right-0 flex flex-col flex-1 overflow-auto bg-transparent bg-bottom bg-cover ">
-        <div onClick={() => setShowEmojiPicker(false)} className="chat-scrollbox">
+        <div
+          onClick={() => setShowEmojiPicker(false)}
+          className="chat-scrollbox"
+        >
           <div className="chat-scroll" ref={scrollRef}>
             <div className="self-center flex-1 w-full ">
               <div className="relative flex flex-col px-3 py-1 m-auto w-full">
@@ -277,10 +291,11 @@ function Messages({
                   Channel was created
                 </div>
                 <div className="self-center px-2 py-1 mx-0 my-1 text-xs text-gray-700 bg-white border border-gray-200 rounded-full shadow rounded-tg">
-                {currentChat?.createdAt && new Date(currentChat.createdAt).toLocaleDateString()}
+                  {currentChat?.createdAt &&
+                    new Date(currentChat.createdAt).toLocaleDateString()}
                 </div>
                 {messages.length !== 0 &&
-                  messages.map((message:any,index:any) => {
+                  messages.map((message: any, index: any) => {
                     return message?.sender._id === user._id ||
                       message?.sender === user._id ? (
                       <div key={index} className="self-end w-3/4 my-2">
@@ -363,7 +378,7 @@ function Messages({
                   </button>
                 </span>
 
-                <span className="absolute inset-y-0 right-14 flex items-center pr-6">
+                <span className="absolute inset-y-0 right-16 flex items-center pr-6">
                   <button
                     onClick={handleImageClick}
                     type="submit"
@@ -378,30 +393,44 @@ function Messages({
                 </span>
               </div>
             )}
-            <span className="absolute inset-y-0 right-4 flex items-center pr-6">
-              <button
-                onClick={togglePinDropdown}
-                type="submit"
-                className="p-1 focus:outline-none focus:shadow-none hover:text-purple-600"
-              >
-                <Paperclip
-                  className="size-5 lg:size-6 mr-3 md:mt-1 mt-4 ml-2  "
-                  size={18}
-                  color="purple"
-                />
-              </button>
-            </span>
+            {!newMessage.length && (
+              <>
+                <span onClick={()=>setIsRecording(true)} className="absolute right-1 flex items-center">
+                  <VoiceRecorder
+                    onRecordingComplete={addAudioElement}
+                    setRecordedAudioBlob={setRecordedAudioBlob}
+                    style={{ background: "none " ,  borderRadius: 0 }}
+                    
+                  />
+                </span>
 
-            <span className="absolute inset-y-0 right-0 flex items-center pr-6">
-              <button
-                onClick={() => handleSubmit(null)}
-                type="submit"
-                className="p-1 focus:outline-none focus:shadow-none hover:text-purple-600"
-              >
-                <SendHorizonal size={18} color="purple" />
-              </button>
-            </span>
-     
+              { !isRecording &&  (<span className="absolute inset-y-0 right-10 flex items-center ">
+                  <button
+                    onClick={togglePinDropdown}
+                    type="submit"
+                    className="p-1 focus:outline-none focus:shadow-none hover:text-purple-600"
+                  >
+                    <Paperclip
+                      className="size-5 lg:size-6 mr-3 md:mt-1 mt-4 ml-2  "
+                      size={18}
+                      color="purple"
+                    />
+                  </button>
+                </span>)}
+              </>
+            )}
+            {newMessage.length > 0 && (
+              <span className="absolute inset-y-0 right-0 flex items-center pr-6">
+                <button
+                  onClick={() => handleSubmit(null)}
+                  type="submit"
+                  className="p-1 focus:outline-none focus:shadow-none hover:text-purple-600"
+                >
+                  <SendHorizonal size={18} color="purple" />
+                </button>
+              </span>
+            )}
+
             <input
               type="text"
               value={newMessage}
@@ -412,15 +441,20 @@ function Messages({
             />
           </div>
         </div>
-                 {showEmojiPicker && (
-                    <Picker
-                    data={data}
-                    onEmojiSelect={(emoji:any) => {
-                        setNewMessage((prevMessage) => prevMessage + emoji.native);
-                      }}
-                      style={{ position: "fixed", bottom: "500px", right: "10px" , backgroundColor: "white" }}
-                    />
-                  )}
+        {showEmojiPicker && (
+          <Picker
+            data={data}
+            onEmojiSelect={(emoji: any) => {
+              setNewMessage((prevMessage) => prevMessage + emoji.native);
+            }}
+            style={{
+              position: "fixed",
+              bottom: "500px",
+              right: "10px",
+              backgroundColor: "white",
+            }}
+          />
+        )}
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ import {
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-function Followers({ followers, followingUsers, setFollowingUsers, onClose }) {
+function Followers({ followers, followingUsers, setFollowingUsers, onClose }:any) {
   const selectUser = (state: any) => state.auth.user;
   const user = useSelector(selectUser);
   const userId = user._id || "";
@@ -29,15 +29,15 @@ function Followers({ followers, followingUsers, setFollowingUsers, onClose }) {
       });
   }, []);
 
-  const isFollowing = (likedUserId) => {
-    return following.some((user) => user._id === likedUserId);
+  const isFollowing = (likedUserId:string) => {
+    return following.some((user:any) => user._id === likedUserId);
   };
 
-  const isRequested = (likedUserId) => {
+  const isRequested = (likedUserId:string) => {
     return requested.includes(likedUserId);
   };
 
-  const handleFollow = (likedUserId) => {
+  const handleFollow = (likedUserId:string) => {
     followUser({ userId, followingUser: likedUserId })
       .then((response: any) => {
         if (response.data.followed) {
@@ -57,12 +57,12 @@ function Followers({ followers, followingUsers, setFollowingUsers, onClose }) {
       });
   };
 
-  const handleUnFollow = (likedUserId) => {
+  const handleUnFollow = (likedUserId:string) => {
     UnFollowUser({ userId, unfollowingUser: likedUserId })
       .then((response: any) => {
-        setFollowing(following.filter((user) => user._id !== likedUserId));
+        setFollowing(following.filter((user:any) => user._id !== likedUserId));
         setFollowingUsers(
-          followingUsers.filter((user) => user._id !== likedUserId)
+          followingUsers.filter((user:any) => user._id !== likedUserId)
         );
         console.log(response.data);
       })
@@ -70,7 +70,7 @@ function Followers({ followers, followingUsers, setFollowingUsers, onClose }) {
         console.log(error.message);
       });
   };
-  const handleReject = (likedUserId) => {
+  const handleReject = (likedUserId:string) => {
     rejectFollowRequest({ userId, requestedUser: likedUserId }).then(
       (response: any) => {
         setRequested(requested.filter((id) => id !== likedUserId));
@@ -88,7 +88,7 @@ function Followers({ followers, followingUsers, setFollowingUsers, onClose }) {
         <hr className="border-gray-300 w-full mb-2" />
         <div className="overflow-auto" style={{ height: "270px" }}>
           <ul>
-            {followers.map((user) => (
+            {followers.map((user:any) => (
               <>
                 <div className="lg:col-span-2 w-12/12  pb-2 mb-2" id="posted">
                   <div className="flex justify-between bg-white rounded-lg">

@@ -219,10 +219,11 @@ export const addPost = (postData: {
 //@dec      Get All Posts
 //method    get
 
-export const getAllPosts = (userId: { userId: string }) => {
+export const getAllPosts = ({userId,searchTerm}: { userId: string,searchTerm:string }) => {
   return new Promise((resolve, reject) => {
     try {
-      apiCall("post", postUrls.getAllPosts, userId)
+      const requestData = searchTerm?.length!==0 ? { userId, searchTerm } : { userId };
+      apiCall("post", postUrls.getAllPosts, requestData)
         .then((response) => {
           resolve(response);
         })
@@ -362,7 +363,7 @@ export const getSavedPost = (userId: string) => {
 //@dec      Get User Details
 //method    POST
 
-export const getUserDetails = (userId: { userId: string }) => {
+export const getUserDetails = (userId: string ) => {
   return new Promise((resolve, reject) => {
     try {
       apiCall("get", userUrls.getUserDetails + `/${userId}`, null)
@@ -535,10 +536,11 @@ export const editProfile = (userData: {
 //@dec      get connections of a user
 //method    POST
 
-export const getUserSuggestions = (userId: { userId: string }) => {
+export const getUserSuggestions = ({ userId, searchTerm }: { userId: string, searchTerm?: string }) => {
   return new Promise((resolve, reject) => {
     try {
-      apiCall("post", userUrls.userSuggestions, userId)
+      const requestData = searchTerm?.length!==0 ? { userId, searchTerm } : { userId };
+      apiCall("post", userUrls.userSuggestions, requestData)
         .then((response) => {
           resolve(response);
         })
@@ -546,7 +548,7 @@ export const getUserSuggestions = (userId: { userId: string }) => {
           reject(err);
         });
     } catch (error) {
-      resolve({ status: 500, message: "Somethings wrong." });
+      resolve({ status: 500, message: "Something's wrong." });
     }
   });
 };

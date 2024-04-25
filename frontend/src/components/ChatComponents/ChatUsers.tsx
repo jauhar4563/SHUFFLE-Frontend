@@ -39,7 +39,7 @@ function ChatUsers({
 
   return (
     <div
-      className="relative flex flex-col hidden h-full bg-white border-r border-gray-300 shadow-xl md:block transform transition-all duration-500 ease-in-out"
+      className="relative flex flex-col  h-full bg-white border-r border-gray-300 shadow-xl md:block transform transition-all duration-500 ease-in-out"
       style={{ width: "24rem" }}
     >
       <div className="flex justify-between px-3 pt-1 text-white">

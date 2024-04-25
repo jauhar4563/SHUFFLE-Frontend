@@ -1,5 +1,6 @@
-
 import { formatDistanceToNow } from 'date-fns';
+import 'react-h5-audio-player/lib/styles.css';
+import CustomAudioPlayer from './AudioPlayer';
 
 const RecievedChat= ({message}:any) => {
   return (
@@ -50,6 +51,14 @@ const RecievedChat= ({message}:any) => {
               </video>
              
             )
+           }
+              {
+             message?.attachment &&
+             message?.attachment.type==='audio' && (
+              <CustomAudioPlayer
+              src={`http://localhost:3000/chat/audios/${message.attachment.filename}`}
+            />
+             )
            }
         </div>
         <span className="text-xs font-normal text-gray-500 dark:text-gray-400">

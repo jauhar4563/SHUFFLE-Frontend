@@ -237,3 +237,22 @@ export const getDashboardStats = () => {
     }
   });
 };
+
+//@dec     Get Dashboard Stats
+//@method   Get
+export const adminTransactionList = (page:number,limit=6) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const queryParams = `?page=${page}&limit=${limit}`;
+      adminApiCalls("get", adminUrl.getTransactions+queryParams, null)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};

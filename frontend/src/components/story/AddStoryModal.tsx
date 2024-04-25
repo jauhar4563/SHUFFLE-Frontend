@@ -62,7 +62,7 @@ function AddStoryModal({ setAddStoryModal,setStories }:any) {
             // setNewPost(response.data.posts);
             
             setIsLoading(false);
-            setStories((prevStories:any) => [...prevStories, response.data]);
+            setStories((prevStories:any) => [response.data,...prevStories]);
             resetState();
             handleCancelClick();
           } else {

@@ -7,6 +7,8 @@ import {
   VideoIcon,
 } from "lucide-react";
 import RecievedChat from "./RecievedChat";
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
 import SendedChat from "./SendedChat";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -14,6 +16,7 @@ import {
   getGroupMessages,
 } from "../../services/api/user/apiMethods";
 import { useNavigate } from "react-router-dom";
+import VoiceRecorder from "./VoiceRecorder";
 
 
 function GroupMessages({
@@ -28,7 +31,10 @@ function GroupMessages({
   const [image, setImage] = useState<any>(null);
   const [video, setVideo] = useState<any>(null);
   const scrollRef = useRef<any>();
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [recordedAudioBlob, setRecordedAudioBlob]: any = useState(null);
+
   const navigate = useNavigate();
   useEffect(() => {
     const currentChatId = currentChat?._id;
@@ -97,6 +103,9 @@ function GroupMessages({
       } else if (file.type.startsWith("video/")) {
         messageType = "video";
         console.log(file);
+      }else if(file.type.startsWith('audio/')){
+        messageType='audio';
+        console.log(file)
       }
       formData.append("file", file);
       setNewMessage(messageType);
@@ -125,6 +134,19 @@ function GroupMessages({
       setNewMessage("");
     });
   };
+
+  const addAudioElement = async (blob: any) => {
+    const url = URL.createObjectURL(blob);
+    const audio = document.createElement("audio");
+    audio.src = url;
+    audio.controls = true;
+    document.body.appendChild(audio);
+
+    const audioFile = new File([blob], `${Date.now()}+audio.mp3`, { type: "audio/mpeg" });
+    handleSubmit(audioFile);
+
+  };
+
 
   const handleImageClick = () => {
     const fileInput = document.getElementById("image");
@@ -277,10 +299,12 @@ function GroupMessages({
               }}
               hidden
             />
+
             <span className="absolute inset-y-0 left-0 flex items-center pl-6">
               <button
                 type="button"
                 className="p-1 focus:outline-none focus:shadow-none"
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
               >
                 <Smile size={18} />
               </button>
@@ -293,7 +317,7 @@ function GroupMessages({
                     type="submit"
                     className="p-1 focus:outline-none focus:shadow-none hover:text-purple-600"
                   >
-                    <VideoIcon
+                    <Video
                       className="size-5 lg:size-6 mr-3 md:mt-1 mt-1 ml-2  "
                       size={18}
                       color="purple"
@@ -301,7 +325,7 @@ function GroupMessages({
                   </button>
                 </span>
 
-                <span className="absolute inset-y-0 right-14 flex items-center pr-6">
+                <span className="absolute inset-y-0 right-16 flex items-center pr-6">
                   <button
                     onClick={handleImageClick}
                     type="submit"
@@ -316,38 +340,67 @@ function GroupMessages({
                 </span>
               </div>
             )}
-            <span className="absolute inset-y-0 right-4 flex items-center pr-6">
-              <button
-                onClick={togglePinDropdown}
-                type="submit"
-                className="p-1 focus:outline-none focus:shadow-none hover:text-purple-600"
-              >
-                <Paperclip
-                  className="size-5 lg:size-6 mr-3 md:mt-1 mt-4 ml-2  "
-                  size={18}
-                  color="purple"
-                />
-              </button>
-            </span>
-            <span className="absolute inset-y-0 right-0 flex items-center pr-6">
-              <button
-                onClick={() => handleSubmit(null)}
-                type="submit"
-                className="p-1 focus:outline-none focus:shadow-none hover:text-green-600"
-              >
-                <SendHorizonal size={18} color="green" />
-              </button>
-            </span>
+            {!newMessage.length && (
+              <>
+                <span className="absolute  right-1 flex items-center">
+                  <VoiceRecorder
+                    onRecordingComplete={addAudioElement}
+                    setRecordedAudioBlob={setRecordedAudioBlob}
+                    //  sendFiles={sendFiles}
+                  />
+                </span>
+
+                <span className="absolute inset-y-0 right-7 flex items-center pr-6">
+                  <button
+                    onClick={togglePinDropdown}
+                    type="submit"
+                    className="p-1 focus:outline-none focus:shadow-none hover:text-purple-600"
+                  >
+                    <Paperclip
+                      className="size-5 lg:size-6 mr-3 md:mt-1 mt-4 ml-2  "
+                      size={18}
+                      color="purple"
+                    />
+                  </button>
+                </span>
+              </>
+            )}
+            {newMessage.length>0 && (
+              <span className="absolute inset-y-0 right-0 flex items-center pr-6">
+                <button
+                  onClick={() => handleSubmit(null)}
+                  type="submit"
+                  className="p-1 focus:outline-none focus:shadow-none hover:text-purple-600"
+                >
+                  <SendHorizonal size={18} color="purple" />
+                </button>
+              </span>
+            )}
+
             <input
               type="text"
               value={newMessage}
-              className="w-full items-center h-10 pl-10 pr-4  bg-white  text-xs border border-gray-300 rounded-md focus:border-gray-200 focus:outline-none focus:ring-1 focus:ring-offset-0 focus:ring-green-600 transition-colors duration-300"
+              className="w-full items-center h-10 pl-10 pr-4  bg-white  text-xs border border-gray-300 rounded-md focus:border-gray-200 focus:outline-none focus:ring-1 focus:ring-offset-0 focus:ring-purple-600 transition-colors duration-300"
               placeholder="Type your message..."
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyPress={handleKeyPress}
             />
           </div>
         </div>
+        {showEmojiPicker && (
+          <Picker
+            data={data}
+            onEmojiSelect={(emoji: any) => {
+              setNewMessage((prevMessage) => prevMessage + emoji.native);
+            }}
+            style={{
+              position: "fixed",
+              bottom: "500px",
+              right: "10px",
+              backgroundColor: "white",
+            }}
+          />
+        )}
       </div>
     </div>
   );

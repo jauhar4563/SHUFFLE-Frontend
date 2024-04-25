@@ -24,3 +24,9 @@
 em-emoji-picker section {
   background-color: white;
 }
+
+.audio-recorder{
+  background: none !important;
+    box-shadow: none !important;
+    margin-right: 10px !important;
+}

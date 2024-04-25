@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getUnreadMessages } from "../../services/api/user/apiMethods";
 import { BASE_URL } from "../../constants/baseUrls";
 import { io } from "socket.io-client";

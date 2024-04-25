@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import PostShimmer from "../../components/shimmerUI/postShimmer";
 import Posts from "../../components/Posts";
 import { useSelector } from "react-redux";
+import PostGallary from "../../components/PostGallary";
 
 function UsersProfile() {
   const selectUser = (state: any) => state.auth.user;
@@ -53,22 +54,15 @@ function UsersProfile() {
       {!loading && <UserDetails user={user} connections={connections} isConnected={isConnected}/>}
 
       {isConnected && (
-        <div className="flex">
-          {loading ? (
-            <div className="">
-              <PostShimmer />
-              <PostShimmer />
-              <PostShimmer />
-            </div>
-          ) : (
-            <div className="">
-              {Post.length!==0 && Post.map((post: any) => (
-                <Posts key={post._id} post={post} />
-              ))}
-            </div>
-          )}
-          <div className=" bg-white"></div>
-        </div>
+         <div className="ms-96 mt-5 grid grid-cols-2 md:grid-cols-3 w-11/12 gap-4">
+         {Post.map((post: any) => (
+           <div key={post._id}>
+             <PostGallary post={post} />
+           </div>
+         ))}
+ 
+       
+       </div>
       )}
     </div>
   );

@@ -5,6 +5,7 @@ import HashTags from "../components/admin/hashTags";
 import PostList from "../components/admin/PostList";
 import ReportList from '../components/admin/ReportList'
 import Admin from "../pages/admin/Admin";
+import Transactions from "../components/admin/Transactions";
 
 export const adminRouter = {
   path: "/admin",
@@ -30,6 +31,10 @@ export const adminRouter = {
     {
       path:"/admin/reports",
       element:<ReportList />
+    },
+    {
+      path:'/admin/transactions',
+      element:<Transactions />
     }
   ],
 };

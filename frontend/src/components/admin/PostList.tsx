@@ -3,8 +3,7 @@ import { toast } from "sonner";
 import {
     adminPostBlock,
     adminPostList,
-  adminUserBlock,
-  adminUserList,
+
 } from "../../services/api/admin/apiMethods";
 import { CheckCheck } from "lucide-react";
 import { Button, Modal,Pagination  } from "flowbite-react";
@@ -50,7 +49,7 @@ const PostList: React.FC = () => {
       setSelectedUserId(postId);
       setBlockAction(status === "block" ? "unblock" : "block");
       setOpenModal(true);
-    } catch (err) {
+    } catch (err:any) {
       toast.error(err.message);
     }
   };
@@ -207,11 +206,10 @@ const PostList: React.FC = () => {
 
                 </td>
                 <td className="px-6 py-4">
-                    {post.date}
-                {/* {formatDistanceToNow(
-                                    new Date(user.timestamp),
+                {formatDistanceToNow(
+                                    new Date(post.createdAt),
                                     { addSuffix: true }
-                                  )} */}
+                                  )}
                 </td>
 
                 <td className="px-6 py-4">

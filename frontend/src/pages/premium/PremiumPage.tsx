@@ -5,6 +5,7 @@ import Header from "../../components/Header";
 import { Outlet } from "react-router-dom";
 import { toast } from "sonner";
 import { getAllTransactions } from "../../services/api/user/apiMethods";
+import { PostSearchProvider } from "../../utils/context/posts/PostSearchContext";
 
 interface Transaction {
   _id: string;
@@ -40,7 +41,9 @@ function PremiumPlans() {
 
   return (
     <div>
-      <Header />
+      <PostSearchProvider>
+        <Header />
+      </PostSearchProvider>
 
       <div className="bg-white pt-8 ">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -115,7 +118,7 @@ function PremiumPlans() {
         </div>
       </div>
 
-      {transactions.length!==0 && (
+      {transactions.length !== 0 && (
         <div className="px-40 ">
           <p className="text-2xl font-bold tracking-tight text-gray-900 pt-16">
             Transaction History

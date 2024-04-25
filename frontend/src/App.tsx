@@ -4,6 +4,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import Protect from "./routes/protect";
 import Header from "./components/Header";
 import SideNavBar from "./components/SideNavBar";
+import { PostSearchProvider } from "./utils/context/posts/PostSearchContext";
 
 function App() {
   const selectUser = (state: any) => state.auth.user;
@@ -19,11 +20,13 @@ function App() {
   return (
     <>
       <Protect>
-        <Header />
-        <div className=" flex   mt-20 h-screen " >
-          <SideNavBar />
-          <Outlet />
-        </div>
+        <PostSearchProvider>
+          <Header />
+          <div className=" flex  mt-20 h-screen ">
+            <SideNavBar />
+            <Outlet />
+          </div>
+        </PostSearchProvider>
       </Protect>
     </>
   );

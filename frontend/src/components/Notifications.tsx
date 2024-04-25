@@ -15,7 +15,6 @@ function Notifications() {
   useEffect(() => {
     try {
       // setLoading(true);
-      setTimeout(() => {
         getNotifications({ userId: userId })
           .then((response:any) => {
             const notificationsData = response.data.notifications;
@@ -29,7 +28,6 @@ function Notifications() {
           .finally(() => {
             // setLoading(false);
           });
-      }, 100);
     } catch (error) {
       console.log(error);
     }

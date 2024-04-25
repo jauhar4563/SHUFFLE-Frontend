@@ -78,5 +78,6 @@ export const adminUrl = {
   postBlock: "/admin/post-block",
   getReports: "/admin/get-reports",
   chartData:'/admin/chart-data',
-  dashboardStats:'/admin/dashboard-stats'
+  dashboardStats:'/admin/dashboard-stats',
+  getTransactions:'/admin/transactions'
 };
