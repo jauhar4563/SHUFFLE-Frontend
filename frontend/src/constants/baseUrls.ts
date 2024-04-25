@@ -1,1 +1,1 @@
-export const BASE_URL = 'http://shufle.online'
+export const BASE_URL = 'https://shufle.online'
