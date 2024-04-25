@@ -1,8 +1,8 @@
 import { Pause, Play } from "lucide-react";
-import React, { useState, useEffect, useRef } from "react";
+import  { useState, useEffect, useRef } from "react";
 import WaveSurfer from "wavesurfer.js";
 
-const CustomAudioPlayer = ({ src }) => {
+const CustomAudioPlayer = ({ src }:any) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [totalDuration, setTotalDuration] = useState(0);
@@ -18,7 +18,7 @@ const CustomAudioPlayer = ({ src }) => {
       barWidth: 2,
       cursorWidth: 0,
       height: 40,
-      responsive: true,
+      // responsive: true,
     });
 
     wavesurfer.current.load(src);
@@ -36,7 +36,7 @@ const CustomAudioPlayer = ({ src }) => {
     });
 
     // Update currentTime based on audio playback
-    wavesurfer.current.on("seek", (progress) => {
+    wavesurfer.current.on("seek", (progress:any) => {
       setCurrentTime(progress * wavesurfer.current.getDuration());
     });
 
@@ -83,7 +83,7 @@ const CustomAudioPlayer = ({ src }) => {
     setIsPlaying(!isPlaying);
   };
 
-  const handleWaveformClick = (e) => {
+  const handleWaveformClick = (e:any) => {
     const clickX = e.nativeEvent.offsetX;
     const waveformWidth = waveformRef.current.clientWidth;
     const progress = clickX / waveformWidth;
@@ -91,7 +91,7 @@ const CustomAudioPlayer = ({ src }) => {
     setTotalDuration(wavesurfer.current.getDuration());
   };
 
-  const formatTime = (seconds) => {
+  const formatTime = (seconds:any) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;

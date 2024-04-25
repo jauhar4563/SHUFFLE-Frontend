@@ -7,10 +7,10 @@ import {
 import { CheckCheck } from "lucide-react";
 import { Button, Modal,Pagination  } from "flowbite-react";
 import { BookLockIcon } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
+// import { formatDistanceToNow } from "date-fns";
 
 const ReportList: React.FC = () => {
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [posts, setReports] = useState<any[]>([]);
   const [filteredPosts,setFilteredPosts] = useState<any[]>([]);
   const [openModal, setOpenModal] = useState(false);
@@ -39,7 +39,7 @@ const ReportList: React.FC = () => {
       console.log(error);
     })
     .finally(() => {
-      setLoading(false);
+      // setLoading(false);
     });
   }
 
@@ -48,7 +48,7 @@ const ReportList: React.FC = () => {
       setSelectedUserId(postId);
       setBlockAction(status === "block" ? "unblock" : "block");
       setOpenModal(true);
-    } catch (err) {
+    } catch (err:any) {
       toast.error(err.message);
     }
   };

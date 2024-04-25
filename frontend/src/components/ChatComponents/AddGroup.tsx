@@ -19,7 +19,7 @@ function AddGroup({
   setOpenModal,
   emailInputRef,
   setUserGroups,
-}) {
+}:any) {
   const selectUser = (state: any) => state.auth.user;
   const user = useSelector(selectUser);
   const userId = user._id;
@@ -87,7 +87,7 @@ function AddGroup({
         console.log("hello");
         const GroupData = response.data;
         console.log(GroupData);
-        setUserGroups((prev) => [...prev, GroupData]);
+        setUserGroups((prev:any) => [...prev, GroupData]);
         toast.info("Group Added successfully");
         resetState();
       });

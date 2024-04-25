@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import  { useEffect, useState } from 'react'
 
 
  
 
 
-function Group({group,CurrentUser,onlineUsers,lastGroupMessages}) {
+function Group({group,CurrentUser,onlineUsers,lastGroupMessages}:any) {
     const [user, setUser] = useState(null);
     const [isOnline,setIsOnline] = useState(false);
     const [lastMessageText, setLastMessageText] = useState<string>('');

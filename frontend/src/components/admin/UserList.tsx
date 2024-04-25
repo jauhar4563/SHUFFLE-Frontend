@@ -9,7 +9,7 @@ import { Button, Modal,Pagination } from "flowbite-react";
 import { BookLockIcon } from "lucide-react";
 
 const UserList: React.FC = () => {
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState<any[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<any[]>([]);
 
@@ -26,7 +26,7 @@ const UserList: React.FC = () => {
   }, [currentPage]); 
 
   const fetchUsers = () => {
-    setLoading(true);
+    // setLoading(true);
     adminUserList(currentPage)
       .then((response: any) => {
         const usersData = response.data;
@@ -42,7 +42,7 @@ const UserList: React.FC = () => {
         toast.error("Failed to fetch users.");
       })
       .finally(() => {
-        setLoading(false);
+        // setLoading(false);
       });
   };
 
@@ -51,7 +51,7 @@ const UserList: React.FC = () => {
       setSelectedUserId(userId);
       setBlockAction(status === "block" ? "unblock" : "block");
       setOpenModal(true);
-    } catch (err) {
+    } catch (err:any) {
       toast.error(err.message);
     }
   };

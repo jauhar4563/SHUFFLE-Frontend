@@ -164,7 +164,7 @@ const PostList: React.FC = () => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100 border-t border-gray-100">
-          {filteredPosts.length > 0 &&
+          {!loading && filteredPosts.length > 0 &&
             filteredPosts.map((post: any) => (
               <tr key={post._id} className="hover:bg-gray-50">
                 <th className="flex gap-3 px-6 py-4 font-normal text-gray-900">

@@ -6,14 +6,14 @@ import { logout } from "../../../utils/context/reducers/authSlice";
 export const apiCall = async <T>(method: string, url: string, data: T) => {
   return await new Promise(async (resolve, reject) => {
     try {
-      let response, error;
+      let response:any, error:any;
 
       if (method === "post") {
         response = await api.post(url, data).catch((err) => {
           error = err;
         });
       } else if (method === "get") {
-        response = await api.get(url, data).catch((err) => {
+        response = await api.get(url).catch((err) => {
           error = err;
         });
       } else if (method === "patch") {
@@ -21,7 +21,7 @@ export const apiCall = async <T>(method: string, url: string, data: T) => {
           error = err;
         });
       } else if (method === "delete") {
-        response = await api.delete(url, data).catch((err) => {
+        response = await api.delete(url).catch((err) => {
           error = err;
         });
       } else if (method === "put") {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+// import { useState } from "react";
 import logo from "../../../public/images/logo/shuffle.png";
 import { Link, useNavigate } from "react-router-dom";
 import { HashIcon, User2, LogOutIcon, BadgeDollarSign } from "lucide-react";
@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { AdminLogout } from "../../utils/context/reducers/adminAuthSlice";
 
 function Navbar() {
-  const [sidenav, setSidenav] = useState<boolean>(true);
+  // const [sidenav, setSidenav] = useState<boolean>(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -29,7 +29,6 @@ function Navbar() {
         data-x-data="{ sidenav: true }"
       >
         <button
-          onClick={() => setSidenav(true)}
           className="p-2 border-2 bg-white rounded-md border-gray-200 shadow-lg text-gray-500 focus:bg-teal-500 focus:outline-none focus:text-white absolute top-0 left-0 sm:hidden"
         >
           <svg
@@ -49,7 +48,6 @@ function Navbar() {
           id="sidebar"
           className="bg-white h-screen md:block shadow-xl px-3 w-30 md:w-60 lg:w-60 overflow-x-hidden transition-transform duration-300 ease-in-out"
           data-x-show="sidenav"
-          onClick={() => setSidenav(false)}
         >
           <div className="flex justify-center mt-4">
             <img src={logo} className=" w-32 " alt="Logo" />

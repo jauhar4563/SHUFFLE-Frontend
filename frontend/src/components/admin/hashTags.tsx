@@ -1,4 +1,4 @@
-import { CheckCheck, Pencil } from "lucide-react";
+import { CheckCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -11,7 +11,7 @@ import { BookLockIcon } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
 function HashTags() {
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [hashtags, setHashtags] = useState<any[]>([]);
   const [filteredHashtags, setFilteredHashtags] = useState<any[]>([]);
   const [tag, setTag] = useState("");
@@ -43,7 +43,7 @@ function HashTags() {
       console.log(error);
     })
     .finally(() => {
-      setLoading(false);
+      // setLoading(false);
     });
   }
 
@@ -67,7 +67,7 @@ function HashTags() {
         .catch((error) => {
           toast.error(error.message);
         });
-    } catch (error) {
+    } catch (error:any) {
       console.log(error.message);
       toast.error("Failed to add hashtag");
     }
@@ -78,7 +78,7 @@ function HashTags() {
       setSelectedHashtagId(hashtagId);
       setBlockAction(status === "block" ? "unblock" : "block");
       setOpenModal(true);
-    } catch (err) {
+    } catch (err:any) {
       toast.error(err.message);
     }
   };
@@ -116,7 +116,6 @@ function HashTags() {
       });
   };
 
-  const handleHashtagEdit = () => {};
   const handleSearch = (searchText: string) => {
     const filtered = hashtags.filter((hashtag) =>
       hashtag.hashtag.toLowerCase().includes(searchText.toLowerCase())
