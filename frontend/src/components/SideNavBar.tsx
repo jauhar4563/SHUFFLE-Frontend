@@ -42,7 +42,7 @@ function SideNavBar() {
               {user ? user.userName : ""}
             </h4>
             {user.isVerified && (
-              <BadgeCheck size={24} className="mt-4" color="white" fill="#9333ea" />
+              <BadgeCheck size={24} className="mt-4" color="white" fill="#7E3AF2" />
             )}
           </div>
         </div>
@@ -134,11 +134,11 @@ function SideNavBar() {
             </NavLink>
             <NavLink
               className={`flex items-center px-4 mt-2 py-2 ${
-                location.pathname === "/settings"
+                location.pathname === "/more"
                   ? "text-purple-600 bg-white"
                   : "text-gray-800"
               }  rounded-lg`}
-              to={"/settings"}
+              to={"/more"}
             >
               <ListCollapse size={20} />
 

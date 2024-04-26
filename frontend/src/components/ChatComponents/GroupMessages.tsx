@@ -245,11 +245,11 @@ function GroupMessages({
                   messages.map((message:any) => {
                     return message?.sender._id === user._id ||
                       message?.sender === user._id ? (
-                      <div key={message._id} className="self-end w-3/4 my-2">
+                      <div key={message?._id} className="self-end w-3/4 my-2">
                         <SendedChat message={message} />
                       </div>
                     ) : (
-                      <div key={message._id} className="self-start w-3/4 my-2">
+                      <div key={message?._id} className="self-start w-3/4 my-2">
                         <RecievedChat message={message} />
                       </div>
                     );

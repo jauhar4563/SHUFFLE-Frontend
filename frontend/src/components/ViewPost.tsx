@@ -9,32 +9,27 @@ import {
   replyComment,
 } from "../services/api/user/apiMethods";
 import { toast } from "sonner";
-import { BadgeCheck, ChevronLeft, ChevronRight, Trash2, Undo2 } from "lucide-react";
+import { BadgeCheck, ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import * as Yup from "yup";
 import { Formik, Form, Field } from "formik";
 import { Modal } from "flowbite-react";
+import { useSocket } from "../utils/context/SocketContext/SocketContext";
 
 const ViewPost = ({
-  post,
-  isLikedByUser,
-  likeCount,
-  isSavedByUser,
-  handleLike,
-  handleSave,
-}) => {
+  post
+}:any) => {
   const selectUser = (state: any) => state.auth.user;
   const user = useSelector(selectUser);
   const userId = user._id || "";
   const [showLikedUsersPopup, setShowLikedUsersPopup] = useState(false);
-  const [hideLikes, setHideLikes] = useState(post.hideLikes);
-  const [hideComment, setHideComment] = useState(post.hideComment);
-  const [isComment, setIsComment] = useState(true);
   const [comments, setComments] = useState([]);
   const [replyComments, setReplyComments] = useState(false);
   const [parentCommentId, setParentCommentId] = useState("");
   const [openModal, setOpenModal] = useState(false);
-  const commentBoxRef = useRef(null);
+  const commentBoxRef = useRef<any>(null);
+  const socket:any = useSocket();
+
 
   useEffect(() => {
     const postId = post._id;
@@ -83,9 +78,7 @@ const ViewPost = ({
     setParentCommentId("");
   };
 
-  const handleIsComment = () => {
-    setIsComment(true);
-  };
+
 
   const commentInitialValues = {
     comment: "",
@@ -102,6 +95,15 @@ const ViewPost = ({
         userId: userId,
         comment: values.comment,
       };
+      if (userId !== post.userId._id) {
+        const notificationData = {
+          postImage: post.imageUrl,
+          receiverId: post.userId._id,
+          senderName: user.userName,
+          message: `Commented "${values.comment}" Your Post`,
+        };
+        socket.current.emit("sendNotification", notificationData);
+      }
 
       addComment(commentData)
         .then((response: any) => {
@@ -177,7 +179,7 @@ const ViewPost = ({
               rightControl={<ChevronRight color="white" />}
             >
               {post.imageUrl &&
-                post.imageUrl.map((image) => (
+                post.imageUrl.map((image:string) => (
                   <img className=" " src={image} alt="Description" />
                 ))}
             </Carousel>
@@ -205,7 +207,7 @@ const ViewPost = ({
               </div>
             </a>
           </header>
-          {isComment && post.hideComment && (
+          { post.hideComment && (
             <div className="home-scroll-post">
               <div className="home-scrollbox-post flex items-center justify-center">
                 <div>
@@ -216,7 +218,7 @@ const ViewPost = ({
               </div>
             </div>
           )}
-          {isComment && !post.hideComment && (
+          { !post.hideComment && (
             <>
               <div className="home-scroll-post">
                 <div ref={commentBoxRef} className="home-scrollbox-post">

@@ -60,7 +60,6 @@ function AddPost({ setNewPost }: any) {
     setShowModal(true);
   };
   const fileInputRef = useRef<HTMLInputElement>(null);
-  console.log("hello");
 
   const handleButtonClick = () => {
     fileInputRef.current?.setAttribute("accept", "image/*");

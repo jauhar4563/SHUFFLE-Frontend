@@ -4,6 +4,7 @@ import { getNotifications } from "../services/api/user/apiMethods";
 import { useSelector } from "react-redux";
 import { Bell, Search } from "lucide-react";
 import { usePostSearchContext } from "../utils/context/posts/PostSearchContext";
+import logo from '../../public/images/logo/shuffle.png'
 
 function Header() {
   const [prevScrollPos, setPrevScrollPos] = useState(window.pageYOffset);
@@ -12,7 +13,8 @@ function Header() {
   const selectUser = (state: any) => state.auth.user;
   const user = useSelector(selectUser);
   const userId = user._id || "";
-  const {postSearchData, setPostSearchData } = usePostSearchContext();
+  const {postSearchData, setPostSearchData } :any = usePostSearchContext();
+ 
 
   const handleScroll = () => {
     const currentScrollPos = window.pageYOffset;
@@ -27,7 +29,6 @@ function Header() {
         .then((response: any) => {
           const notificationsData = response.data.notifications;
           setNotifications(notificationsData);
-          console.log(notificationsData);
         })
         .catch((error) => {
           console.log(error);
@@ -49,7 +50,7 @@ function Header() {
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchValue = e.target.value;
     // Update the postSearchData in the context
-    setPostSearchData((prevData) => ({
+    setPostSearchData((prevData:any) => ({
       ...prevData,
       search: searchValue.trim() ? searchValue : null,
     }));
@@ -62,7 +63,7 @@ function Header() {
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
           <Link to="/" className="flex items-center">
             <img
-              src="../../public/images/logo/shuffle.png"
+              src={logo}
               className="mr-3 h-6 sm:h-9"
               alt="Flowbite Logo"
             />

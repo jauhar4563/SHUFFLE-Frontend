@@ -19,6 +19,8 @@ function Friend({ conversation, CurrentUser, onlineUsers, lastMessages }: any) {
   const socket = useRef<any>();
   const conversationId = conversation._id;
   const userId = CurrentUser._id;
+  const [updatedAtTime, setUpdatedAtTime] = useState<string>('');
+
 
   useEffect(() => {
     socket.current = io(BASE_URL);
@@ -30,6 +32,9 @@ function Friend({ conversation, CurrentUser, onlineUsers, lastMessages }: any) {
         setUnreadMessages(response.data);
       });
     });
+    const updatedAtDate = new Date(conversation.updatedAt);
+        const formattedTime = updatedAtDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        setUpdatedAtTime(formattedTime);
   }, []);
 
   useEffect(() => {
@@ -63,7 +68,6 @@ function Friend({ conversation, CurrentUser, onlineUsers, lastMessages }: any) {
     }
   }, [conversation, CurrentUser, onlineUsers]);
   const handleClick = () => {
-    // Clear the unReadMessages array when the chat is clicked
     setUnreadMessages([]);
   };
   return (
@@ -126,7 +130,7 @@ function Friend({ conversation, CurrentUser, onlineUsers, lastMessages }: any) {
                   />
                 </svg>
                 <span className="ml-1 text-xs font-medium text-gray-600">
-                  12.52
+                  {updatedAtTime}
                 </span>
               </div>
             </div>

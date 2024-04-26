@@ -9,7 +9,7 @@ import * as Yup from "yup";
 import { addStory } from "../../services/api/user/apiMethods";
 import axios from "axios";
 
-function AddStoryModal({ setAddStoryModal,setStories }:any) {
+function AddStoryModal({ setAddStoryModal,setUserStory }:any) {
   const selectUser = (state: any) => state.auth.user || "";
   const user = useSelector(selectUser) || "";
   const userId = user._id || "";
@@ -58,11 +58,9 @@ function AddStoryModal({ setAddStoryModal,setStories }:any) {
         .then((response: any) => {
           const data = response.data;
           if (response.status === 200) {
-            toast.info(data.message);
-            // setNewPost(response.data.posts);
-            
+            toast.info(data.message);            
             setIsLoading(false);
-            setStories((prevStories:any) => [response.data,...prevStories]);
+            setUserStory(response.data);
             resetState();
             handleCancelClick();
           } else {

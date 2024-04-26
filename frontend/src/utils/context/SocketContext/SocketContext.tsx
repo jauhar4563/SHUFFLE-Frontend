@@ -1,33 +1,31 @@
-// SocketContext.tsx
-import React, { createContext, useContext, useEffect,  useState } from "react";
-import { io, Socket } from "socket.io-client";
+import { createContext, useContext, useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
+import io from "socket.io-client";
 import { BASE_URL } from "../../../constants/baseUrls";
 
-type SocketContextType = {
-  socket: Socket | null;
-};
+const SocketContext: any = createContext(undefined);
 
-const SocketContext = createContext<SocketContextType>({ socket: null });
+export const useSocket = () => useContext(SocketContext);
 
-export const useSocket = () => {
-  return useContext(SocketContext);
-};
-
-export const SocketProvider: React.FC = ({ children }:any) => {
-  const [socket, setSocket] = useState<Socket | null>(null);
-
+export const SocketProvider = ({ children }: any) => {
+  const socket = useRef<any>(null);
+  const selectUser: any = (state: any) => state.auth.user;
+  const user: any = useSelector(selectUser);
+  const userId: string = user._id || "";
   useEffect(() => {
-    const newSocket = io(BASE_URL);
-    setSocket(newSocket);
-    console.log("Socket Context");
-    console.log(socket);
-    
+    socket.current = io(BASE_URL);
+    if (user) {
+      socket.current.emit("addUser", userId);
+    }
 
+    return () => {
+      if (socket.current) {
+        socket.current.disconnect();
+      }
+    };
   }, []);
 
   return (
-    <SocketContext.Provider value={{ socket }}>
-      {children}
-    </SocketContext.Provider>
+    <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
   );
 };

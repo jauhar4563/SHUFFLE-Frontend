@@ -133,20 +133,20 @@ function PostGallary({ post }: { post: any }) {
                     ? "/profile"
                     : `/users-profile/${post.userId._id}`
                 }
-                className="flex items-center space-x-2"
+                className="flex items-center space-x-1"
               >
                 <img
                   src={post.userId.profileImg}
                   alt="User"
-                  className=" h-7 rounded-full"
+                  className=" h-6 rounded-full"
                 />
 
                 <div className="flex items-center">
-                  <p className="text-gray-800 text-sm font-medium mx-1">
+                  <p className="text-gray-100 text-xs font-medium mx-1">
                     {post.userId.userName}
                   </p>
                   {post.userId?.isVerified && (
-                       <BadgeCheck size={20} color="white" fill="#9333ea"/>
+                       <BadgeCheck size={15} color="white" fill="#7E3AF2"/>
                   )}
 
                   {/* <p className="text-gray-500 text-xs mx-1"> </p>
@@ -160,8 +160,8 @@ function PostGallary({ post }: { post: any }) {
           </div>
           <div className="absolute bottom-4 left-4 ">
             <div className="flex flex-col top-10">
-              <p className="text-sm text-gray-200">{post.title}</p>
-              <p className="text-xs text-gray-300">{post.description}</p>
+              <p className="text-sm font-light text-gray-200">{post.title}</p>
+              <p className="text-xs font-extralight text-gray-200">{post.description}</p>
             </div>
             <div className="flex items-center">
               <div>
@@ -170,9 +170,9 @@ function PostGallary({ post }: { post: any }) {
                   className="flex justify-center items-center gap-2 px-2  rounded-full p-1 transform transition-all duration-300 hover:scale-105"
                 >
                   <Heart
-                    color={isLikedByUser ? "red" : "gray"}
-                    fill={isLikedByUser ? "red" : "none"}
-                    size={25}
+                    color={isLikedByUser ? "#7E3AF2" : "gray"}
+                    fill={isLikedByUser ? "#7E3AF2" : "none"}
+                    size={22}
                   />
                 </button>
                 <p
@@ -188,14 +188,14 @@ function PostGallary({ post }: { post: any }) {
                   onClick={() => setShowCommentModal(true)}
                   className="flex justify-center items-center gap-2 px-2  rounded-full p-1 transform transition-all duration-300 hover:scale-105"
                 >
-                  <MessageSquareMore color="gray" size={25} />
+                  <MessageSquareMore color="gray" size={22} />
 
-                  <span className="text-sm"></span>
+                  <span className="text-xs"></span>
                 </button>
                 {!post.hideComment && (
                   <span
                     onClick={toggleLikedUsersPopup}
-                    className=" cursor-pointer text-white text-center text-sm"
+                    className=" cursor-pointer text-white text-center text-xs"
                   >
                     {commentsCount}
                   </span>

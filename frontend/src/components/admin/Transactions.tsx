@@ -37,7 +37,7 @@ const Transactions: React.FC = () => {
         // setLoading(false);
       });
   };
-
+  
   // Render
   return (
     <div className="w-full overflow-hidden rounded-lg border border-gray-200 shadow-md m-5">
@@ -53,6 +53,9 @@ const Transactions: React.FC = () => {
             </th>
             <th scope="col" className="px-6 py-4 font-medium text-gray-900">
               Transaction ID
+            </th>
+            <th scope="col" className="px-6 py-4 font-medium text-gray-900">
+             Status
             </th>
             <th scope="col" className="px-6 py-4 font-medium text-gray-900">
               Date
@@ -80,7 +83,21 @@ const Transactions: React.FC = () => {
                 </div>
               </td>
               <td className="px-6 py-4">{transaction.amount}</td>
-              <td className="px-6 py-4">{transaction.transactionId}</td>
+              <td className="px-6 py-4">tid_{transaction.transactionId.slice(9,20)}</td>
+              <td className="px-6 py-4">
+                {transaction.userId.isVerified?(
+                   <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2 py-1 text-xs font-semibold text-green-600">
+                   <span className="h-1.5 w-1.5 rounded-full bg-green-600"></span>
+                   Active
+                 </span>
+               ) : (
+                 <span className="inline-flex items-center gap-1 rounded-full  px-2 py-1 text-xs font-semibold text-red-600">
+                   <span className="h-1.5 w-1.5 rounded-full bg-red-600"></span>
+                   Not Active
+                 </span>
+               )
+                }
+              </td>
               <td className="px-6 py-4">
                 {" "}
                 {formatDistanceToNow(new Date(transaction.startDate), {

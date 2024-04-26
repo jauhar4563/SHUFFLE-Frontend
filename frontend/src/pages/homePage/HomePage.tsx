@@ -17,6 +17,7 @@ function HomePage() {
 
   useEffect(() => {
     try {
+      
      fetchposts();
     } catch (error) {
       console.log(error);
@@ -30,7 +31,6 @@ function HomePage() {
           const postsData = response.data;
           setPosts(postsData);
 
-          console.log(postsData);
         })
         .catch((error) => {
           toast.error(error.message);

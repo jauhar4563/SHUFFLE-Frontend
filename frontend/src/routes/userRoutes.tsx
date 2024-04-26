@@ -23,6 +23,7 @@ import ProtectedGroupVideoCall from "../components/ChatComponents/ProtectGroupVi
 import Error from "../components/Error/Error";
 import Protect from "./protectedRoutes/ProtectedRoutes";
 import Explore from "../pages/explore/Explore";
+import More from "../components/More";
 
 const appRouter = createBrowserRouter([
   {
@@ -61,6 +62,10 @@ const appRouter = createBrowserRouter([
       {
         path:'/explore',
         element:<Explore/>
+      },
+      {
+        path:'/more',
+        element:<More />
       }
     ],
   },

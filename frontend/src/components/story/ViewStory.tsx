@@ -64,7 +64,7 @@ function ViewStory({ story, onClose }:any) {
             alt="User Avatar"
             className="h-9 w-9 rounded-full mr-2"
           />
-          <span className="text-sm text-white font-medium">{story.userId.userName}</span>
+          <span className="text-sm text-gray-100 font-medium">{story.userId.userName}</span>
         </div>
         <div className="relative">
           <div className="h-1 flex gap-2 w-full rounded-lg mb-2">

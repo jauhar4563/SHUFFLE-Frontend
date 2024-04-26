@@ -13,7 +13,7 @@ interface PostSearchContextValue {
 }
 
 // Create the context with an initial empty object as the default value
-const PostSearchContext = createContext<PostSearchContextValue | undefined>(undefined);
+const PostSearchContext:any = createContext<PostSearchContextValue | undefined>(undefined);
 
 // Create a custom hook to consume the context
 const usePostSearchContext = () => {
@@ -25,7 +25,7 @@ const usePostSearchContext = () => {
 };
 
 // PostSearchProvider component using useState for PostSearchData
-const PostSearchProvider: React.FC = ({ children }:any) => {
+const PostSearchProvider = ({ children }:any) => {
   const [postSearchData, setPostSearchData] = useState<PostSearchData>({
     search:null,
    

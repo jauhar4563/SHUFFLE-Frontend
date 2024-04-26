@@ -491,7 +491,6 @@ export const rejectFollowRequest = (data: {
 export const getUserConnection = (userId: { userId: string }) => {
   return new Promise((resolve, reject) => {
     try {
-      console.log(userId);
 
       apiCall("post", connectionUrls.getConnection, userId)
         .then((response) => {
@@ -1107,6 +1106,26 @@ export const readStory = (storyData:{storyId:string,userId:string}) => {
     try {
 
       apiCall("patch", storyUrl.readStory, storyData)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};
+
+//@dec      Get user stories
+//method    POST
+
+export const getUserStory = (userId: string) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const url:string = `${storyUrl.getUserStory}/${userId}`
+      apiCall("get", url, null)
         .then((response) => {
           resolve(response);
         })

@@ -5,6 +5,7 @@ import './Chat.css'
 import { useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import {
+  addConversation,
   getLastGroupMessages,
   getLastMessages,
   getUserConversations,
@@ -15,7 +16,7 @@ import { io } from "socket.io-client";
 import { BASE_URL } from "../../constants/baseUrls";
 import GroupMessages from "../../components/ChatComponents/GroupMessages";
 import VideoCallModal from "../../components/ChatComponents/VideoCallModal";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import GroupVideoCallModal from "../../components/ChatComponents/GroupVideoCallModal";
 // import { toast } from "sonner";
 import NochatScreen from "../../components/ChatComponents/NoChat";
@@ -29,7 +30,7 @@ function Chat() {
   const selectUser = (state: any) => state.auth.user;
   const user = useSelector(selectUser);
   const userId = user._id;
-  const [conversations, setConversations] = useState([]);
+  const [conversations, setConversations] = useState<any[]>([]);
   const [currentChat, setCurrentChat] = useState<any>(null);
   const socket = useRef<any>();
   const navigate = useNavigate()
@@ -45,9 +46,29 @@ function Chat() {
   const [joinGroupVideoCall,setJoinGroupVideoCall] = useState(false);
   const [videoCallJoinRoomId,setVideoCallJoinRoomId]=useState('');
   const [callRequestedUser,setCallRequestedUser] = useState({name:'',profile:''})
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const messageUserId = queryParams.get("userId");
+
+
 
   useEffect(() => {
     socket.current = io(BASE_URL);
+    
+    if(messageUserId){
+
+      addConversation({ senderId: userId, receiverId: messageUserId }).then(
+        (response:any) => {
+          const userData = response.data;
+          const existChat = conversations.filter((con)=>con._id===userData._id);
+          if(!existChat.length){
+              setConversations((prev) => [...prev, userData]);
+          }
+          setCurrentChat(userData);
+        }
+      );
+    }
+
 
     getUserConversations(userId).then((response: any) => {
       setConversations(response.data);
@@ -66,6 +87,7 @@ function Chat() {
     
 
     socket.current.on("getMessage", (data: any) => {
+     
       const senderId = data.senderId;
       console.log(data);
       getLastMessage();
@@ -81,6 +103,7 @@ function Chat() {
         });
         console.log(arrivalMessage);
       });
+      
     });
     getGroupMessages();
   }, []);

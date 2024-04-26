@@ -63,7 +63,8 @@ export const chatUrl = {
 export const storyUrl = {
   addStory: "/story/add-story",
   getStories: "/story/get-stories",
-  readStory:'/story/read-story'
+  readStory:'/story/read-story',
+  getUserStory:'/story/get-user-story'
 };
 
 export const adminUrl = {

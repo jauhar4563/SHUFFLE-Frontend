@@ -6,8 +6,6 @@ import {
 } from "../../services/api/user/apiMethods";
 import { toast } from "sonner";
 import { useParams } from "react-router-dom";
-import PostShimmer from "../../components/shimmerUI/postShimmer";
-import Posts from "../../components/Posts";
 import { useSelector } from "react-redux";
 import PostGallary from "../../components/PostGallary";
 
@@ -53,7 +51,7 @@ function UsersProfile() {
     <div className="ml-5 w-9/12">
       {!loading && <UserDetails user={user} connections={connections} isConnected={isConnected}/>}
 
-      {isConnected && (
+      {isConnected || !user?.isPrivate && (
          <div className="ms-96 mt-5 grid grid-cols-2 md:grid-cols-3 w-11/12 gap-4">
          {Post.map((post: any) => (
            <div key={post._id}>

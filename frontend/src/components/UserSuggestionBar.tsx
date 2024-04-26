@@ -8,6 +8,8 @@ import { useSelector } from "react-redux";
 import { BadgeCheck, UserRoundPlus, UserRoundSearch } from "lucide-react";
 import { toast } from "sonner";
 import debounce from "lodash/debounce";
+import { useSocket } from "../utils/context/SocketContext/SocketContext";
+import { useNavigate } from "react-router-dom";
 
 function UserSuggestionBar() {
   const selectUser = (state: any) => state.auth.user;
@@ -18,11 +20,12 @@ function UserSuggestionBar() {
   const [searchValue, setSearchValue] = useState<string>("");
   const [following, setFollowing] = useState([]);
   const [requested, setRequested] = useState<string[]>([]);
+  const socket:any = useSocket();
+  const Navigate = useNavigate();
 
   useEffect(() => {
       getUserSuggestions({ userId })
         .then((response: any) => {
-          console.log(response.data);
           setUsers(response.data.suggestedUsers);
           setLoading(false);
         })
@@ -41,9 +44,16 @@ function UserSuggestionBar() {
         });
   }, []);
   const handleFollow = (foloweduserId: string, followedUserName: string) => {
+      const notificationData = {
+        postImage: userData.profileImg,
+        receiverId: foloweduserId,
+        senderName: followedUserName,
+        message: "Started follwing you",
+      };
+      socket.current.emit("sendNotification", notificationData);
+    
     followUser({ userId, followingUser: foloweduserId })
       .then((response: any) => {
-        console.log(response.data);
         setUsers(users.filter((user: any) => user._id !== foloweduserId));
         response.data.followed
           ? toast.info(`Followed ${followedUserName}`)
@@ -61,7 +71,6 @@ function UserSuggestionBar() {
     
     getUserSuggestions({ userId, searchTerm:searchValue })
       .then((response: any) => {
-        console.log(response.data);
         setUsers(response.data.suggestedUsers);
         setLoading(false);
       })
@@ -135,11 +144,12 @@ function UserSuggestionBar() {
             <div className="">
               {users.map((suggestedUser: any) => (
                 <div
+                key={suggestedUser._id}
                   className="flex justify-between
              bg-gray-50 p-2 mb-3 rounded-lg  max-w-full"
                 >
                   {/* User Info with Three-Dot Menu */}
-                  <div className="flex gap-2 justify-between mb-2">
+                  <div className="flex gap-2 justify-between mb-2 cursor-pointer" onClick={()=>Navigate(`/users-profile/${suggestedUser._id}`)}>
                     <img
                       src={suggestedUser.profileImg}
                       alt="User Avatar"
@@ -152,7 +162,7 @@ function UserSuggestionBar() {
                             {suggestedUser.userName}
                           </p>
                           {suggestedUser.isVerified && (
-                              <BadgeCheck size={20} color="white" fill="#9333ea"/>
+                              <BadgeCheck size={20} color="white" fill="#7E3AF2"/>
 
                           )}
                         </div>

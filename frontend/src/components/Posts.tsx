@@ -27,12 +27,14 @@ import { Carousel } from "flowbite-react";
 import LikedUsers from "./LikedUsers";
 import ReportModal from "./ReportModal";
 import { formatDistanceToNow } from "date-fns";
+import { useSocket } from "../utils/context/SocketContext/SocketContext";
 
 const Posts: React.FC<PostProps> = ({ post }) => {
   const dispatch = useDispatch();
   const selectUser = (state: any) => state.auth.user;
   const user = useSelector(selectUser);
   const userId = user._id || "";
+  const socket: any = useSocket();
   const [isOpen, setIsOpen] = useState(false);
   const [reportModal, setReportModal] = useState(false);
   const [editPostData, setEditPostData] = useState<any>(null);
@@ -56,7 +58,6 @@ const Posts: React.FC<PostProps> = ({ post }) => {
     const postId = post._id;
     getCommentsCount(postId)
       .then((response: any) => {
-        console.log(response.data);
         setCommentsCount(response.data);
       })
       .catch((err: any) => {
@@ -116,7 +117,6 @@ const Posts: React.FC<PostProps> = ({ post }) => {
       likePost({ postId, userId })
         .then((response: any) => {
           const postData = response.data;
-          console.log(postData);
           dispatch(setPosts({ posts: postData.posts }));
           setIsLikedByUser(!isLikedByUser);
           if (isLikedByUser) {
@@ -125,6 +125,15 @@ const Posts: React.FC<PostProps> = ({ post }) => {
             );
             setLikeCount((prev) => prev - 1);
           } else {
+            if (userId !== post.userId._id) {
+              const notificationData = {
+                postImage: post.imageUrl,
+                receiverId: post.userId._id,
+                senderName: user.userName,
+                message: "Liked Your Post",
+              };
+              socket.current.emit("sendNotification", notificationData);
+            }
             setLikedUsers((prevLikedUsers) => [...prevLikedUsers, user]);
             setLikeCount((prev) => prev + 1);
           }
@@ -141,7 +150,6 @@ const Posts: React.FC<PostProps> = ({ post }) => {
       savePost({ postId, userId })
         .then((response: any) => {
           const userData = response.data;
-          console.log(userData);
           dispatch(loginSuccess({ user: userData }));
           setIsSavedByUser(!isSavedByUser);
         })
@@ -181,7 +189,7 @@ const Posts: React.FC<PostProps> = ({ post }) => {
                     {post.userId.userName}
                   </p>
                   {post.userId?.isVerified && (
-                       <BadgeCheck size={22} color="white" fill="#9333ea"/>
+                    <BadgeCheck size={22} color="white" fill="#7E3AF2" />
                   )}
 
                   <p className="text-gray-500 text-sm mx-1">-</p>
@@ -197,7 +205,7 @@ const Posts: React.FC<PostProps> = ({ post }) => {
                   className="hover:bg-gray-50 rounded-full p-1"
                   onClick={toggleDropdown}
                 >
-                <EllipsisVertical />
+                  <EllipsisVertical />
                 </button>
 
                 {isOpen && (
@@ -261,8 +269,13 @@ const Posts: React.FC<PostProps> = ({ post }) => {
                   rightControl={<ChevronRight color="white" />}
                 >
                   {images &&
-                    images.map((image) => (
-                      <img className=" " src={image} alt="Description" />
+                    images.map((image, index) => (
+                      <img
+                        className=" "
+                        key={index}
+                        src={image}
+                        alt="Description"
+                      />
                     ))}
                 </Carousel>
               </div>
@@ -276,7 +289,11 @@ const Posts: React.FC<PostProps> = ({ post }) => {
                     onClick={() => handleLike(post._id, user._id)}
                     className="flex justify-center items-center gap-2 px-2 mt-1 hover:bg-gray-50 rounded-full p-1 transform transition-all duration-300 hover:scale-105"
                   >
-                     <Heart color={isLikedByUser?'red':'gray'} fill={isLikedByUser?'red':'none'} size={22}/>
+                    <Heart
+                      color={isLikedByUser ? " #7E3AF2" : "gray"}
+                      fill={isLikedByUser ? " #7E3AF2" : "none"}
+                      size={22}
+                    />
                   </button>
                   {!post.hideLikes && (
                     <span
@@ -292,7 +309,7 @@ const Posts: React.FC<PostProps> = ({ post }) => {
                     onClick={() => setShowCommentModal(true)}
                     className="flex justify-center items-center gap-2  mt-1 hover:bg-gray-50 rounded-full p-1 transform transition-all duration-300 hover:scale-105"
                   >
-                    <MessageSquareMore size={22}/>
+                    <MessageSquareMore size={22} />
 
                     <span className="text-sm"></span>
                   </button>
@@ -309,8 +326,11 @@ const Posts: React.FC<PostProps> = ({ post }) => {
                   onClick={() => handleSave(post._id, user._id)}
                   className="flex justify-center items-center mt-1 gap-1 px-1 hover:bg-gray-50 rounded-full p-1 transform transition-all duration-300 hover:scale-105"
                 >
-                
-                  <Bookmark color="gray" fill={isSavedByUser ? "grey" : "none"} size={22}/>
+                  <Bookmark
+                    color="gray"
+                    fill={isSavedByUser ? "grey" : "none"}
+                    size={22}
+                  />
                 </button>
               </div>
             </div>
@@ -344,14 +364,7 @@ const Posts: React.FC<PostProps> = ({ post }) => {
       {showCommentModal && (
         <div className="addpost-popup z-50">
           <div className="addpost-popup">
-            <ViewPost
-              post={post}
-              isLikedByUser={isLikedByUser}
-              likeCount={likeCount}
-              isSavedByUser={isSavedByUser}
-              handleLike={handleLike}
-              handleSave={handleSave}
-            />
+            <ViewPost post={post} />
             <div className="fixed right-10 top-10">
               <button
                 className="close-button me-5"

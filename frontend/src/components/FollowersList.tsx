@@ -38,6 +38,7 @@ function Followers({ followers, followingUsers, setFollowingUsers, onClose }:any
   };
 
   const handleFollow = (likedUserId:string) => {
+    
     followUser({ userId, followingUser: likedUserId })
       .then((response: any) => {
         if (response.data.followed) {
