@@ -11,7 +11,7 @@ export const SocketProvider = ({ children }: any) => {
   const socket = useRef<any>(null);
   const selectUser: any = (state: any) => state.auth.user;
   const user: any = useSelector(selectUser);
-  const userId: string = user._id || "";
+  const userId: string = user?._id || "";
   useEffect(() => {
     socket.current = io(BASE_URL);
     if (user) {
