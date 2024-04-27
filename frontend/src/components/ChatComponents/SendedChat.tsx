@@ -26,7 +26,7 @@ const SendedChat = ({ message }: any) => {
           )}
           {message.attachment && message.attachment.type === "image" && (
             <img
-              src={`${BASE_URL}/api/chat/images/${message.attachment.filename}`}
+              src={`${BASE_URL}/chat/images/${message.attachment.filename}`}
               alt=""
               className="relative rounded-lg object-cover w-full h-full"
             />
@@ -37,13 +37,13 @@ const SendedChat = ({ message }: any) => {
               className="relative rounded-lg object-cover w-full h-full"
             >
               <source
-                src={`${BASE_URL}/api/chat/videos/${message.attachment.filename}`}
+                src={`${BASE_URL}/chat/videos/${message.attachment.filename}`}
               />
             </video>
           )}
           {message.attachment && message.attachment.type === "audio" && (
               <CustomAudioPlayer
-              src={`${BASE_URL}/api/chat/audios/${message.attachment.filename}`}
+              src={`${BASE_URL}/chat/audios/${message.attachment.filename}`}
             />
            
           )}
