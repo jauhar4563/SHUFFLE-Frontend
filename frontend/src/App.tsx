@@ -7,13 +7,13 @@ import SideNavBar from "./components/SideNavBar";
 import { PostSearchProvider } from "./utils/context/posts/PostSearchContext";
 import { toast } from "sonner";
 import { useSocket } from "./utils/context/SocketContext/SocketContext";
+import MobileNavBar from "./components/MobileNavBar";
 
 interface NotificationType {
   postImage: string;
   senderName: string;
   message: string;
 }
-
 
 function App() {
   const selectUser = (state: any) => state.auth.user;
@@ -27,17 +27,19 @@ function App() {
       navigate("/login");
     }
   }, [user, navigate]);
-  
-
 
   useEffect(() => {
-    console.log(socket)
+    console.log(socket);
     if (!socket.current) return;
     socket.current.on("getNotifications", (data: NotificationType) => {
       console.log(data);
       toast(
         <div className="flex gap-2">
-          <img src={data.postImage[0]} alt="User" className="h-8 rounded-full" />
+          <img
+            src={data.postImage[0]}
+            alt="User"
+            className="h-8 rounded-full"
+          />
           <p className="text-sm">
             {data.senderName} {data.message}
           </p>
@@ -49,13 +51,18 @@ function App() {
   return (
     <>
       <Protect>
-          <PostSearchProvider>
-            <Header />
-            <div className=" flex  mt-20 h-screen ">
+        <PostSearchProvider>
+          <Header />
+          <div className=" flex  lg:mt-20 h-screen ">
+            <div className="hidden lg:block">
               <SideNavBar />
-              <Outlet />
             </div>
-          </PostSearchProvider>
+            <div className="lg:hidden">
+              <MobileNavBar />
+            </div>
+            <Outlet />
+          </div>
+        </PostSearchProvider>
       </Protect>
     </>
   );

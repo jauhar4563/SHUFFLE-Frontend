@@ -83,11 +83,12 @@ function Signup() {
           />
         </div>
         {/* Right: Login Form */}
-        <div className="lg:p-36 md:p-52 sm:20  -ml-20 p-8 w-full lg:w-1/2">
+        <div className="lg:p-36 md:p-52 sm:20  lg:-ml-20 p-8 w-full lg:w-1/2">
+          <div className="lg:hidden mb-10 flex justify-center">
+            <img src={logo} className=" w-32 m-3" alt="Logo" />
+          </div>
           <div className="flex flex-col items-center">
-            <h1 className=" text-4xl font-semibold mb-2">
-              Create Your Account
-            </h1>
+            <h1 className="text-4xl tex-center font-semibold mb-2">Create Your Account</h1>
             <h1 className="text-lg font-normal mb-2">Signup to your account</h1>
           </div>
           <div className="rounded-t mb-0 px-6 py-6">
@@ -111,7 +112,7 @@ function Signup() {
                 <img
                   alt="..."
                   className="w-5 mr-1"
-                  src="https://d3sxshmncs10te.cloudfront.net/icon/free/svg/189796.svg?token=eyJhbGciOiJoczI1NiIsImtpZCI6ImRlZmF1bHQifQ__.eyJpc3MiOiJkM3N4c2htbmNzMTB0ZS5jbG91ZGZyb250Lm5ldCIsImV4cCI6MTcxMDU2NjgyMSwicSI6bnVsbCwiaWF0IjoxNzEwMzA3NjIxfQ__.8dd417f293cdb51b78ca03f00afa46060e5da27ccda18a4bf339545526024142"
+                  src="https://static-00.iconduck.com/assets.00/facebook-icon-512x512-seb542ju.png"
                 />
                 Facebook
               </button>

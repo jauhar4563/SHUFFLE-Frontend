@@ -163,7 +163,7 @@ const Posts: React.FC<PostProps> = ({ post }) => {
 
   return (
     <>
-      <div className="lg:col-span-2 ms-96 w-12/12 pl-4 pt-4" id="posted">
+      <div className="lg:col-span-2  lg:ms-96 w-12/12 lg:pl-4 s pt-4" id="posted">
         <div className="flex flex-col">
           <div
             onDoubleClick={() => handleLike(post._id, user._id)}
@@ -260,7 +260,7 @@ const Posts: React.FC<PostProps> = ({ post }) => {
               </p>
             </div>
             {/* Image */}
-            <div className="mb-4 " style={{ width: "620px" }}>
+            <div className="mb-4 sm-w sm:w-full lg:w-full" >
               <div className="h-56 sm:h-64 xl:h-80 2xl:h-96">
                 <Carousel
                   pauseOnHover

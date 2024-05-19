@@ -2,7 +2,7 @@ function More() {
   return (
     <div className="ml-5">
 
-    <div className="  ms-96  h-5/6 my-4 w-8/12 col-span-8   rounded-xl bg-white border:none  sm:px-8 ">
+    <div className="  ms-96  h-5/6 my-4 w-8/12 col-span-8 fixed   rounded-xl bg-white border:none  sm:px-8 ">
       <div className="pt-4">
         <h1 className="py-2 text-xs font-semibold">Account settings</h1>
       </div>

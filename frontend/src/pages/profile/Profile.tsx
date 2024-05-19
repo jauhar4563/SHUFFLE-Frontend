@@ -74,26 +74,25 @@ function Profile() {
   };
 
   return (
-    <div className="ml-5 w-8/12">
-      <div className="ms-96 flex mt-5 flex-col bg-white p-4 pl-10 w-11/12 rounded-lg">
-        <div className="flex mt-5 ml-12 gap-20 ">
+    <div className="lg:ml-5 w-full lg:w-8/12">
+      <div className="lg:ms-96 lg:mt-5  bg-white p-4 lg:pl-10 w-full lg:w-11/12 rounded-lg">
+        <div className="flex mt-3 lg:mt-5 lg:ml-12  gap-5 lg:gap-20">
           <div className="flex gap-4">
             <img
-              className=" h-36 w-36 rounded-full"
+              className=" h-16 w-16 lg:h-36 lg:w-36 rounded-full"
               src={user.profileImg}
               alt=""
             />
           </div>
-          <div className="flex flex-col mt-5">
+          <div className="flex flex-col  lg:mt-5">
             <div className="flex items-top justify-start gap-2">
               <p className="font-medium text-lg">{user.userName}</p>
               {user?.isVerified && (
-              
-                <BadgeCheck size={25} color="white" fill="#9333ea"/>
+                <BadgeCheck size={25} color="white" fill="#9333ea" />
               )}
             </div>
 
-            <div className="flex gap-6 mt-5">
+            <div className="flex gap-6 mt-2 lg:mt-5">
               <div
                 onClick={handleFollwingModal}
                 className="flex flex-col cursor-pointer items-center"
@@ -117,41 +116,37 @@ function Profile() {
               <p className="text-sm text-gray-600">{user?.bio}</p>
             </div>
           </div>
-          <div className="flex flex-col gap-7 ml-12 mt-7">
-            <div className="flex gap-3  cursor-pointer" onClick={() => setIsProfileEdit(true)} >
+          <div className="flex flex-col gap-7 lg:ml-12 mt-2 lg:mt-7">
+            <div
+              className="flex gap-3  cursor-pointer"
+              onClick={() => setIsProfileEdit(true)}
+            >
               <Tooltip content="Edit Profile" style="light">
-                <Pencil
-                  className=""
-                  size={20}
-                  
-                  color="gray"
-                />
+                <Pencil className="" size={20} color="gray" />
               </Tooltip>
-              <p className="text-sm text-gray-500" >Edit Profile</p>
+              <p className="text-sm hidden lg:block text-gray-500">Edit Profile</p>
             </div>
-            <div className="flex gap-3 cursor-pointer"   onClick={() => navigate("/premium/plans")}>
+            <div
+              className="flex gap-3 cursor-pointer"
+              onClick={() => navigate("/premium/plans")}
+            >
               <Tooltip content="Get Verified" style="light">
-                <BadgeDollarSign
-                  color="gray"
-                />
+                <BadgeDollarSign color="gray" />
               </Tooltip>
 
-              <p className="text-sm text-gray-500">{user.isVerified?'Premium':'Get Premium'}</p>
+              <p className="text-sm hidden lg:block text-gray-500">
+                {user.isVerified ? "Premium" : "Get Premium"}
+              </p>
             </div>
           </div>
         </div>
-        <div className="w-11/12 ml-12">
-          {/* <p className="font-semibold">About Me</p> */}
-        </div>
       </div>
-      <div className="ms-96 mt-5 grid grid-cols-2 md:grid-cols-3 w-11/12 gap-4">
+      <div className="lg:ms-96 mt-5 grid grid-cols-2 md:grid-cols-3 w-full lg:w-11/12 gap-4">
         {posts.map((post: any) => (
           <div key={post._id}>
             <PostGallary post={post} />
           </div>
         ))}
-
-      
       </div>
       {isProfileEdit && <ProfileEdit user={user} onClose={handleEditClose} />}
       {isFollowersgModal && (

@@ -195,7 +195,7 @@ function AddPost({ setNewPost }: any) {
     }
     try {
       await addHashTags({ hashtag: tag })
-        .then((response: any) => {
+        .then(() => {
           const addedHashtag = {value:tag,label:tag}
           setSelectedHashtag(addedHashtag);
 
@@ -212,9 +212,9 @@ function AddPost({ setNewPost }: any) {
   };
 
   return (
-    <div className=" ms-96 ">
+    <div className=" lg:ms-96 ">
       <div
-        className=" mt-4 ml-4  home-addpost-section h-18%  rounded-xl border border-gray-200 "
+        className=" lg:mt-4 lg:ml-4  home-addpost-section h-18%  rounded-xl border border-gray-200 "
         style={{ width: "670px" }}
       >
         <Story />

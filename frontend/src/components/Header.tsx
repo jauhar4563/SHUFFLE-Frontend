@@ -1,5 +1,5 @@
-import  { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { getNotifications } from "../services/api/user/apiMethods";
 import { useSelector } from "react-redux";
 import { Bell, Search } from "lucide-react";
@@ -14,6 +14,7 @@ function Header() {
   const user = useSelector(selectUser);
   const userId = user._id || "";
   const {postSearchData, setPostSearchData } :any = usePostSearchContext();
+  const Navigate = useNavigate();
  
 
   const handleScroll = () => {
@@ -58,7 +59,7 @@ function Header() {
   };
 
   return (
-    <header className={`fixed z-40 top-0 w-full`}>
+    <header className={`fixed z-40 top-0 w-full hidden lg:block`}>
       <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-white">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
           <Link to="/" className="flex items-center">
@@ -75,17 +76,12 @@ function Header() {
               aria-label="Cart"
             >
               <Bell size={20} />
-
-              {/* <span className="absolute inset-0 object-right-top -mr-6">
-                <div className="inline-flex items-center px-1.5 py-0.5 border-2 border-white rounded-full text-xs font-semibold leading-4 bg-red-500 text-white">
-                  6
-                </div>
-              </span> */}
             </Link>
           </div>
           <div className="relative text-gray-600">
             <input
               type="search"
+              onClick={()=>Navigate('/explore')}
               name="search"
               placeholder="Search"
               onChange={handleSearch}

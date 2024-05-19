@@ -88,8 +88,8 @@ function UserDetails({ user, connections, isConnected }: any) {
   };
   return (
     <div>
-      <div className="ms-96 flex mt-5 flex-col bg-white p-4 pl-10 w-11/12 rounded-lg">
-        <div className="flex mt-5 ml-12 gap-20 ">
+      <div className="lg:ms-96 flex mt-5 flex-col bg-white p-4 lg:pl-10 w-full lg:w-11/12 rounded-lg">
+        <div className="flex mt-5 lg:ml-12 gap-20 ">
           <div className="flex gap-4">
             <img
               className=" h-36 w-36 rounded-full"

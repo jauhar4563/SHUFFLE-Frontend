@@ -1,6 +1,6 @@
 import ChatUsers from "../../components/ChatComponents/ChatUsers";
 import Messages from "../../components/ChatComponents/Messages";
-import './Chat.css'
+import "./Chat.css";
 // import ChatingUser from "../../components/ChatComponents/ChatingUser";
 import { useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
@@ -33,61 +33,60 @@ function Chat() {
   const [conversations, setConversations] = useState<any[]>([]);
   const [currentChat, setCurrentChat] = useState<any>(null);
   const socket = useRef<any>();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<any[]>([]);
-  const [lastMessages,setLastMessages] = useState([]);
-  const [lastGroupMessages,setLastGroupMessages] = useState([]); 
+  const [lastMessages, setLastMessages] = useState([]);
+  const [lastGroupMessages, setLastGroupMessages] = useState([]);
   const [arrivalMessage, setArrivalMessage] = useState<any>(null);
   const [groupArrivalMessage, setGroupArrivalMessage] = useState<any>(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [userGroups, setUserGroups] = useState([]);
   const [isGroup, setIsGroup] = useState(false);
-  const [joinVideoCall,setJoinVideoCall]=useState(false);
-  const [joinGroupVideoCall,setJoinGroupVideoCall] = useState(false);
-  const [videoCallJoinRoomId,setVideoCallJoinRoomId]=useState('');
-  const [callRequestedUser,setCallRequestedUser] = useState({name:'',profile:''})
+  const [joinVideoCall, setJoinVideoCall] = useState(false);
+  const [joinGroupVideoCall, setJoinGroupVideoCall] = useState(false);
+  const [videoCallJoinRoomId, setVideoCallJoinRoomId] = useState("");
+  const [callRequestedUser, setCallRequestedUser] = useState({
+    name: "",
+    profile: "",
+  });
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const messageUserId = queryParams.get("userId");
 
-
-
   useEffect(() => {
     socket.current = io(BASE_URL);
-    
-    if(messageUserId){
 
+    if (messageUserId) {
       addConversation({ senderId: userId, receiverId: messageUserId }).then(
-        (response:any) => {
+        (response: any) => {
           const userData = response.data;
-          const existChat = conversations.filter((con)=>con._id===userData._id);
-          if(!existChat.length){
-              setConversations((prev) => [...prev, userData]);
+          const existChat = conversations.filter(
+            (con) => con._id === userData._id
+          );
+          if (!existChat.length) {
+            setConversations((prev) => [...prev, userData]);
           }
           setCurrentChat(userData);
         }
       );
     }
 
-
     getUserConversations(userId).then((response: any) => {
       setConversations(response.data);
     });
 
-    getUserGroups(userId).then((response:any) => {
+    getUserGroups(userId).then((response: any) => {
       setUserGroups(response.data);
     });
 
-    getLastMessages().then((response:any)=>{
+    getLastMessages().then((response: any) => {
       console.log(response.data);
       setLastMessages(response.data);
-    })
+    });
 
     getLastMessage();
-    
 
     socket.current.on("getMessage", (data: any) => {
-     
       const senderId = data.senderId;
       console.log(data);
       getLastMessage();
@@ -95,56 +94,52 @@ function Chat() {
         setArrivalMessage({
           sender: response.data.user,
           text: data.text,
-          attachment:{
-            type:data.messageType,
-            filename:data.file
+          attachment: {
+            type: data.messageType,
+            filename: data.file,
           },
           createdAt: Date.now(),
         });
         console.log(arrivalMessage);
       });
-      
     });
     getGroupMessages();
   }, []);
 
-  const getLastMessage=()=>{
-    getLastGroupMessages().then((response:any)=>{
-      setLastGroupMessages(response.data)
-    })
-    
-  }
+  const getLastMessage = () => {
+    getLastGroupMessages().then((response: any) => {
+      setLastGroupMessages(response.data);
+    });
+  };
 
-
-  useEffect(()=>{
-
-    
-    console.log("Video call useEffect")
-    socket.current.on("videoCallResponse",(data:any)=>{
+  useEffect(() => {
+    console.log("Video call useEffect");
+    socket.current.on("videoCallResponse", (data: any) => {
       setVideoCallJoinRoomId(data.roomId);
-      setCallRequestedUser({name:data.senderName,profile:data.senderProfile});
+      setCallRequestedUser({
+        name: data.senderName,
+        profile: data.senderProfile,
+      });
       setJoinVideoCall(true);
-    })
+    });
 
-    socket.current.on("GroupVideoCallResponse",(data:any)=>{
-      setVideoCallJoinRoomId(data.roomId)
-      setCallRequestedUser({name:data.groupName,profile:data.groupProfile});
-      setJoinGroupVideoCall(true)
-    })
+    socket.current.on("GroupVideoCallResponse", (data: any) => {
+      setVideoCallJoinRoomId(data.roomId);
+      setCallRequestedUser({
+        name: data.groupName,
+        profile: data.groupProfile,
+      });
+      setJoinGroupVideoCall(true);
+    });
+  }, [socket]);
 
-  },[socket]);
-
-  const handleJoinVidoCallRoom=()=>{
- 
+  const handleJoinVidoCallRoom = () => {
     navigate(`/video-call/${videoCallJoinRoomId}/${userId}`);
-   
-  }
+  };
 
-  const handleJoinGroupVidoCallRoom=()=>{
- 
+  const handleJoinGroupVidoCallRoom = () => {
     navigate(`/group-video-call/${videoCallJoinRoomId}/${userId}`);
-   
-  }
+  };
 
   const getGroupMessages = () => {
     socket.current.on("responseGroupMessage", (data: any) => {
@@ -154,9 +149,9 @@ function Chat() {
           group: data.group_id,
           sender: response.data.user,
           text: data.content,
-          attachment:{
-            type:data.messageType,
-            filename:data.file
+          attachment: {
+            type: data.messageType,
+            filename: data.file,
           },
           createdAt: Date.now(),
         };
@@ -173,7 +168,7 @@ function Chat() {
         userId: userId,
       };
       socket.current.emit("joinGroup", emitData);
-      socket.current.on("joinGroupResponse", (message:any) => {
+      socket.current.on("joinGroupResponse", (message: any) => {
         console.log(message);
       });
       console.log(emitData);
@@ -183,7 +178,7 @@ function Chat() {
   useEffect(() => {
     (arrivalMessage && currentChat?.members.includes(arrivalMessage?.sender)) ||
       (currentChat?.members.find(
-        (member:any) => member._id !== arrivalMessage?.sender
+        (member: any) => member._id !== arrivalMessage?.sender
       ) &&
         setMessages((prev) => [...prev, arrivalMessage]));
   }, [arrivalMessage, currentChat]);
@@ -196,83 +191,79 @@ function Chat() {
 
   useEffect(() => {
     socket?.current?.emit("addUser", user._id);
-    socket?.current?.on("getUsers", (users:any) => {
+    socket?.current?.on("getUsers", (users: any) => {
       setOnlineUsers(users);
     });
   }, [user]);
 
   return (
     <>
-  
-    <div className="relative flex w-full h-screen overflow-hidden antialiased bg-gray-200">
-      <ChatUsers
-        conversations={conversations}
-        user={user}
-        setCurrentChat={setCurrentChat}
-        onlineUsers={onlineUsers}
-        userGroups={userGroups}
-        isGroup={isGroup}
-        setIsGroup={setIsGroup}
-        setUserGroups={setUserGroups}
-        setConversations={setConversations}
-        lastMessages={lastMessages}
-        lastGroupMessages={lastGroupMessages}
-      />
-      {!isGroup && currentChat && (
-        <Messages
-          messages={messages}
-          setMessages={setMessages}
+      <div className="relative flex w-full h-screen overflow-hidden antialiased bg-gray-200">
+        <ChatUsers
+          conversations={conversations}
           user={user}
-          currentChat={currentChat}
-          socket={socket}
+          setCurrentChat={setCurrentChat}
           onlineUsers={onlineUsers}
-        />
-      )}
-      {!currentChat && 
-      (
-        <NochatScreen />
-      )
-      }
-      {isGroup && currentChat && (
-        <GroupMessages
-          messages={messages}
-          setMessages={setMessages}
-          user={user}
-          currentChat={currentChat}
-          socket={socket}
           userGroups={userGroups}
+          isGroup={isGroup}
+          setIsGroup={setIsGroup}
+          setUserGroups={setUserGroups}
+          setConversations={setConversations}
+          lastMessages={lastMessages}
+          lastGroupMessages={lastGroupMessages}
         />
-      )}
-      {/* <ChatingUser /> */}
-      {joinVideoCall &&
-                  <VideoCallModal
-                  show={joinVideoCall}
-                  onHide={() => setJoinVideoCall(false)}
-                  onAccept={handleJoinVidoCallRoom}
-                  onReject={() =>{
-                    setVideoCallJoinRoomId('');
-                     setJoinVideoCall(false);
-                    }}
-                  caller={callRequestedUser}
-                />
-                
-              }
+        {!isGroup && currentChat && (
+          <Messages
+            messages={messages}
+            setMessages={setMessages}
+            user={user}
+            currentChat={currentChat}
+            socket={socket}
+            onlineUsers={onlineUsers}
+          />
+        )}
+        {!currentChat && (
+          <div className="hidden lg:block">
+            <NochatScreen />
+          </div>
+        )}
+        {isGroup && currentChat && (
+          <GroupMessages
+            messages={messages}
+            setMessages={setMessages}
+            user={user}
+            currentChat={currentChat}
+            socket={socket}
+            userGroups={userGroups}
+          />
+        )}
+        {/* <ChatingUser /> */}
+        {joinVideoCall && (
+          <VideoCallModal
+            show={joinVideoCall}
+            onHide={() => setJoinVideoCall(false)}
+            onAccept={handleJoinVidoCallRoom}
+            onReject={() => {
+              setVideoCallJoinRoomId("");
+              setJoinVideoCall(false);
+            }}
+            caller={callRequestedUser}
+          />
+        )}
 
-               {joinGroupVideoCall &&
-                  <GroupVideoCallModal
-                  show={joinGroupVideoCall}
-                  onHide={() => setJoinGroupVideoCall(false)}
-                  onAccept={handleJoinGroupVidoCallRoom}
-                  onReject={ () => {
-                    setVideoCallJoinRoomId('');
-                    setJoinGroupVideoCall(false);
-                    }}
-                  caller={callRequestedUser}
-                />
-                
-              }
-
-    </div>
+        {joinGroupVideoCall && (
+          <GroupVideoCallModal
+            show={joinGroupVideoCall}
+            onHide={() => setJoinGroupVideoCall(false)}
+            onAccept={handleJoinGroupVidoCallRoom}
+            onReject={() => {
+              setVideoCallJoinRoomId("");
+              setJoinGroupVideoCall(false);
+            }}
+            caller={callRequestedUser}
+          />
+        )}
+      </div>
     </>
   );
 }

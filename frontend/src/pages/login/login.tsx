@@ -96,7 +96,10 @@ function Login() {
           />
         </div>
         {/* Right: Login Form */}
-        <div className="lg:p-36 md:p-52 sm:20  -ml-20 p-8 w-full lg:w-1/2">
+        <div className="lg:p-36 md:p-52 sm:20  lg:-ml-20 p-8 w-full lg:w-1/2">
+          <div className="lg:hidden mb-10 flex justify-center">
+            <img src={logo} className=" w-32 m-3" alt="Logo" />
+          </div>
           <div className="flex flex-col items-center">
             <h1 className=" text-4xl font-semibold mb-2">Welcome Back</h1>
             <h1 className="text-lg font-normal mb-4">Login to your account</h1>
@@ -115,17 +118,17 @@ function Login() {
                 />
                 Google
               </button>
-              {/* <button
+              <button
                 className="bg-white active:bg-blueGray-50 text-blueGray-700 font-normal px-4 py-3 rounded outline-none focus:outline-none mr-2 mb-5 uppercase shadow hover:shadow-md inline-flex items-center font-bold text-xs ease-linear transition-all duration-150"
                 type="button"
               >
                 <img
                   alt="..."
                   className="w-5 mr-1"
-                  src="https://d3sxshmncs10te.cloudfront.net/icon/free/svg/189796.svg?token=eyJhbGciOiJoczI1NiIsImtpZCI6ImRlZmF1bHQifQ__.eyJpc3MiOiJkM3N4c2htbmNzMTB0ZS5jbG91ZGZyb250Lm5ldCIsImV4cCI6MTcxMDU2NjgyMSwicSI6bnVsbCwiaWF0IjoxNzEwMzA3NjIxfQ__.8dd417f293cdb51b78ca03f00afa46060e5da27ccda18a4bf339545526024142"
+                  src="https://static-00.iconduck.com/assets.00/facebook-icon-512x512-seb542ju.png"
                 />
                 Facebook
-              </button> */}
+              </button>
             </div>
             <hr className="mt-6 border-b-1 border-blueGray-300" />
           </div>

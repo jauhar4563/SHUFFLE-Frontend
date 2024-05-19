@@ -20,38 +20,38 @@ function UserSuggestionBar() {
   const [searchValue, setSearchValue] = useState<string>("");
   const [following, setFollowing] = useState([]);
   const [requested, setRequested] = useState<string[]>([]);
-  const socket:any = useSocket();
+  const socket: any = useSocket();
   const Navigate = useNavigate();
 
   useEffect(() => {
-      getUserSuggestions({ userId })
-        .then((response: any) => {
-          setUsers(response.data.suggestedUsers);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
+    getUserSuggestions({ userId })
+      .then((response: any) => {
+        setUsers(response.data.suggestedUsers);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
 
-        getUserConnection({ userId })
-        .then((response: any) => {
-          const connectionData = response.data.connection;
-          setFollowing(connectionData.following);
-          setRequested(connectionData.requestSent);
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
+    getUserConnection({ userId })
+      .then((response: any) => {
+        const connectionData = response.data.connection;
+        setFollowing(connectionData.following);
+        setRequested(connectionData.requestSent);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
   }, []);
   const handleFollow = (foloweduserId: string, followedUserName: string) => {
-      const notificationData = {
-        postImage: userData.profileImg,
-        receiverId: foloweduserId,
-        senderName: followedUserName,
-        message: "Started follwing you",
-      };
-      socket.current.emit("sendNotification", notificationData);
-    
+    const notificationData = {
+      postImage: userData.profileImg,
+      receiverId: foloweduserId,
+      senderName: followedUserName,
+      message: "Started follwing you",
+    };
+    socket.current.emit("sendNotification", notificationData);
+
     followUser({ userId, followingUser: foloweduserId })
       .then((response: any) => {
         setUsers(users.filter((user: any) => user._id !== foloweduserId));
@@ -68,8 +68,8 @@ function UserSuggestionBar() {
 
   const debouncedSearch = debounce(() => {
     console.log(searchValue);
-    
-    getUserSuggestions({ userId, searchTerm:searchValue })
+
+    getUserSuggestions({ userId, searchTerm: searchValue })
       .then((response: any) => {
         setUsers(response.data.suggestedUsers);
         setLoading(false);
@@ -82,29 +82,29 @@ function UserSuggestionBar() {
   const handleSearch = () => {
     const searchTerm = searchValue.trim();
     if (searchTerm === "") return;
-    
+
     debouncedSearch();
   };
 
-  const isFollowing = (likedUserId:string) => {
-    return following.some((user:any) => user._id === likedUserId);
+  const isFollowing = (likedUserId: string) => {
+    return following.some((user: any) => user._id === likedUserId);
   };
 
-  const isRequested = (likedUserId:string) => {
+  const isRequested = (likedUserId: string) => {
     return requested.includes(likedUserId);
   };
 
   return (
     <>
       <div
-        className="fixed right-36 lg:col-span-2 ms-10 h-5/6 w-1/5 p-4 bg-white rounded-lg  mt-5"
+        className="fixed hidden lg:block right-36 lg:col-span-2 ms-10 h-5/6 w-1/5 p-4 bg-white rounded-lg  mt-5"
         id="posted"
       >
         <h1 className="mb-4 text-gray-600 text-center font-semibold">
           SUGGESTIONS
         </h1>
         <div className="flex flex-col">
-          <div className="flex items-center w-full mb-3 max-w-sm mx-auto">
+          <div className="flex items-center hidden w-full mb-3 max-w-sm mx-auto">
             <label htmlFor="simple-search" className="sr-only">
               Search
             </label>
@@ -144,12 +144,17 @@ function UserSuggestionBar() {
             <div className="">
               {users.map((suggestedUser: any) => (
                 <div
-                key={suggestedUser._id}
+                  key={suggestedUser._id}
                   className="flex justify-between
              bg-gray-50 p-2 mb-3 rounded-lg  max-w-full"
                 >
                   {/* User Info with Three-Dot Menu */}
-                  <div className="flex gap-2 justify-between mb-2 cursor-pointer" onClick={()=>Navigate(`/users-profile/${suggestedUser._id}`)}>
+                  <div
+                    className="flex gap-2 justify-between mb-2 cursor-pointer"
+                    onClick={() =>
+                      Navigate(`/users-profile/${suggestedUser._id}`)
+                    }
+                  >
                     <img
                       src={suggestedUser.profileImg}
                       alt="User Avatar"
@@ -162,13 +167,18 @@ function UserSuggestionBar() {
                             {suggestedUser.userName}
                           </p>
                           {suggestedUser.isVerified && (
-                              <BadgeCheck size={20} color="white" fill="#7E3AF2"/>
-
+                            <BadgeCheck
+                              size={20}
+                              color="white"
+                              fill="#7E3AF2"
+                            />
                           )}
                         </div>
                         <p className="text-gray-500 text-xs">
-                          {(!isFollowing(suggestedUser._id) && !isRequested(suggestedUser._id) )?
-                          'Suggested For You':'Go to profile'}
+                          {!isFollowing(suggestedUser._id) &&
+                          !isRequested(suggestedUser._id)
+                            ? "Suggested For You"
+                            : "Go to profile"}
                         </p>
                       </div>
                     </div>
@@ -182,17 +192,20 @@ function UserSuggestionBar() {
                     
                   </button> */}
 
-                    { !isFollowing(suggestedUser._id) && !isRequested(suggestedUser._id) &&  (<button
-                        onClick={() =>
-                          handleFollow(
-                            suggestedUser._id,
-                            suggestedUser.userName
-                          )
-                        }
-                        className=" hover:bg-gray-50 rounded-full p-1"
-                      >
-                        <UserRoundPlus size={20} />
-                      </button>)}
+                      {!isFollowing(suggestedUser._id) &&
+                        !isRequested(suggestedUser._id) && (
+                          <button
+                            onClick={() =>
+                              handleFollow(
+                                suggestedUser._id,
+                                suggestedUser.userName
+                              )
+                            }
+                            className=" hover:bg-gray-50 rounded-full p-1"
+                          >
+                            <UserRoundPlus size={20} />
+                          </button>
+                        )}
                     </div>
                   </div>
                   {/* Image */}

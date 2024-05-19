@@ -24,7 +24,7 @@ function FollowRequests() {
         
     },[]);
 
-    const handleAcceptRequest = (requestedUser)=>{
+    const handleAcceptRequest = (requestedUser:any)=>{
         console.log(requestedUser)
         acceptFollowRequest({userId,requestedUser}).then((response:any)=>{
             setRequests(response.data.connections)
@@ -32,7 +32,7 @@ function FollowRequests() {
             toast.info("Request Accepted")
         })
     }
-    const handleReject = (requestedUser)=>{
+    const handleReject = (requestedUser:any)=>{
         rejectFollowRequest({userId,requestedUser}).then((response:any)=>{
             setRequests(response.data.connections)
             toast.info("Request Rejected")
@@ -45,9 +45,9 @@ function FollowRequests() {
     <>
       <div className="flex flex-col  h-screen">
         <div className="z-40 mt-3">
-          <div className="lg:col-span-2 ms-96 w-12/12 p-3" id="posted">
+          <div className="lg:col-span-2 lg:ms-96 w-12/12 p-3" id="posted">
             <div
-              className="flex justify-between bg-white p-4 ml-2 rounded-lg"
+              className="flex justify-between bg-white p-4 lg:ml-2 rounded-lg"
               style={{ width: "660px" }}
             >
               <h1 className=" text-xl font-semibold"> Follow Requests</h1>

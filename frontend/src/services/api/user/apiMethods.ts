@@ -1137,3 +1137,23 @@ export const getUserStory = (userId: string) => {
     }
   });
 };
+
+
+//@dec      Get Unread Messages
+//method    Get
+
+export const userSearch = (searchTerm:{searchTerm:string}) => {
+  return new Promise((resolve, reject) => {
+    try {
+      apiCall("post", userUrls.userSearch, searchTerm)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    } catch (error) {
+      resolve({ status: 500, message: "Somethings wrong." });
+    }
+  });
+};

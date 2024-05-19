@@ -15,6 +15,7 @@ export const userUrls = {
   validate: "/validate-payment",
   allTransactions: "/get-transactions",
   getNotifications: "/get-notifications",
+  userSearch :'/user-search'
 };
 
 export const postUrls = {

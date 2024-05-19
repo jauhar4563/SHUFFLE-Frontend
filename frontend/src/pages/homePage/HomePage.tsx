@@ -48,7 +48,7 @@ function HomePage() {
         </div>
         {loading ? (
           // Render shimmer UI when loading
-          <div className="">
+          <div className=" ">
             {Array.from({ length: 5 }).map((_, index) => (
               <div key={index}>
                 <PostShimmer />
@@ -64,7 +64,10 @@ function HomePage() {
           </div>
         )}
       </div>
+      <div className="hidden lg:block">
+
       <UserSuggestionBar />
+      </div>
     </>
   );
 }

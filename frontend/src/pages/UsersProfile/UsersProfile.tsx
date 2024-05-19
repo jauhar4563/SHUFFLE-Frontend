@@ -48,11 +48,11 @@ function UsersProfile() {
   }, []);
 
   return (
-    <div className="ml-5 w-9/12">
+    <div className="lg:ml-5 w-full lg:w-9/12">
       {!loading && <UserDetails user={user} connections={connections} isConnected={isConnected}/>}
 
       {isConnected || !user?.isPrivate && (
-         <div className="ms-96 mt-5 grid grid-cols-2 md:grid-cols-3 w-11/12 gap-4">
+         <div className="lg:ms-96 mt-5 grid grid-cols-2 md:grid-cols-3 w-full lg:w-11/12 gap-4">
          {Post.map((post: any) => (
            <div key={post._id}>
              <PostGallary post={post} />

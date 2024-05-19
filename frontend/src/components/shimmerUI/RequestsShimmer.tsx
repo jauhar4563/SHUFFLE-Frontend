@@ -1,7 +1,7 @@
 
 function RequestsShimmer() {
   return (
-    <div className="lg:col-span-2 ms-96 w-12/12 pl-3 pb-2" id="posted">
+    <div className="lg:col-span-2 lg:ms-96 w-12/12 pl-3 pb-2" id="posted">
       <div className="flex justify-between bg-white p-2 ml-2 rounded-lg" style={{width:"660px"}}>
         <div className="info flex items-center">
           <div className="h-full bg-gray-200 animate-pulse w-1 mr-3"></div>
