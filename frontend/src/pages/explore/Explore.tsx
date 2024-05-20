@@ -44,8 +44,8 @@ function Explore() {
   }, [postSearchData, userId]);
 
   return (
-    <div className="lg:ml-5 w-full lg:w-8/12">
-      <div className="flex gap-2 lg:ms-96 mt-5">
+    <div className="lg:ml-5 w-full p-2 lg:w-8/12">
+      <div className="flex gap-2 lg:ms-96 mt-2 lg:mt-5">
         <div
           onClick={() => setIsPostSelected(true)}
           className={`${

@@ -11,6 +11,8 @@ import { Spinner } from "flowbite-react";
 import Select from "react-select";
 import Story from "./story/Story";
 import { addHashTags } from "../services/api/admin/apiMethods";
+import '../pages/homePage/Home.css'
+
 
 function AddPost({ setNewPost }: any) {
   const selectUser = (state: any) => state.auth.user || "";
@@ -25,6 +27,8 @@ function AddPost({ setNewPost }: any) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedHashtag, setSelectedHashtag] = useState<any>([]);
+  const [isMobile, setIsMobile] = useState(false);
+
 
   const resetState = () => {
     setHideLikes(false);
@@ -46,6 +50,17 @@ function AddPost({ setNewPost }: any) {
     } catch (error: any) {
       console.log(error.message);
     }
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const handleHideLikesToggle = () => {
@@ -214,8 +229,8 @@ function AddPost({ setNewPost }: any) {
   return (
     <div className=" lg:ms-96 ">
       <div
-        className=" lg:mt-4 lg:ml-4  home-addpost-section h-18%  rounded-xl border border-gray-200 "
-        style={{ width: "670px" }}
+        className="home-addpost-section lg:mt-4 lg:ml-4  home-addpost-section h-18%  rounded-xl border border-gray-200 "
+        // style={{ width: "670px" }}
       >
         <Story />
         <div className="bg-white flex flex-col rounded-lg justify-between p-4">

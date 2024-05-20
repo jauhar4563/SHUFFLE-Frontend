@@ -1,0 +1,17 @@
+@media only screen and (max-width: 768px) {
+    /* Add your mobile-specific styles here */
+    .lg\:ms-96 {
+      margin-left: 0;
+    }
+    .notifications-section {
+      width: 100%;
+    }
+  }
+  
+  @media only screen and (min-width: 1024px) {
+    /* Add your styles for LG devices here */
+    .notifications-section {
+      width: 800px;
+    }
+  }
+  

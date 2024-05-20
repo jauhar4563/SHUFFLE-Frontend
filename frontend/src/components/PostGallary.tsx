@@ -117,7 +117,7 @@ function PostGallary({ post }: { post: any }) {
     >
       <img
         onClick={() => setShowCommentModal(true)}
-        className={`h-64 cursor-pointer w-full  ${
+        className={`lg:h-64 h-40 cursor-pointer w-full  ${
           isTransitioning ? "fadeOut" : "fadeIn"
         } ${isHovered ? "darken" : ""}`}
         src={images[currentImageIndex]}
