@@ -219,10 +219,10 @@ export const addPost = (postData: {
 //@dec      Get All Posts
 //method    get
 
-export const getAllPosts = ({userId,searchTerm}: { userId: string,searchTerm:string }) => {
+export const getAllPosts = ({userId,searchTerm,page}: { userId: string,searchTerm:string,page:number}) => {
   return new Promise((resolve, reject) => {
     try {
-      const requestData = searchTerm?.length!==0 ? { userId, searchTerm } : { userId };
+      const requestData = searchTerm?.length!==0 ? { userId, searchTerm,page } : { userId,page };
       apiCall("post", postUrls.getAllPosts, requestData)
         .then((response) => {
           resolve(response);

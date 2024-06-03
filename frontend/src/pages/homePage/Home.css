@@ -1,17 +1,17 @@
-@media only screen and (max-width: 768px) {
-    /* Add your mobile-specific styles here */
-    .lg\:ms-96 {
-      margin-left: 0;
-    }
-    .home-addpost-section {
-      width: 100%;
-    }
+@media only screen and (max-width: 1024px) {
+  .home-addpost-section {
+    width: 100vw;
   }
-  
-  @media only screen and (min-width: 1024px) {
-    /* Add your styles for LG devices here */
-    .home-addpost-section {
-      width: 670px;
-    }
+  .posts-section {
+    width: 100vw;
   }
-  
+}
+
+@media only screen and (min-width: 1024px) {
+  .home-addpost-section {
+    width: 670px;
+  }
+  .posts-section {
+    width: 620px;
+  }
+}

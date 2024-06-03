@@ -16,12 +16,13 @@ function Explore() {
   const [posts, setPosts] = useState([]);
   const [users, setUsers] = useState([]);
   const { postSearchData }: any = usePostSearchContext();
+  const [page,setPage] = useState(1);
 
   useEffect(() => {
     setLoading(true);
     const searchValue = postSearchData.search || "";
 
-    getAllPosts({ userId: userId, searchTerm: searchValue })
+    getAllPosts({ userId: userId, searchTerm: searchValue,page })
       .then((response: any) => {
         const postsData = response.data;
         setPosts(postsData);
@@ -41,7 +42,20 @@ function Explore() {
         toast.error(error.message);
       });
 
-  }, [postSearchData, userId]);
+  }, [postSearchData, userId,page]);
+
+
+  const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop + 1 >=
+      document.documentElement.scrollHeight
+    )
+      setPage((prev) => prev + 1);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+  },[]);
 
   return (
     <div className="lg:ml-5 w-full p-2 lg:w-8/12">

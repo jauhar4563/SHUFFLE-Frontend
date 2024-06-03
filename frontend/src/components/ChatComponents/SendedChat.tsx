@@ -1,7 +1,7 @@
 import { formatDistanceToNow } from "date-fns";
 import 'react-h5-audio-player/lib/styles.css';
 import CustomAudioPlayer from "./AudioPlayer";
-import { BASE_URL } from "../../constants/baseUrls";
+// import { BASE_URL } from "../../constants/baseUrls";
 
 
 const SendedChat = ({ message }: any) => {
@@ -26,7 +26,7 @@ const SendedChat = ({ message }: any) => {
           )}
           {message.attachment && message.attachment.type === "image" && (
             <img
-              src={`${BASE_URL}/chat/images/${message.attachment.filename}`}
+              src={message.attachment.filename}
               alt=""
               className="relative rounded-lg object-cover w-full h-full"
             />
@@ -37,13 +37,13 @@ const SendedChat = ({ message }: any) => {
               className="relative rounded-lg object-cover w-full h-full"
             >
               <source
-                src={`${BASE_URL}/chat/videos/${message.attachment.filename}`}
+                src={message.attachment.filename}
               />
             </video>
           )}
           {message.attachment && message.attachment.type === "audio" && (
               <CustomAudioPlayer
-              src={`${BASE_URL}/chat/audios/${message.attachment.filename}`}
+              src={message.attachment.filename}
             />
            
           )}

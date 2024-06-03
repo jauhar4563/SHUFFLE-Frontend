@@ -28,6 +28,7 @@ import LikedUsers from "./LikedUsers";
 import ReportModal from "./ReportModal";
 import { formatDistanceToNow } from "date-fns";
 import { useSocket } from "../utils/context/SocketContext/SocketContext";
+import "../pages/homePage/Home.css";
 
 const Posts: React.FC<PostProps> = ({ post }) => {
   const dispatch = useDispatch();
@@ -163,11 +164,14 @@ const Posts: React.FC<PostProps> = ({ post }) => {
 
   return (
     <>
-      <div className="lg:col-span-2  lg:ms-96 w-12/12 lg:pl-4 s pt-4" id="posted">
+      <div
+        className="lg:col-span-2  lg:ms-96 w-12/12 lg:pl-4 s pt-2 lg:pt-4"
+        id="posted"
+      >
         <div className="flex flex-col">
           <div
             onDoubleClick={() => handleLike(post._id, user._id)}
-            className="bg-white p-3 lg:p-6 mb-1 rounded-lg max-w-full"
+            className="bg-white p-4 lg:p-6 mb-1 rounded-lg max-w-full"
           >
             <div className="flex items-center justify-between mb-2">
               <Link
@@ -260,7 +264,7 @@ const Posts: React.FC<PostProps> = ({ post }) => {
               </p>
             </div>
             {/* Image */}
-            <div className="mb-4 sm-w sm:w-full lg:w-full" >
+            <div className="mb-4 posts-section sm-w sm:w-full lg:w-full">
               <div className="h-56 sm:h-64 xl:h-80 2xl:h-96">
                 <Carousel
                   pauseOnHover

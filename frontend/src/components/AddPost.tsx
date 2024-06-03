@@ -11,8 +11,7 @@ import { Spinner } from "flowbite-react";
 import Select from "react-select";
 import Story from "./story/Story";
 import { addHashTags } from "../services/api/admin/apiMethods";
-import '../pages/homePage/Home.css'
-
+import "../pages/homePage/Home.css";
 
 function AddPost({ setNewPost }: any) {
   const selectUser = (state: any) => state.auth.user || "";
@@ -28,7 +27,6 @@ function AddPost({ setNewPost }: any) {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedHashtag, setSelectedHashtag] = useState<any>([]);
   const [isMobile, setIsMobile] = useState(false);
-
 
   const resetState = () => {
     setHideLikes(false);
@@ -70,7 +68,7 @@ function AddPost({ setNewPost }: any) {
   const handleHideCommentToggle = () => {
     setHideComment(!hideComment);
   };
-  
+
   const handleCreatePostClick = () => {
     setShowModal(true);
   };
@@ -211,7 +209,7 @@ function AddPost({ setNewPost }: any) {
     try {
       await addHashTags({ hashtag: tag })
         .then(() => {
-          const addedHashtag = {value:tag,label:tag}
+          const addedHashtag = { value: tag, label: tag };
           setSelectedHashtag(addedHashtag);
 
           formik.values.hashtag = "";
@@ -233,8 +231,8 @@ function AddPost({ setNewPost }: any) {
         // style={{ width: "670px" }}
       >
         <Story />
-        <div className="bg-white flex flex-col rounded-lg justify-between p-4">
-          <div className="text-gray-500 font-medium text-xs">
+        <div className="bg-white flex flex-col rounded-lg justify-between p-2 lg:p-4">
+          <div className="text-gray-500 hidden lg:block font-medium text-xs">
             Whats Happening?........
           </div>
           <div className="flex items-center justify-between align-middle">
@@ -264,7 +262,7 @@ function AddPost({ setNewPost }: any) {
             </div>
             <button
               onClick={handleCreatePostClick}
-              className="text-xs mb-4 bg-gradient-to-b from-purple-600 to-blue-400 text-white px-4 py-2 mt-6 rounded-md hover:bg-gray-800  focus:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300"
+              className="text-xs mb-4 bg-gradient-to-b from-purple-600 to-blue-400 text-white px-4 py-2 lg:mt-6 rounded-md hover:bg-gray-800  focus:bg-black focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-colors duration-300"
             >
               Create Post
             </button>
