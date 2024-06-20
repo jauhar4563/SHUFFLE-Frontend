@@ -243,28 +243,9 @@ const Posts: React.FC<PostProps> = ({ post }) => {
               </div>
             </div>
             {/* Message */}
-            <div className="mb-1 mt-2">
-              <p className="text-gray-700 text-sm font-medium">
-                {post.title}{" "}
-                {/* <a href="" className="text-blue-600">
-                  #Negan
-                </a>{" "}
-                <a href="" className="text-blue-600">
-                  #TWD
-                </a> */}
-              </p>
-            </div>
-
-            <div className="mb-3">
-              <p className="text-gray-500 text-sm">
-                {post.description}{" "}
-                <a href="" className="text-blue-600">
-                  {post.hashtags}
-                </a>{" "}
-              </p>
-            </div>
+         
             {/* Image */}
-            <div className="mb-4 posts-section sm-w sm:w-full lg:w-full">
+            <div className="mb-2 mt-3 posts-section sm-w sm:w-full lg:w-full">
               <div className="h-56 sm:h-64 xl:h-80 2xl:h-96">
                 <Carousel
                   pauseOnHover
@@ -283,6 +264,26 @@ const Posts: React.FC<PostProps> = ({ post }) => {
                     ))}
                 </Carousel>
               </div>
+            </div>
+            <div className="mb-1">
+              <p className="text-gray-700 text-sm font-medium">
+                {post.title}{" "}
+                {/* <a href="" className="text-blue-600">
+                  #Negan
+                </a>{" "}
+                <a href="" className="text-blue-600">
+                  #TWD
+                </a> */}
+              </p>
+            </div>
+
+            <div className="mb-1">
+              <p className="text-gray-500 text-sm">
+                {post.description}{" "}
+                <a href="" className="text-blue-600">
+                  {post.hashtags}
+                </a>{" "}
+              </p>
             </div>
 
             {/* Like and Comment Section */}

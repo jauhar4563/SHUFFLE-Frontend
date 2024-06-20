@@ -95,15 +95,17 @@ function PostGallary({ post }: { post: any }) {
   };
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setIsTransitioning(true);
-      setTimeout(() => {
-        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-        setIsTransitioning(false);
-      }, 500); // Duration of fade-out effect
-    }, 5000); // Change image every 3 seconds
+    if (images.length > 1) {
+      const intervalId = setInterval(() => {
+        setIsTransitioning(true);
+        setTimeout(() => {
+          setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+          setIsTransitioning(false);
+        }, 500); // Duration of fade-out effect
+      }, 5000); // Change image every 3 seconds
 
-    return () => clearInterval(intervalId);
+      return () => clearInterval(intervalId);
+    }
   }, [images.length]);
   const toggleLikedUsersPopup = () => {
     setShowLikedUsersPopup(!showLikedUsersPopup);
@@ -127,41 +129,43 @@ function PostGallary({ post }: { post: any }) {
       {isHovered && (
         <>
           <div className="absolute top-5 left-4 ">
-          <Link
-                to={
-                  user._id === post.userId._id
-                    ? "/profile"
-                    : `/users-profile/${post.userId._id}`
-                }
-                className="flex items-center space-x-1"
-              >
-                <img
-                  src={post.userId.profileImg}
-                  alt="User"
-                  className=" h-6 rounded-full"
-                />
+            <Link
+              to={
+                user._id === post.userId._id
+                  ? "/profile"
+                  : `/users-profile/${post.userId._id}`
+              }
+              className="flex items-center space-x-1"
+            >
+              <img
+                src={post.userId.profileImg}
+                alt="User"
+                className=" h-6 rounded-full"
+              />
 
-                <div className="flex items-center">
-                  <p className="text-gray-100 text-xs font-medium mx-1">
-                    {post.userId.userName}
-                  </p>
-                  {post.userId?.isVerified && (
-                       <BadgeCheck size={15} color="white" fill="#7E3AF2"/>
-                  )}
+              <div className="flex items-center">
+                <p className="text-gray-100 text-xs font-medium mx-1">
+                  {post.userId.userName}
+                </p>
+                {post.userId?.isVerified && (
+                  <BadgeCheck size={15} color="white" fill="#7E3AF2" />
+                )}
 
-                  {/* <p className="text-gray-500 text-xs mx-1"> </p>
+                {/* <p className="text-gray-500 text-xs mx-1"> </p>
                   <p className="text-gray-500 text-xs">
                     {formatDistanceToNow(new Date(post.date), {
                       addSuffix: true,
                     })}
                   </p> */}
-                </div>
-              </Link>
+              </div>
+            </Link>
           </div>
           <div className="absolute bottom-4 left-4 ">
             <div className="flex flex-col top-10">
               <p className="text-sm font-light text-gray-200">{post.title}</p>
-              <p className="text-xs font-extralight text-gray-200">{post.description}</p>
+              <p className="text-xs font-extralight text-gray-200">
+                {post.description}
+              </p>
             </div>
             <div className="flex items-center">
               <div>

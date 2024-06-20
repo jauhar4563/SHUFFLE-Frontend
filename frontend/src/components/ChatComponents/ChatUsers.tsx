@@ -1,6 +1,6 @@
-import  { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Friend from "./Friend";
-import { Home, MessageSquarePlus, PlusCircle } from "lucide-react";
+import { ArrowLeftCircle, MessageSquarePlus, PlusCircle } from "lucide-react";
 import AddGroup from "./AddGroup";
 import { getChatElibleUsers } from "../../services/api/user/apiMethods";
 import Group from "./Group";
@@ -10,6 +10,7 @@ import MessageUsersModal from "./MessageUsersModal";
 function ChatUsers({
   conversations,
   user,
+  currentChat,
   setCurrentChat,
   onlineUsers,
   userGroups,
@@ -18,8 +19,8 @@ function ChatUsers({
   setUserGroups,
   setConversations,
   lastMessages,
-  lastGroupMessages
-}:any) {
+  lastGroupMessages,
+}: any) {
   const navigate = useNavigate();
   const [openModal, setOpenModal] = useState(false);
   const emailInputRef = useRef<HTMLInputElement>(null);
@@ -39,17 +40,19 @@ function ChatUsers({
 
   return (
     <div
-      className="relative flex flex-col  h-full bg-white border-r border-gray-300 shadow-xl md:block transform transition-all duration-500 ease-in-out"
+      className={`${
+        currentChat ? "hidden" : "block"
+      } lg:bock relative flex flex-col  h-full bg-white border-r border-gray-300 shadow-xl md:block transform transition-all duration-500 ease-in-out`}
       style={{ width: "24rem" }}
     >
       <div className="flex justify-between px-3 pt-1 text-white">
         <div className="flex items-center w-full py-2">
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate(-1)}
             aria-haspopup="true"
             className="p-2 text-gray-700 rounded-full focus:outline-none hover:text-gray-600 hover:bg-gray-200"
           >
-            <Home />
+            <ArrowLeftCircle />
           </button>
           <div className="relative flex items-center w-full pl-2 overflow-hidden text-gray-600 focus-within:text-gray-400">
             <span className="absolute inset-y-0 left-0 flex items-center pl-4">
@@ -124,7 +127,7 @@ function ChatUsers({
           {!isGroup &&
             conversations &&
             !conversations?.isGroup &&
-            conversations.map((conversation:any) => (
+            conversations.map((conversation: any) => (
               <div onClick={() => setCurrentChat(conversation)}>
                 <Friend
                   CurrentUser={user}
@@ -137,7 +140,7 @@ function ChatUsers({
 
           {isGroup &&
             userGroups &&
-            userGroups.map((group:any) => (
+            userGroups.map((group: any) => (
               <div onClick={() => setCurrentChat(group)}>
                 <Group
                   CurrentUser={user}

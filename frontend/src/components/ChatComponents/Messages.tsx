@@ -188,7 +188,7 @@ function Messages({
   };
 
   return (
-    <div className="relative flex flex-col flex-1">
+    <div className={`${currentChat?'block':"hidden"} lg:bock relative flex flex-col flex-1`}>
       <div className="z-20 flex flex-grow-0 flex-shrink-0 w-full pr-3 bg-white border-b">
         <div
           className="w-12 h-12 mx-4 my-2 bg-blue-500 bg-center bg-no-repeat bg-cover rounded-full cursor-pointer"
