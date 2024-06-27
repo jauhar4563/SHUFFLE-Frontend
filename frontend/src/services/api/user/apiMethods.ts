@@ -239,7 +239,7 @@ export const getAllPosts = ({userId,searchTerm,page}: { userId: string,searchTer
 //@dec      Get User Post
 //method    POST
 
-export const getUserPost = (userId: string) => {
+export const getUserPost = (userId: string | undefined) => {
   return new Promise((resolve, reject) => {
     try {
       const url:string=`${postUrls.getUserPosts}/${userId}`
@@ -363,7 +363,7 @@ export const getSavedPost = (userId: string) => {
 //@dec      Get User Details
 //method    POST
 
-export const getUserDetails = (userId: string ) => {
+export const getUserDetails = (userId: string | undefined) => {
   return new Promise((resolve, reject) => {
     try {
       apiCall("get", userUrls.getUserDetails + `/${userId}`, null)

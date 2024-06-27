@@ -30,3 +30,15 @@ em-emoji-picker section {
     box-shadow: none !important;
     margin-right: 10px !important;
 }
+
+@media (min-width: 1024px) {
+  .responsive-width {
+    width: 24rem;
+  }
+}
+
+@media (max-width: 1023px) {
+  .responsive-width {
+    width: 30rem;
+  }
+}

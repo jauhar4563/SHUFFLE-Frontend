@@ -88,16 +88,16 @@ function UserDetails({ user, connections, isConnected }: any) {
   };
   return (
     <div>
-      <div className="lg:ms-96 flex mt-5 flex-col bg-white p-4 lg:pl-10 w-full lg:w-11/12 rounded-lg">
-        <div className="flex mt-5 lg:ml-12 gap-20 ">
+      <div className="lg:ms-96 flex lg:mt-5 flex-col bg-white p-4 lg:pl-10 w-full lg:w-11/12 rounded-lg">
+        <div className="flex mt-2 lg:mt-5 lg:ml-12 gap-10 lg:gap-20 ">
           <div className="flex gap-4">
             <img
-              className=" h-36 w-36 rounded-full"
-              src={user.profileImg}
+              className="h-16 w-16 lg:h-36 lg:w-36 rounded-full"
+              src={user?.profileImg}
               alt=""
             />
           </div>
-          <div className="flex flex-col mt-5">
+          <div className="flex flex-col lg:mt-5">
             <div className="flex items-top justify-start gap-2">
               <p className="font-medium text-lg">{user.userName}</p>
               {user?.isVerified && (
@@ -105,7 +105,7 @@ function UserDetails({ user, connections, isConnected }: any) {
               )}
             </div>
             {user?._id !== userId && (
-              <div className="flex mt-2 justify-between">
+              <div className="flex mt-2 gap-5 lg:justify-between">
                 {isFollowed ? (
                   <span
                     onClick={handleUnFollow}

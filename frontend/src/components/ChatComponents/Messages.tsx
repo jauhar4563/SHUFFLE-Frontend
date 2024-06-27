@@ -1,4 +1,12 @@
-import { Image, Paperclip, SendHorizonal, Smile, Video } from "lucide-react";
+import {
+  ArrowLeftCircle,
+  ChevronLeft,
+  Image,
+  Paperclip,
+  SendHorizonal,
+  Smile,
+  Video,
+} from "lucide-react";
 import "../../pages/chat/Chat.css";
 import data from "@emoji-mart/data";
 import Picker from "@emoji-mart/react";
@@ -13,7 +21,7 @@ import {
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import VoiceRecorder from "./VoiceRecorder";
-import '../../pages/chat/Chat.css'
+import "../../pages/chat/Chat.css";
 
 function Messages({
   messages,
@@ -22,6 +30,7 @@ function Messages({
   currentChat,
   socket,
   onlineUsers,
+  changeCurrentChat
 }: any) {
   const [newMessage, setNewMessage] = useState("");
   const [friend, setFriend] = useState<any>(null);
@@ -32,7 +41,7 @@ function Messages({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [recordedAudioBlob, setRecordedAudioBlob]: any = useState(null);
-  const [isRecording, setIsRecording] = useState<boolean>(false)
+  const [isRecording, setIsRecording] = useState<boolean>(false);
 
   // const [joinVideoCall,setJoinVidioCall]=useState(false);
   // const [videoCallJoinRoomId,setVideoCallJoinRoomId]=useState('');
@@ -174,7 +183,7 @@ function Messages({
   };
 
   const addAudioElement = async (blob: any) => {
-    setIsRecording(false)
+    setIsRecording(false);
     const url = URL.createObjectURL(blob);
     const audio = document.createElement("audio");
     audio.src = url;
@@ -188,8 +197,16 @@ function Messages({
   };
 
   return (
-    <div className={`${currentChat?'block':"hidden"} lg:bock relative flex flex-col flex-1`}>
-      <div className="z-20 flex flex-grow-0 flex-shrink-0 w-full pr-3 bg-white border-b">
+    <div
+      className={`${
+        currentChat ? "block" : "hidden"
+      } lg:bock relative flex flex-col flex-1`}
+    >
+      <div className="z-20 flex flex-grow-0 items-center flex-shrink-0 w-full pr-3 bg-white border-b">
+        <div className="lg:hidden">
+          <ChevronLeft size={30} onClick={()=>changeCurrentChat(null)}/>
+        </div>
+
         <div
           className="w-12 h-12 mx-4 my-2 bg-blue-500 bg-center bg-no-repeat bg-cover rounded-full cursor-pointer"
           style={{
@@ -395,28 +412,32 @@ function Messages({
             )}
             {!newMessage.length && (
               <>
-                <span onClick={()=>setIsRecording(true)} className="absolute right-1 flex items-center">
+                <span
+                  onClick={() => setIsRecording(true)}
+                  className="absolute right-1 flex items-center"
+                >
                   <VoiceRecorder
                     onRecordingComplete={addAudioElement}
                     setRecordedAudioBlob={setRecordedAudioBlob}
-                    style={{ background: "none " ,  borderRadius: 0 }}
-                    
+                    style={{ background: "none ", borderRadius: 0 }}
                   />
                 </span>
 
-              { !isRecording &&  (<span className="absolute inset-y-0 right-10 flex items-center ">
-                  <button
-                    onClick={togglePinDropdown}
-                    type="submit"
-                    className="p-1 focus:outline-none focus:shadow-none hover:text-purple-600"
-                  >
-                    <Paperclip
-                      className="size-5 lg:size-6 mr-3 md:mt-1 mt-4 ml-2  "
-                      size={18}
-                      color="purple"
-                    />
-                  </button>
-                </span>)}
+                {!isRecording && (
+                  <span className="absolute inset-y-0 right-10 flex items-center ">
+                    <button
+                      onClick={togglePinDropdown}
+                      type="submit"
+                      className="p-1 focus:outline-none focus:shadow-none hover:text-purple-600"
+                    >
+                      <Paperclip
+                        className="size-5 lg:size-6 mr-3 md:mt-1 mt-4 ml-2  "
+                        size={18}
+                        color="purple"
+                      />
+                    </button>
+                  </span>
+                )}
               </>
             )}
             {newMessage.length > 0 && (

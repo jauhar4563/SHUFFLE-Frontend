@@ -6,6 +6,7 @@ import { getChatElibleUsers } from "../../services/api/user/apiMethods";
 import Group from "./Group";
 import { useNavigate } from "react-router-dom";
 import MessageUsersModal from "./MessageUsersModal";
+import '../../pages/chat/Chat.css'
 
 function ChatUsers({
   conversations,
@@ -42,8 +43,7 @@ function ChatUsers({
     <div
       className={`${
         currentChat ? "hidden" : "block"
-      } lg:bock relative flex flex-col  h-full bg-white border-r border-gray-300 shadow-xl md:block transform transition-all duration-500 ease-in-out`}
-      style={{ width: "24rem" }}
+      } lg:bock relative responsive-width flex flex-col  h-full bg-white border-r border-gray-300 shadow-xl md:block transform transition-all duration-500 ease-in-out`}
     >
       <div className="flex justify-between px-3 pt-1 text-white">
         <div className="flex items-center w-full py-2">

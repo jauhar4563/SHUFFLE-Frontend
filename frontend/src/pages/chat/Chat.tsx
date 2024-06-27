@@ -53,6 +53,10 @@ function Chat() {
   const queryParams = new URLSearchParams(location.search);
   const messageUserId = queryParams.get("userId");
 
+  const changeCurrentChat=(val:any)=>{
+    setCurrentChat(val)
+  }
+
   useEffect(() => {
     socket.current = io(BASE_URL);
 
@@ -221,6 +225,7 @@ function Chat() {
             currentChat={currentChat}
             socket={socket}
             onlineUsers={onlineUsers}
+            changeCurrentChat={changeCurrentChat}
           />
         )}
         {!currentChat && (

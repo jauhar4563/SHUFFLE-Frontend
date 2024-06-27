@@ -367,10 +367,10 @@ const Posts: React.FC<PostProps> = ({ post }) => {
       )}
 
       {showCommentModal && (
-        <div className="addpost-popup z-50">
-          <div className="addpost-popup">
+        <div className="addpost-popup  z-50">
+          <div className="addpost-popup ">
             <ViewPost post={post} />
-            <div className="fixed right-10 top-10">
+            <div className="hidden fixed lg:block lg:right-10 lg:top-10">
               <button
                 className="close-button me-5"
                 onClick={() => setShowCommentModal(false)}

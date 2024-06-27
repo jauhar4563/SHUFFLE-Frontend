@@ -38,7 +38,7 @@ function Explore() {
         setUsers(response.data);
       })
       .catch((error) => {
-        toast.error(error.message);
+        // toast.error(error.message);
       });
 
   }, [postSearchData, userId]);

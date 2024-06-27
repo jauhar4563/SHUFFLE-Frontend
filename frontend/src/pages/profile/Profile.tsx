@@ -4,14 +4,15 @@ import {
   getUserPost,
 } from "../../services/api/user/apiMethods";
 import { useDispatch, useSelector } from "react-redux";
-import { setPosts } from "../../utils/context/reducers/authSlice";
-import { BadgeCheck, BadgeDollarSign, Pencil } from "lucide-react";
+import { logout, setPosts } from "../../utils/context/reducers/authSlice";
+import { BadgeCheck, BadgeDollarSign, LogOut, Pencil } from "lucide-react";
 import ProfileEdit from "../../components/ProfileEdit";
 import Followers from "../../components/FollowersList";
 import Following from "../../components/FollowingList";
 import { Tooltip } from "flowbite-react";
 import { useNavigate } from "react-router-dom";
 import PostGallary from "../../components/PostGallary";
+import { toast } from "sonner";
 
 function Profile() {
   const dispatch = useDispatch();
@@ -28,6 +29,13 @@ function Profile() {
   const [isFollowingModal, setIsFollowingModal] = useState(false);
   const [isFollowersgModal, setIsFollowersgModal] = useState(false);
   const navigate = useNavigate();
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("email");
+    toast.info("Logout Successful");
+    navigate("/login");
+  };
+
 
   useEffect(() => {
     try {
@@ -76,7 +84,7 @@ function Profile() {
   return (
     <div className="lg:ml-5 w-full lg:w-8/12">
       <div className="lg:ms-96 lg:mt-5  bg-white p-4 lg:pl-10 w-full lg:w-11/12 rounded-lg">
-        <div className="flex mt-3 lg:mt-5 lg:ml-12  gap-5 lg:gap-20">
+        <div className="flex mt-3 lg:mt-5 lg:ml-12  gap-7 lg:gap-20">
           <div className="flex gap-4">
             <img
               className=" h-16 w-16 lg:h-36 lg:w-36 rounded-full"
@@ -116,7 +124,16 @@ function Profile() {
               <p className="text-sm text-gray-600">{user?.bio}</p>
             </div>
           </div>
-          <div className="flex flex-col gap-7 lg:ml-12 mt-2 lg:mt-7">
+          <div className="flex flex-col gap-5 lg:gap-7 ml-6 lg:ml-12 mt-2 lg:mt-7">
+          <div
+              className="flex gap-3 lg:hidden cursor-pointer"
+              onClick={handleLogout}
+            >
+              <Tooltip content="Edit Profile" style="light">
+                <LogOut className="" size={20} color="red" />
+              </Tooltip>
+              <p className="text-sm hidden lg:block text-gray-500">Logout</p>
+            </div>
             <div
               className="flex gap-3  cursor-pointer"
               onClick={() => setIsProfileEdit(true)}
@@ -141,7 +158,7 @@ function Profile() {
           </div>
         </div>
       </div>
-      <div className="lg:ms-96 mt-5 grid grid-cols-2 md:grid-cols-3 w-full lg:w-11/12 gap-4">
+      <div className="lg:ms-96 mt-5  grid grid-cols-2 md:grid-cols-3 w-full lg:w-11/12 gap-4">
         {posts.map((post: any) => (
           <div key={post._id}>
             <PostGallary post={post} />

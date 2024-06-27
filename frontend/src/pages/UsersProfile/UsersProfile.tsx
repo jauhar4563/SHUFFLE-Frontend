@@ -14,7 +14,7 @@ function UsersProfile() {
   const userData = useSelector(selectUser);
   const loggedUserId = userData._id;
   const [isConnected, setIsConnected] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const [connections, setConnections] = useState(null);
   const [Post, setPost] = useState([]);
   const [loading, setLoading] = useState(true);

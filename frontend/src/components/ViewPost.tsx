@@ -15,10 +15,9 @@ import * as Yup from "yup";
 import { Formik, Form, Field } from "formik";
 import { Modal } from "flowbite-react";
 import { useSocket } from "../utils/context/SocketContext/SocketContext";
+import { useNavigate } from "react-router-dom";
 
-const ViewPost = ({
-  post
-}:any) => {
+const ViewPost = ({ post }: any) => {
   const selectUser = (state: any) => state.auth.user;
   const user = useSelector(selectUser);
   const userId = user._id || "";
@@ -28,8 +27,8 @@ const ViewPost = ({
   const [parentCommentId, setParentCommentId] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const commentBoxRef = useRef<any>(null);
-  const socket:any = useSocket();
-
+  const socket: any = useSocket();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const postId = post._id;
@@ -77,8 +76,6 @@ const ViewPost = ({
     setReplyComments(false);
     setParentCommentId("");
   };
-
-
 
   const commentInitialValues = {
     comment: "",
@@ -165,166 +162,202 @@ const ViewPost = ({
   }, [comments, replyComments]);
 
   return (
-    <div
-      className="bg-white overflow-hidden z-50 w-full shadow-none"
-      style={{ width: "1000px" }}
-    >
-      <div className="grid grid-cols-3 min-w-full ">
-        <div className=" col-span-2  w-full h-full">
-          <div className="h-56 sm:h-64 xl:h-80 2xl:h-96">
-            <Carousel
-              pauseOnHover
-              slideInterval={5000}
-              leftControl={<ChevronLeft color="white" />}
-              rightControl={<ChevronRight color="white" />}
-            >
-              {post.imageUrl &&
-                post.imageUrl.map((image:string) => (
-                  <img className=" " src={image} alt="Description" />
-                ))}
-            </Carousel>
+    <>
+      <div
+        className="bg-white hidden lg:block overflow-hidden z-50 w-full shadow-none"
+        style={{ width: "1000px" }}
+      >
+        <div className="grid grid-cols-3 min-w-full ">
+          <div className=" col-span-2  w-full h-full">
+            <div className="h-56 sm:h-64 xl:h-80 2xl:h-96">
+              <Carousel
+                pauseOnHover
+                slideInterval={5000}
+                leftControl={<ChevronLeft color="white" />}
+                rightControl={<ChevronRight color="white" />}
+              >
+                {post.imageUrl &&
+                  post.imageUrl.map((image: string) => (
+                    <img className=" " src={image} alt="Description" />
+                  ))}
+              </Carousel>
+            </div>
           </div>
-        </div>
 
-        <div className="col-span-1 relative pl-4">
-          <header className="border-b border-grey-400">
-            <a
-              href="#"
-              className="block cursor-pointer py-4 flex items-center text-sm outline-none focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out"
-            >
-              <img
-                src={post.userId.profileImg}
-                className="h-9 w-9 rounded-full object-cover"
-                alt="user"
-              />
-              <div className="flex items-center">
-                <p className="block ml-2 font-bold mx-1">
-                  {post.userId.userName}
-                </p>
-                {post.userId.isVerified && (
-                  <BadgeCheck size={22} color="white" fill="#9333ea" />
-                )}
-              </div>
-            </a>
-          </header>
-          { post.hideComment && (
-            <div className="home-scroll-post">
-              <div className="home-scrollbox-post flex items-center justify-center">
-                <div>
-                  <h1 className="text-md font-semibold">
-                    Comments are hidden.
-                  </h1>
+          <div className="col-span-1 relative pl-4">
+            <header className="border-b border-grey-400">
+              <a
+                href="#"
+                className="block cursor-pointer py-4 flex items-center text-sm outline-none focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out"
+              >
+                <img
+                  src={post.userId.profileImg}
+                  className="h-9 w-9 rounded-full object-cover"
+                  alt="user"
+                />
+                <div className="flex items-center">
+                  <p className="block ml-2 font-bold mx-1">
+                    {post.userId.userName}
+                  </p>
+                  {post.userId.isVerified && (
+                    <BadgeCheck size={22} color="white" fill="#9333ea" />
+                  )}
+                </div>
+              </a>
+            </header>
+            {post.hideComment && (
+              <div className="home-scroll-post">
+                <div className="home-scrollbox-post flex items-center justify-center">
+                  <div>
+                    <h1 className="text-md font-semibold">
+                      Comments are hidden.
+                    </h1>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-          { !post.hideComment && (
-            <>
-              <div className="home-scroll-post">
-                <div ref={commentBoxRef} className="home-scrollbox-post">
-                  {comments.map((comment: any) => (
-                    <div key={comment._id}>
-                      <div className="mb-6">
-                        <div className="flex justify-between items-center me-4">
-                          <div className="flex items-center ">
-                            <img
-                              className="h-9 w-9 rounded-full border-2 p-.5 mb-3"
-                              src={comment.userId.profileImg}
-                              alt="Profile"
-                            />
-                            <div className="w-full flex me-2">
-                              <p className=" text-xs mx-3 font-semibold text-black">
-                                {comment.userId.userName}
-                              </p>
-                              <p
-                                className="text-xs text-gray-400"
-                                style={{ fontSize: "9px" }}
-                              >
-                                {formatDistanceToNow(
-                                  new Date(comment.createdAt),
-                                  { addSuffix: true }
-                                )}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="flex">
-                            <button
-                              onClick={() => handleReplyComments(comment._id)}
-                              style={{ fontSize: "10px" }}
-                              className="text-xs text-purple-600 flex"
-                            >
-                              Reply{" "}
-                            </button>
-                            {user.userName == comment.userId.userName && (
-                              <button
-                                onClick={() => {
-                                  setOpenModal(true);
-                                  setParentCommentId(comment._id);
-                                }}
-                                className="ms-2"
-                              >
-                                <Trash2 color="gray" size={10} />
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                        <div>
-                          <p className="text-xs text-gray-800 mx-3">
-                            {comment.comment}
-                          </p>
-                        </div>
-                      </div>
-
-                      {comment.replyComments.map((reply: any) => (
-                        <div key={reply._id} className="ms-10 reply-commment">
+            )}
+            {!post.hideComment && (
+              <>
+                <div className="home-scroll-post">
+                  <div ref={commentBoxRef} className="home-scrollbox-post">
+                    {comments.map((comment: any) => (
+                      <div key={comment._id}>
+                        <div className="mb-6">
                           <div className="flex justify-between items-center me-4">
                             <div className="flex items-center ">
                               <img
                                 className="h-9 w-9 rounded-full border-2 p-.5 mb-3"
-                                src={reply.userId.profileImg}
+                                src={comment.userId.profileImg}
                                 alt="Profile"
                               />
                               <div className="w-full flex me-2">
                                 <p className=" text-xs mx-3 font-semibold text-black">
-                                  {reply.userId.userName}
+                                  {comment.userId.userName}
                                 </p>
                                 <p
                                   className="text-xs text-gray-400"
                                   style={{ fontSize: "9px" }}
                                 >
                                   {formatDistanceToNow(
-                                    new Date(reply.timestamp),
+                                    new Date(comment.createdAt),
                                     { addSuffix: true }
                                   )}
                                 </p>
                               </div>
                             </div>
+                            <div className="flex">
+                              <button
+                                onClick={() => handleReplyComments(comment._id)}
+                                style={{ fontSize: "10px" }}
+                                className="text-xs text-purple-600 flex"
+                              >
+                                Reply{" "}
+                              </button>
+                              {user.userName == comment.userId.userName && (
+                                <button
+                                  onClick={() => {
+                                    setOpenModal(true);
+                                    setParentCommentId(comment._id);
+                                  }}
+                                  className="ms-2"
+                                >
+                                  <Trash2 color="gray" size={10} />
+                                </button>
+                              )}
+                            </div>
                           </div>
                           <div>
                             <p className="text-xs text-gray-800 mx-3">
-                              {reply.replyComment}
+                              {comment.comment}
                             </p>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              </div>
-              {replyComments && (
-                <Formik
-                  initialValues={commentInitialValues}
-                  validationSchema={commentValidationSchema}
-                  onSubmit={ReplyCommentHandleSubmit}
-                >
-                  <Form>
-                    <div className="w-full items-center absolute bottom-0 pe-6 bg-white h-20">
-                      <div>
-                        <p className="text-xs font-bold mb-1">
-                          @{user.userName}
-                        </p>
+
+                        {comment.replyComments.map((reply: any) => (
+                          <div key={reply._id} className="ms-10 reply-commment">
+                            <div className="flex justify-between items-center me-4">
+                              <div className="flex items-center ">
+                                <img
+                                  className="h-9 w-9 rounded-full border-2 p-.5 mb-3"
+                                  src={reply.userId.profileImg}
+                                  alt="Profile"
+                                />
+                                <div className="w-full flex me-2">
+                                  <p className=" text-xs mx-3 font-semibold text-black">
+                                    {reply.userId.userName}
+                                  </p>
+                                  <p
+                                    className="text-xs text-gray-400"
+                                    style={{ fontSize: "9px" }}
+                                  >
+                                    {formatDistanceToNow(
+                                      new Date(reply.timestamp),
+                                      { addSuffix: true }
+                                    )}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-800 mx-3">
+                                {reply.replyComment}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                      <div className="flex">
+                    ))}
+                  </div>
+                </div>
+                {replyComments && (
+                  <Formik
+                    initialValues={commentInitialValues}
+                    validationSchema={commentValidationSchema}
+                    onSubmit={ReplyCommentHandleSubmit}
+                  >
+                    <Form>
+                      <div className="w-full items-center absolute bottom-0 pe-6 bg-white h-20">
+                        <div>
+                          <p className="text-xs font-bold mb-1">
+                            @{user.userName}
+                          </p>
+                        </div>
+                        <div className="flex">
+                          <Field
+                            className="w-full ps-3 border-gray-200 border  focus:border-gray-200 focus:outline-none focus:ring-1 focus:ring-offset-0 focus:ring-purple-600   rounded-md text-xs resize-none outline-none appearance-none"
+                            aria-label="post your comments..."
+                            placeholder="post your comments..."
+                            autoComplete="off"
+                            autoCorrect="off"
+                            style={{ height: "36px" }}
+                            name="comment"
+                          />
+                          <button
+                            type="submit"
+                            className="mx-4 text-xs  focus:outline-none border-none bg-transparent text-purple-600"
+                          >
+                            Reply
+                          </button>
+                          <button
+                            onClick={handleCancelReplyComments}
+                            className="text-xs text-red-700 me-3"
+                          >
+                            cancel
+                          </button>
+                        </div>
+                      </div>
+                    </Form>
+                  </Formik>
+                )}
+
+                {!replyComments && (
+                  <Formik
+                    initialValues={commentInitialValues}
+                    validationSchema={commentValidationSchema}
+                    onSubmit={commentHandleSubmit}
+                  >
+                    <Form>
+                      <div className="w-full flex items-center absolute bottom-0 pe-6 bg-white h-14">
                         <Field
                           className="w-full ps-3 border-gray-200 border  focus:border-gray-200 focus:outline-none focus:ring-1 focus:ring-offset-0 focus:ring-purple-600   rounded-md text-xs resize-none outline-none appearance-none"
                           aria-label="post your comments..."
@@ -336,91 +369,312 @@ const ViewPost = ({
                         />
                         <button
                           type="submit"
-                          className="mx-4 text-xs  focus:outline-none border-none bg-transparent text-purple-600"
+                          className="mx-2 text-xs  focus:outline-none border-none bg-transparent text-purple-600"
                         >
-                          Reply
-                        </button>
-                        <button
-                          onClick={handleCancelReplyComments}
-                          className="text-xs text-red-700 me-3"
-                        >
-                          cancel
+                          Comment
                         </button>
                       </div>
-                    </div>
-                  </Form>
-                </Formik>
-              )}
-
-              {!replyComments && (
-                <Formik
-                  initialValues={commentInitialValues}
-                  validationSchema={commentValidationSchema}
-                  onSubmit={commentHandleSubmit}
-                >
-                  <Form>
-                    <div className="w-full flex items-center absolute bottom-0 pe-6 bg-white h-14">
-                      <Field
-                        className="w-full ps-3 border-gray-200 border  focus:border-gray-200 focus:outline-none focus:ring-1 focus:ring-offset-0 focus:ring-purple-600   rounded-md text-xs resize-none outline-none appearance-none"
-                        aria-label="post your comments..."
-                        placeholder="post your comments..."
-                        autoComplete="off"
-                        autoCorrect="off"
-                        style={{ height: "36px" }}
-                        name="comment"
-                      />
-                      <button
-                        type="submit"
-                        className="mx-2 text-xs  focus:outline-none border-none bg-transparent text-purple-600"
-                      >
-                        Comment
-                      </button>
-                    </div>
-                  </Form>
-                </Formik>
-              )}
-            </>
-          )}
+                    </Form>
+                  </Formik>
+                )}
+              </>
+            )}
+          </div>
         </div>
+        {showLikedUsersPopup && (
+          <LikedUsers likedUsers={post.likes} onClose={toggleLikedUsersPopup} />
+        )}
+        <Modal
+          show={openModal}
+          size="md"
+          onClose={() => setOpenModal(false)}
+          popup
+        >
+          <Modal.Header />
+          <Modal.Body>
+            <div className="text-center">
+              {/* <HiOutlineExclamationCircle className="mx-auto text-xs  mb-4 h-10 w-10 text-gray-400 dark:text-gray-200" /> */}
+              <h3 className="mb-5 text-xs font-normal text-gray-500 dark:text-gray-400">
+                Are you sure you want to delete this this comment?
+              </h3>
+              <div className="flex justify-center gap-4 ">
+                <button
+                  className="text-xs flex gap-1 text-purple-600 font-semibold border px-2 py-1 rounded-md border-purple-600"
+                  onClick={() => {
+                    setOpenModal(false);
+                    handleDeleteComments(parentCommentId);
+                    setParentCommentId("");
+                  }}
+                >
+                  Yes, I'm sure
+                </button>{" "}
+                <button
+                  className="text-xs border px-4 py-1 rounded-md border-gray-600"
+                  onClick={() => setOpenModal(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </Modal.Body>
+        </Modal>
       </div>
-      {showLikedUsersPopup && (
-        <LikedUsers likedUsers={post.likes} onClose={toggleLikedUsersPopup} />
-      )}
-      <Modal
-        show={openModal}
-        size="md"
-        onClose={() => setOpenModal(false)}
-        popup
-      >
-        <Modal.Header />
-        <Modal.Body>
-          <div className="text-center">
-            {/* <HiOutlineExclamationCircle className="mx-auto text-xs  mb-4 h-10 w-10 text-gray-400 dark:text-gray-200" /> */}
-            <h3 className="mb-5 text-xs font-normal text-gray-500 dark:text-gray-400">
-              Are you sure you want to delete this this comment?
-            </h3>
-            <div className="flex justify-center gap-4 ">
-              <button
-                className="text-xs flex gap-1 text-purple-600 font-semibold border px-2 py-1 rounded-md border-purple-600"
-                onClick={() => {
-                  setOpenModal(false);
-                  handleDeleteComments(parentCommentId);
-                  setParentCommentId("");
-                }}
+
+      <div className="bg-white w-full left-0 h-full lg:hidden overflow-hidden z-50 shadow-none">
+        <div className="flex flex-col gap-4 h-full ">
+          <div className=" w-full">
+            <header className="border-b flex items-center gap-2 border-grey-400">
+              <ChevronLeft size={32} onClick={() => navigate(-1)} />
+              <a
+                href="#"
+                className=" cursor-pointer py-4 flex items-center text-sm outline-none focus:outline-none focus:border-gray-300 transition duration-150 ease-in-out"
               >
-                Yes, I'm sure
-              </button>{" "}
-              <button
-                className="text-xs border px-4 py-1 rounded-md border-gray-600"
-                onClick={() => setOpenModal(false)}
+                <img
+                  src={post.userId.profileImg}
+                  className="h-9 w-9 rounded-full object-cover"
+                  alt="user"
+                />
+                <div className="flex items-center">
+                  <p className="block ml-2 font-bold mx-1">
+                    {post.userId.userName}
+                  </p>
+                  {post.userId.isVerified && (
+                    <BadgeCheck size={22} color="white" fill="#9333ea" />
+                  )}
+                </div>
+              </a>
+            </header>
+            <div className="h-56 sm:h-64 xl:h-80 2xl:h-96">
+              <Carousel
+                pauseOnHover
+                slideInterval={5000}
+                leftControl={<ChevronLeft color="white" />}
+                rightControl={<ChevronRight color="white" />}
               >
-                Cancel
-              </button>
+                {post.imageUrl &&
+                  post.imageUrl.map((image: string) => (
+                    <img className=" " src={image} alt="Description" />
+                  ))}
+              </Carousel>
             </div>
           </div>
-        </Modal.Body>
-      </Modal>
-    </div>
+
+          <div className="relative pl-4 h-full">
+            {post.hideComment && (
+              <div className="home-scroll-post">
+                <div className="home-scrollbox-post flex items-center justify-center">
+                  <div>
+                    <h1 className="text-md font-semibold">
+                      Comments are hidden.
+                    </h1>
+                  </div>
+                </div>
+              </div>
+            )}
+            {!post.hideComment && (
+              <>
+                <div className="">
+                  <div ref={commentBoxRef} className="">
+                    {comments.map((comment: any) => (
+                      <div key={comment._id}>
+                        <div className="mb-6">
+                          <div className="flex justify-between items-center me-4">
+                            <div className="flex items-center ">
+                              <img
+                                className="h-9 w-9 rounded-full border-2 p-.5 mb-3"
+                                src={comment.userId.profileImg}
+                                alt="Profile"
+                              />
+                              <div className="w-full flex me-2">
+                                <p className=" text-xs mx-3 font-semibold text-black">
+                                  {comment.userId.userName}
+                                </p>
+                                <p
+                                  className="text-xs text-gray-400"
+                                  style={{ fontSize: "9px" }}
+                                >
+                                  {formatDistanceToNow(
+                                    new Date(comment.createdAt),
+                                    { addSuffix: true }
+                                  )}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex">
+                              <button
+                                onClick={() => handleReplyComments(comment._id)}
+                                style={{ fontSize: "10px" }}
+                                className="text-xs text-purple-600 flex"
+                              >
+                                Reply{" "}
+                              </button>
+                              {user.userName == comment.userId.userName && (
+                                <button
+                                  onClick={() => {
+                                    setOpenModal(true);
+                                    setParentCommentId(comment._id);
+                                  }}
+                                  className="ms-2"
+                                >
+                                  <Trash2 color="gray" size={10} />
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-800 mx-3">
+                              {comment.comment}
+                            </p>
+                          </div>
+                        </div>
+
+                        {comment.replyComments.map((reply: any) => (
+                          <div key={reply._id} className="ms-10 reply-commment">
+                            <div className="flex justify-between items-center me-4">
+                              <div className="flex items-center ">
+                                <img
+                                  className="h-9 w-9 rounded-full border-2 p-.5 mb-3"
+                                  src={reply.userId.profileImg}
+                                  alt="Profile"
+                                />
+                                <div className="w-full flex me-2">
+                                  <p className=" text-xs mx-3 font-semibold text-black">
+                                    {reply.userId.userName}
+                                  </p>
+                                  <p
+                                    className="text-xs text-gray-400"
+                                    style={{ fontSize: "9px" }}
+                                  >
+                                    {formatDistanceToNow(
+                                      new Date(reply.timestamp),
+                                      { addSuffix: true }
+                                    )}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                            <div>
+                              <p className="text-xs text-gray-800 mx-3">
+                                {reply.replyComment}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {replyComments && (
+                  <Formik
+                    initialValues={commentInitialValues}
+                    validationSchema={commentValidationSchema}
+                    onSubmit={ReplyCommentHandleSubmit}
+                  >
+                    <Form>
+                      <div className="w-full items-center absolute bottom-0 pe-6 bg-white ">
+                        <div>
+                          <p className="text-xs font-bold mb-1">
+                            @{user.userName}
+                          </p>
+                        </div>
+                        <div className="flex">
+                          <Field
+                            className="w-full ps-3 border-gray-200 border  focus:border-gray-200 focus:outline-none focus:ring-1 focus:ring-offset-0 focus:ring-purple-600   rounded-md text-xs resize-none outline-none appearance-none"
+                            aria-label="post your comments..."
+                            placeholder="post your comments..."
+                            autoComplete="off"
+                            autoCorrect="off"
+                            style={{ height: "36px" }}
+                            name="comment"
+                          />
+                          <button
+                            type="submit"
+                            className="mx-4 text-xs  focus:outline-none border-none bg-transparent text-purple-600"
+                          >
+                            Reply
+                          </button>
+                          <button
+                            onClick={handleCancelReplyComments}
+                            className="text-xs text-red-700 me-3"
+                          >
+                            cancel
+                          </button>
+                        </div>
+                      </div>
+                    </Form>
+                  </Formik>
+                )}
+
+                {!replyComments && (
+                  <Formik
+                    initialValues={commentInitialValues}
+                    validationSchema={commentValidationSchema}
+                    onSubmit={commentHandleSubmit}
+                  >
+                    <Form>
+                      <div className="w-full flex items-center absolute bottom-0 pe-6 bg-white h-14">
+                        <Field
+                          className="w-full ps-3 border-gray-200 border  focus:border-gray-200 focus:outline-none focus:ring-1 focus:ring-offset-0 focus:ring-purple-600   rounded-md text-xs resize-none outline-none appearance-none"
+                          aria-label="post your comments..."
+                          placeholder="post your comments..."
+                          autoComplete="off"
+                          autoCorrect="off"
+                          style={{ height: "36px" }}
+                          name="comment"
+                        />
+                        <button
+                          type="submit"
+                          className="mx-2 text-xs  focus:outline-none border-none bg-transparent text-purple-600"
+                        >
+                          Comment
+                        </button>
+                      </div>
+                    </Form>
+                  </Formik>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+        {showLikedUsersPopup && (
+          <LikedUsers likedUsers={post.likes} onClose={toggleLikedUsersPopup} />
+        )}
+        <Modal
+          show={openModal}
+          size="md"
+          onClose={() => setOpenModal(false)}
+          popup
+        >
+          <Modal.Header />
+          <Modal.Body>
+            <div className="text-center">
+              {/* <HiOutlineExclamationCircle className="mx-auto text-xs  mb-4 h-10 w-10 text-gray-400 dark:text-gray-200" /> */}
+              <h3 className="mb-5 text-xs font-normal text-gray-500 dark:text-gray-400">
+                Are you sure you want to delete this this comment?
+              </h3>
+              <div className="flex justify-center gap-4 ">
+                <button
+                  className="text-xs flex gap-1 text-purple-600 font-semibold border px-2 py-1 rounded-md border-purple-600"
+                  onClick={() => {
+                    setOpenModal(false);
+                    handleDeleteComments(parentCommentId);
+                    setParentCommentId("");
+                  }}
+                >
+                  Yes, I'm sure
+                </button>{" "}
+                <button
+                  className="text-xs border px-4 py-1 rounded-md border-gray-600"
+                  onClick={() => setOpenModal(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </Modal.Body>
+        </Modal>
+      </div>
+    </>
   );
 };
 

@@ -11,7 +11,7 @@ import { SocketProvider } from "./utils/context/SocketContext/SocketContext.tsx"
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <Provider store={store}>
-    <Toaster richColors position="top-right" />
+    <Toaster richColors closeButton  position="top-right" />
     <PersistGate loading={null} persistor={persistor}>
       <SocketProvider>
         <RouterProvider router={appRouter}>
