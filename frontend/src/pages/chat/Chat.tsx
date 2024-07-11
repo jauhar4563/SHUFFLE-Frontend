@@ -58,8 +58,23 @@ function Chat() {
   }
 
   useEffect(() => {
-    socket.current = io(BASE_URL);
+     socket.current = io(BASE_URL);
+  socket.current.on("connect", () => {
+    console.log("Socket connected:", socket.current.id);
+  });
+  socket.current.on("disconnect", () => {
+    console.log("Socket disconnected");
+  });
 
+  if (userId) {
+    socket.current.emit("addUser", userId);
+    console.log("addUser event emitted with userId:", userId);
+  }
+
+  socket.current.on("getUsers", (users:any) => {
+    console.log("Online users received:", users);
+    setOnlineUsers(users);
+  });
     if (messageUserId) {
       addConversation({ senderId: userId, receiverId: messageUserId }).then(
         (response: any) => {
@@ -109,6 +124,7 @@ function Chat() {
     });
     getGroupMessages();
   }, []);
+
 
   const getLastMessage = () => {
     getLastGroupMessages().then((response: any) => {
@@ -193,12 +209,7 @@ function Chat() {
       setMessages((prev) => [...prev, groupArrivalMessage]);
   }, [groupArrivalMessage, currentChat]);
 
-  useEffect(() => {
-    socket?.current?.emit("addUser", user._id);
-    socket?.current?.on("getUsers", (users: any) => {
-      setOnlineUsers(users);
-    });
-  }, [user]);
+
 
   return (
     <>

@@ -171,7 +171,7 @@ const Posts: React.FC<PostProps> = ({ post }) => {
         <div className="flex flex-col">
           <div
             onDoubleClick={() => handleLike(post._id, user._id)}
-            className="bg-white p-4 lg:p-6 mb-1 rounded-lg max-w-full"
+            className="bg-white post-container-div p-4 lg:p-6 mb-1 rounded-lg max-w-full"
           >
             <div className="flex items-center justify-between mb-2">
               <Link

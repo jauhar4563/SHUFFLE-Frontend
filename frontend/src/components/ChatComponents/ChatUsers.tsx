@@ -128,7 +128,7 @@ function ChatUsers({
             conversations &&
             !conversations?.isGroup &&
             conversations.map((conversation: any) => (
-              <div onClick={() => setCurrentChat(conversation)}>
+              <div key={conversation._id} onClick={() => setCurrentChat(conversation)}>
                 <Friend
                   CurrentUser={user}
                   conversation={conversation}

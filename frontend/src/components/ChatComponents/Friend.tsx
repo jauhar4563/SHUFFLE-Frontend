@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { getUnreadMessages } from "../../services/api/user/apiMethods";
-import { BASE_URL } from "../../constants/baseUrls";
-import { io } from "socket.io-client";
+// import { BASE_URL } from "../../constants/baseUrls";
+// import { io } from "socket.io-client";
 
 interface Member {
   _id: string;
@@ -23,15 +23,14 @@ function Friend({ conversation, CurrentUser, onlineUsers, lastMessages }: any) {
 
 
   useEffect(() => {
-    socket.current = io(BASE_URL);
-    socket.current.on("getMessage", (data: any) => {
-      console.log(data);
+    // socket.current = io(BASE_URL);
+    // socket.current.on("getMessage", (data: any) => {
+    //   console.log(data);
       
-      getUnreadMessages({ conversationId, userId }).then((response: any) => {
-        console.log(response.data);
-        setUnreadMessages(response.data);
-      });
-    });
+    //   getUnreadMessages({ conversationId, userId }).then((response: any) => {
+    //     setUnreadMessages(response.data);
+    //   });
+    // });
     const updatedAtDate = new Date(conversation.updatedAt);
         const formattedTime = updatedAtDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         setUpdatedAtTime(formattedTime);
@@ -41,7 +40,6 @@ function Friend({ conversation, CurrentUser, onlineUsers, lastMessages }: any) {
    
 
     getUnreadMessages({ conversationId, userId }).then((response: any) => {
-      console.log(response.data);
       setUnreadMessages(response.data);
     });
   }, [socket]);

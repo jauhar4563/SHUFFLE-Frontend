@@ -227,11 +227,11 @@ function AddPost({ setNewPost }: any) {
   return (
     <div className=" lg:ms-96 ">
       <div
-        className="home-addpost-section lg:mt-4 lg:ml-4  home-addpost-section h-18%  rounded-xl border border-gray-200 "
+        className="home-addpost-section post-container-div lg:mt-4 lg:ml-4  home-addpost-section h-18%  rounded-xl border border-gray-200 "
         // style={{ width: "670px" }}
       >
         <Story />
-        <div className="bg-white flex flex-col rounded-lg justify-between p-2 lg:p-4">
+        <div className="bg-white w-full flex flex-col w-ful rounded-lg justify-between p-2 lg:p-4">
           <div className="text-gray-500 hidden lg:block font-medium text-xs">
             Whats Happening?........
           </div>

@@ -22,13 +22,17 @@ function HomePage() {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const response:any = await getAllPosts({ userId, searchTerm: "", page });
+        const response: any = await getAllPosts({
+          userId,
+          searchTerm: "",
+          page,
+        });
         const postsData = response.data;
         if (postsData.length === 0) {
           setHasMore(false);
         }
         setPosts((prev) => [...prev, ...postsData]);
-      } catch (error:any) {
+      } catch (error: any) {
         toast.error(error.message);
       } finally {
         setLoading(false);

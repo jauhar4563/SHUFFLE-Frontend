@@ -50,7 +50,7 @@ function Story() {
   };
 
   return (
-    <div className="max-w-full mx-auto p-2 bg-white rounded-lg">
+    <div className="max-w-full  mx-auto p-2 bg-white rounded-lg">
       <ul className="flex space-x-6 font-serif">
         <li className="flex flex-col items-center space-y-1 relative">
           {
